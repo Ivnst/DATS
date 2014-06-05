@@ -13,8 +13,13 @@ namespace DATS.Controllers
 
         public ActionResult Index()
         {
-            return View();
+            return this.RedirectToAction("Example");
+            //return View();
         }
 
+        public ActionResult Example()
+        {
+          return View();
+        }
     }
 }
