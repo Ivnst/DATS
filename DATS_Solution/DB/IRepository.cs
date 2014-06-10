@@ -15,5 +15,7 @@ namespace DATS
     DbSet<Place> Places { get; set; }
     DbSet<Price> Prices { get; set; }
     DbSet<SoldPlace> SoldPlaces { get; set; }
+
+    int SaveChanges();
   }
 }

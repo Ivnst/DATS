@@ -8,7 +8,7 @@ using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(DATS.NinjectConfig), "Stop")]
 namespace DATS
 {
-  public class NinjectConfig
+  public static class NinjectConfig
   {
     private static readonly Bootstrapper bootstrapper = new Bootstrapper();
 
@@ -50,7 +50,7 @@ namespace DATS
     /// <param name="kernel">The kernel.</param>
     private static void RegisterServices(IKernel kernel)
     {
-      kernel.Bind<IRepository>().To<SqlRep>();
+      kernel.Bind<IRepository>().To<SqlRep>().InRequestScope();
     }
   }
 }

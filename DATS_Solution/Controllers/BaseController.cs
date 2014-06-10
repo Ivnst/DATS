@@ -6,7 +6,8 @@ namespace DATS.Controllers
     public class BaseController : Controller
     {
       [Inject]
-      public IRepository Repository;
+      public IRepository Repository { get; set; }
 
+      protected static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
     }
 }

@@ -49,6 +49,9 @@
     <Reference Include="Ninject.Web.Common">
       <HintPath>..\packages\Ninject.Web.Common.3.2.2.0\lib\net40-full\Ninject.Web.Common.dll</HintPath>
     </Reference>
+    <Reference Include="Ninject.Web.Mvc">
+      <HintPath>..\packages\Ninject.MVC4.3.2.1.0\lib\net40-full\Ninject.Web.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=3.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NLog.3.0.0.0\lib\net40\NLog.dll</HintPath>
@@ -142,6 +145,13 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DB\IRepository.cs" />
+    <Compile Include="DB\Partials\SqlRep-SoldPlaces.cs" />
+    <Compile Include="DB\Partials\SqlRep-Prices.cs" />
+    <Compile Include="DB\Partials\SqlRep-Places.cs" />
+    <Compile Include="DB\Partials\SqlRep-Matches.cs" />
+    <Compile Include="DB\Partials\SqlRep-Clients.cs" />
+    <Compile Include="DB\Partials\SqlRep-Sectors.cs" />
+    <Compile Include="DB\Partials\SqlRep-Stadiums.cs" />
     <Compile Include="DB\SqlRep.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -241,6 +251,9 @@
     <Content Include="Scripts\knockout-2.1.0.js" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
     <Content Include="Scripts\_references.js" />
+    <None Include="Nlog.config">
+      <SubType>Designer</SubType>
+    </None>
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -293,7 +306,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>28844</DevelopmentServerPort>
+          <DevelopmentServerPort>31325</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
