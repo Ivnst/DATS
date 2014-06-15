@@ -1,4 +1,8 @@
-﻿using System.Data.Entity;
+﻿using System.Linq;
+using System.Data.Entity;
+using System.Collections.Generic;
+using System;
+using System.Data.Entity.Core.Objects;
 
 namespace DATS
 {
@@ -12,5 +16,39 @@ namespace DATS
     /// </summary>
     public DbSet<Match> Matches { get; set; }
 
+    /// <summary>
+    /// Возвращает список мероприятий у указанного стадиона
+    /// </summary>
+    /// <param name="stadium"></param>
+    /// <returns></returns>
+    public List<Match> GetMatchesByStadium(Stadium stadium)
+    {
+      return Matches.Where<Match>(m => m.StadiumId == stadium.Id && DbFunctions.AddMinutes(m.BeginsAt, m.Duration) > DateTime.Now).ToList<Match>();
+    }
+
+    /// <summary>
+    /// Статистика по секторам на указанном мероприятии
+    /// </summary>
+    /// <param name="match"></param>
+    /// <returns></returns>
+    public List<SectorView> GetSectorsStatistics(Match match)
+    {
+      List<SectorView> result = new List<SectorView>();
+
+      foreach (Sector sector in GetSectorsByStadium(match.StadiumId))
+      {
+        SectorView item = new SectorView();
+        item.SectorId = sector.Id;
+        item.Name = sector.Name;
+        item.TotalPlaces = Places.Count<Place>(p => p.SectorId == sector.Id);
+        item.SoldPlaces = GetCountOfSoldPlaces(match, sector, false);
+        item.ReservedPlaces = GetCountOfSoldPlaces(match, sector, true);
+        item.FreePlaces = item.TotalPlaces - item.SoldPlaces - item.ReservedPlaces;
+       
+        result.Add(item);
+      }
+
+      return result;
+    }
   }
 }
