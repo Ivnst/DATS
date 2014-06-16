@@ -18,9 +18,9 @@ namespace DATS.Controllers
           get
           {
             //view cookie
-            var cookie = Request.Cookies["ss"]; //SS - selected stadium
-            int stadiumId = Convert.ToInt32(cookie == null ? "-1" : cookie.Value);
+            int stadiumId = ReadIntValueFromCookie("ss");//SS - selected stadium
 
+            //search stadium (check cookie value)
             Stadium stadium = Repository.Stadiums.FirstOrDefault<Stadium>(s => s.Id == stadiumId);
             if(stadium == null)
             {
@@ -37,8 +37,7 @@ namespace DATS.Controllers
             if (value == null) return;
 
             //create cookie
-            var cookie = new HttpCookie("ss", value.Id.ToString());
-            Response.SetCookie(cookie);
+            WriteIntValueIntoCookie("ss", value.Id);
           }
         }
 
@@ -50,10 +49,10 @@ namespace DATS.Controllers
           get
           {
             Stadium stadium = this.CurrentStadium;
+            if (stadium == null) return null;
 
             //view cookie
-            var cookie = Request.Cookies["sm"]; //SM - selected match
-            int matchId = Convert.ToInt32(cookie == null ? "-1" : cookie.Value);
+            int matchId = ReadIntValueFromCookie("sm");//SM - selected match
 
             Match match = Repository.Matches.FirstOrDefault<Match>(m => m.Id == matchId);
             if (match == null || match.StadiumId != stadium.Id)
@@ -71,13 +70,13 @@ namespace DATS.Controllers
             if (value == null) return;
 
             //create cookie
-            var cookie = new HttpCookie("sm", value.Id.ToString());
-            Response.SetCookie(cookie);
+            WriteIntValueIntoCookie("sm", value.Id);
           }
         }
 
         #endregion
 
+        #region <Actions>
         //
         // GET: /Home/
 
@@ -92,16 +91,11 @@ namespace DATS.Controllers
           //определяем текущий стадион (Выбранный)
           Stadium currentStadium = this.CurrentStadium;
           if (currentStadium == null) return RedirectToAction("Error", new { e = 1 });
+
           Match currentMatch = this.CurrentMatch;
           if (currentMatch == null) return RedirectToAction("Error", new { e = 2 });
 
-          //заполняем данные для View
-          ViewBag.Stadiums = stadiums;
-          ViewBag.CurrentStadium = currentStadium;
-          ViewBag.CurrentMatch = currentMatch;
-          ViewBag.Matches = Repository.GetMatchesByStadium(currentStadium);
-          ViewBag.SectorsInfo = Repository.GetSectorsStatistics(currentMatch);
-
+          FillViewBag(currentStadium, currentMatch);
           return View();
         }
 
@@ -139,15 +133,25 @@ namespace DATS.Controllers
           return RedirectToAction("Index");
         }
 
-
+        /// <summary>
+        /// Страница для продажи билетов
+        /// </summary>
+        /// <param name="sid"></param>
+        /// <returns></returns>
         public ActionResult EditSector(int sid)
         {
           return View();
         }
 
-
+        /// <summary>
+        /// Страница с ошибкой
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
         public ActionResult Error(int e)
         {
+          FillViewBag(this.CurrentStadium, this.CurrentMatch);
+
           switch (e)
           {
             case 1:
@@ -163,11 +167,40 @@ namespace DATS.Controllers
           return View();
         }
 
-
+        /// <summary>
+        /// Пример использования Twitter Bootstrap
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Example()
         {
           return View();
         }
 
+        #endregion
+
+        #region <Methods>
+
+        /// <summary>
+        /// заполняем данные для View
+        /// </summary>
+        /// <param name="currentStadium"></param>
+        /// <param name="currentMatch"></param>
+        private void FillViewBag(Stadium currentStadium, Match currentMatch)
+        {
+          if(currentStadium == null)
+          {
+            currentStadium = new Stadium();
+            currentStadium.Name = "Стадионы не найдены";
+          }
+
+          //заполняем данные для View
+          ViewBag.Stadiums = Repository.GetAllStadiums();
+          ViewBag.CurrentStadium = currentStadium;
+          ViewBag.CurrentMatch = currentMatch;
+          ViewBag.Matches = Repository.GetMatchesByStadium(currentStadium);
+          ViewBag.SectorsInfo = Repository.GetSectorsStatistics(currentMatch);
+        }
+
+        #endregion
     }
 }
