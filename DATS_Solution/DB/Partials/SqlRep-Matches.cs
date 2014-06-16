@@ -34,6 +34,7 @@ namespace DATS
     public List<SectorView> GetSectorsStatistics(Match match)
     {
       List<SectorView> result = new List<SectorView>();
+      if (match == null) return result;
 
       foreach (Sector sector in GetSectorsByStadium(match.StadiumId))
       {

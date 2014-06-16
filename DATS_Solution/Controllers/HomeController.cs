@@ -86,13 +86,14 @@ namespace DATS.Controllers
           List<Stadium> stadiums = Repository.GetAllStadiums();
           if(stadiums.Count == 0)
           {
-            //RedirectToAction("NoStadiums");
-            throw new Exception();
+            return RedirectToAction("Error", new { e = 1 });
           }
 
           //определяем текущий стадион (Выбранный)
           Stadium currentStadium = this.CurrentStadium;
+          if (currentStadium == null) return RedirectToAction("Error", new { e = 1 });
           Match currentMatch = this.CurrentMatch;
+          if (currentMatch == null) return RedirectToAction("Error", new { e = 2 });
 
           //заполняем данные для View
           ViewBag.Stadiums = stadiums;
@@ -141,6 +142,24 @@ namespace DATS.Controllers
 
         public ActionResult EditSector(int sid)
         {
+          return View();
+        }
+
+
+        public ActionResult Error(int e)
+        {
+          switch (e)
+          {
+            case 1:
+              ViewBag.Message = "Стадионы не найдены! Добавить стадион можно на странице настроек.";
+              break;
+            case 2:
+              ViewBag.Message = "У выбранного стадиона нет активных мероприятий! Добавить мероприятие можно на странице настроек.";
+              break;
+            default:
+              ViewBag.Message = "Неизвестная ошибка.";
+              break;
+          }
           return View();
         }
 
