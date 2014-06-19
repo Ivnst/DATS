@@ -1,4 +1,6 @@
-﻿using System.Data.Entity;
+﻿using System.Linq;
+using System.Data.Entity;
+using System.Collections.Generic;
 
 namespace DATS
 {
@@ -12,5 +14,24 @@ namespace DATS
     /// </summary>
     public DbSet<Sector> Sectors { get; set; }
 
+    /// <summary>
+    /// Возвращает список секторов у указанного стадиона
+    /// </summary>
+    /// <param name="stadium"></param>
+    /// <returns></returns>
+    public List<Sector> GetSectorsByStadium(Stadium stadium)
+    {
+      return GetSectorsByStadium(stadium.Id);
+    }
+
+    /// <summary>
+    /// Возвращает список секторов у указанного стадиона
+    /// </summary>
+    /// <param name="stadium"></param>
+    /// <returns></returns>
+    public List<Sector> GetSectorsByStadium(int stadiumId)
+    {
+      return Sectors.Where<Sector>(s => s.StadiumId == stadiumId).ToList<Sector>();
+    }
   }
 }

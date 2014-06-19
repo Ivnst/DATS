@@ -17,5 +17,13 @@ namespace DATS
     DbSet<SoldPlace> SoldPlaces { get; set; }
 
     int SaveChanges();
+
+    //Stadiums
+    List<Stadium> GetAllStadiums();
+
+
+    //Matches
+    List<Match> GetMatchesByStadium(Stadium stadium);
+    List<SectorView> GetSectorsStatistics(Match match);
   }
 }

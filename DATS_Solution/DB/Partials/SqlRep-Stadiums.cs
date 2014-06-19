@@ -1,4 +1,6 @@
 ﻿using System.Data.Entity;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DATS
 {
@@ -12,5 +14,14 @@ namespace DATS
     /// </summary>
     public DbSet<Stadium> Stadiums { get; set; }
 
+
+    /// <summary>
+    /// Возвращает список всех стадионов
+    /// </summary>
+    /// <returns></returns>
+    public List<Stadium> GetAllStadiums()
+    {
+      return Stadiums.ToList<Stadium>();
+    }
   }
 }
