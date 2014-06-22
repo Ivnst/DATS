@@ -13,9 +13,6 @@
 <table class="table table-striped table-bordered table-hover">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.StadiumId)
-        </th>
-        <th>
             @Html.DisplayNameFor(model => model.Name)
         </th>
         <th>
@@ -30,9 +27,6 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.StadiumId)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
