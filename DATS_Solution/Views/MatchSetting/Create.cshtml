@@ -1,0 +1,59 @@
+﻿@model DATS.Match
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_SettingLayout.cshtml";
+    Culture = "ru-RU";
+}
+
+<h2>MatchSetting: Create</h2>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary()
+
+    <fieldset>
+        <legend>Match</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.StadiumId)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(
+    model => model.StadiumId,
+ (IEnumerable<SelectListItem>)ViewBag.Stadiumes,
+    "-- пожалуйста выберите стадион --"
+)
+</div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Name)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Name)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.BeginsAt)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.BeginsAt)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Duration)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Duration)
+        </div>
+
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+

@@ -1,0 +1,48 @@
+﻿@model DATS.Match
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_SettingLayout.cshtml";
+}
+
+<h2>MatchSetting: Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>Match</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.StadiumId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.StadiumId)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.BeginsAt)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BeginsAt)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Duration)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Duration)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

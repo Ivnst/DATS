@@ -9,6 +9,7 @@ namespace DATS
     /// </summary>
     public SqlRep() : base("DATS") { }
 
+
     /// <summary>
     /// Сохранение изменений в базе данных
     /// </summary>

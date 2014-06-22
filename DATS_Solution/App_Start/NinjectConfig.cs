@@ -51,6 +51,7 @@ namespace DATS
     private static void RegisterServices(IKernel kernel)
     {
       kernel.Bind<IRepository>().To<SqlRep>().InRequestScope();
+   
     }
   }
 }

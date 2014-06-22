@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity;
+using System.Linq;
 
 namespace DATS
 {
@@ -11,6 +12,7 @@ namespace DATS
     /// Список стадионов
     /// </summary>
     public DbSet<Stadium> Stadiums { get; set; }
+    IQueryable<Stadium> IRepository.Stadiumes { get { return Stadiums; } }
 
   }
 }
