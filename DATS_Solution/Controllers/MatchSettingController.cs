@@ -10,21 +10,10 @@ namespace DATS.Controllers
     public class MatchSettingController : BaseController
     {
 
-        private IRepository repository;
-
-        public MatchSettingController(IRepository repo)
-        {
-            repository = repo;
-        }
-
-
-
-        //
-        // GET: /Setting/
 
         public ViewResult Index()
         {
-            return View(repository.Matches);
+            return View(Repository.Matches);
 
         }
 
@@ -33,12 +22,12 @@ namespace DATS.Controllers
         public ViewResult Edit(int id)
         {
             
-            Match match = repository.Matches
+            Match match = Repository.Matches
               .FirstOrDefault(p => p.Id == id);
 
             // start selectList
             IEnumerable<SelectListItem> selectList =
-            from s in repository.Stadiumes
+            from s in Repository.Stadiums
             select new SelectListItem
             {
                 Selected = (s.Id == match.StadiumId),
@@ -56,15 +45,15 @@ namespace DATS.Controllers
         {
             if (ModelState.IsValid)
             {
-                repository.SaveMatch(match);
-                TempData["message"] = string.Format("{0} has been saved", match.Name);
+                Repository.SaveMatch(match);
+                TempData["message"] = string.Format(@"Мероприятие ""{0}"" успешно сохранено.", match.Name);
                 return RedirectToAction("Index");
             }
             else
             {
                 // start selectList
                 IEnumerable<SelectListItem> selectList =
-                from s in repository.Stadiumes
+                from s in Repository.Stadiums
                 select new SelectListItem
                 {
                     Selected = (s.Id == match.StadiumId),
@@ -85,7 +74,7 @@ namespace DATS.Controllers
         {
             // start selectList
             IEnumerable<SelectListItem> selectList =
-            from s in repository.Stadiumes
+            from s in Repository.Stadiums
             select new SelectListItem
             {
                 Selected = false,
@@ -103,15 +92,15 @@ namespace DATS.Controllers
         {
             if (ModelState.IsValid)
             {
-                repository.SaveMatch(match);
-                TempData["message"] = string.Format("{0} has been saved", match.Name);
+                Repository.SaveMatch(match);
+                TempData["message"] = string.Format(@"Мероприятие ""{0}"" успешно создано.", match.Name);
                 return RedirectToAction("Index");
             }
             else
             {
                 // start selectList
                 IEnumerable<SelectListItem> selectList =
-                from s in repository.Stadiumes
+                from s in Repository.Stadiums
                 select new SelectListItem
                 {
                     Selected = (s.Id == match.StadiumId),
@@ -129,7 +118,7 @@ namespace DATS.Controllers
 
         public ViewResult Delete(int id)
         {
-            Match match = repository.Matches
+            Match match = Repository.Matches
               .FirstOrDefault(p => p.Id == id);
             return View(match);
         }
@@ -139,8 +128,8 @@ namespace DATS.Controllers
         [HttpPost]
         public ActionResult Delete(Match match)
         {
-                repository.DeleteMatch(match);
-                TempData["message"] = string.Format("{0} has been deleted", match.Name);
+                Repository.DeleteMatch(match);
+                TempData["message"] = string.Format(@"Мероприятие было удалено.", match.Name);
                 return RedirectToAction("Index");
         }
 

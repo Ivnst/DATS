@@ -1,18 +1,18 @@
 ﻿@model DATS.Match
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Справочник мероприятий: Редактирование";
     Layout = "~/Views/Shared/_SettingLayout.cshtml";
     Culture = "ru-RU";
 }
 
-<h2>MatchSetting: Edit</h2>
+<h2>Справочник мероприятий: Редактирование</h2>
 
 @using (Html.BeginForm()) {
     @Html.ValidationSummary()
 
     <fieldset>
-        <legend>Match</legend>
+        <legend></legend>
 
         <div class="editor-label">
             @Html.LabelFor(model => model.StadiumId)
@@ -49,13 +49,13 @@
         @Html.HiddenFor(model => model.Id)
 
         <p>
-            <input type="submit" value="Save" />
+            <input type="submit" value="Сохранить" />
         </p>
     </fieldset>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Обратно к списку", "Index")
 </div>
 
 

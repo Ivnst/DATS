@@ -12,7 +12,6 @@ namespace DATS
     /// Список стадионов
     /// </summary>
     public DbSet<Stadium> Stadiums { get; set; }
-    IQueryable<Stadium> IRepository.Stadiumes { get { return Stadiums; } }
 
   }
 }

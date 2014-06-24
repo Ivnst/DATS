@@ -25,7 +25,6 @@ namespace DATS
     /// Название матча (или мероприятия)
     /// </summary>
     [DisplayName("Название мероприятия")]
-    [StringLength(255)]
     [DataType(DataType.MultilineText)]
     [Required(ErrorMessage = "Пожалуйста введите название матча (или мероприятия).")]
     public string Name { get; set; }
@@ -33,9 +32,9 @@ namespace DATS
     /// Дата и время начала
     /// </summary>
     [DisplayName("Дата и время начала")]
-    [DataType(DataType.DateTime), DisplayFormat(DataFormatString = "{0:dd/MM/yyyy hh:mm}", ApplyFormatInEditMode = true)]
-    [Range(typeof(DateTime), "01-01-2000", "01-01-2099")]
-    [Required(ErrorMessage = "Пожалуйста введите дату и время начала (dd/MM/yyyy hh:mm).")]
+    [DataType(DataType.DateTime), DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}", ApplyFormatInEditMode = true)]
+    [Range(typeof(DateTime), "01.01.2000", "31.12.2099")]
+    [Required(ErrorMessage = "Пожалуйста введите дату и время начала (dd.MM.yyyy HH:mm:ss).")]
     public DateTime BeginsAt { get; set; }
     /// <summary>
     /// Продолжительность в минутах
