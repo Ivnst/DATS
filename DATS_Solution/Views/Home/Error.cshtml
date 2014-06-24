@@ -1,0 +1,15 @@
+﻿@{
+    ViewBag.Title = "Error";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+<div style="text-align: center; width: 700px; margin: 50px auto">
+    <div class="panel panel-warning">
+        <div class="panel-heading">
+            Ошибка</div>
+        <div class="panel-body">
+            <p>@ViewBag.Message</p>
+            <a class="btn btn-primary" href="/Settings/Index" role="button">Перейти к настройкам</a>
+        </div>
+    </div>
+</div>

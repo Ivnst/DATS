@@ -24,7 +24,7 @@ namespace DATS.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         StadiumId = c.Int(nullable: false),
-                        Name = c.String(nullable: false),
+                        Name = c.String(nullable: false, maxLength: 255),
                         BeginsAt = c.DateTime(nullable: false),
                         Duration = c.Int(nullable: false),
                     })

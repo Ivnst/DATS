@@ -167,6 +167,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Clients.cs" />
+    <Compile Include="Models\ModelsView\SectorView.cs" />
     <Compile Include="Models\SoldPlaces.cs" />
     <Compile Include="Models\Prices.cs" />
     <Compile Include="Models\Matches.cs" />
@@ -284,9 +285,13 @@
     <Content Include="Views\MatchSetting\Delete.cshtml" />
     <Content Include="Views\MatchSetting\Edit.cshtml" />
     <Content Include="Scripts\jquery.validate.globalize.min.js.map" />
+    <Content Include="Views\Home\EditSector.cshtml" />
+    <Content Include="Views\Home\Error.cshtml" />
+    <Content Include="Views\Shared\_HomeLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\StadiumsImages\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

@@ -7,7 +7,7 @@ namespace DATS
     /// <summary>
     /// Конструктор (здесь DATS - название базы данных)
     /// </summary>
-    public SqlRep() : base("DATS") { }
+    public SqlRep() : base("DefaultConnection") {} 
 
 
     /// <summary>

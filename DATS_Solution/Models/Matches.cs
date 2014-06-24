@@ -13,22 +13,21 @@ namespace DATS
   [Table("Matches")]
   public class Match : ItemWithId
   {
-
-
     /// <summary>
     /// Код стадиона
     /// </summary>
     [DisplayName("Ид. стадиона")]
     [Required(ErrorMessage = "Пожалуйста выбирите стадион.")]
     public int StadiumId { get; set; }
+
     /// <summary>
     /// Название матча (или мероприятия)
     /// </summary>
     [DisplayName("Название мероприятия")]
-    [StringLength(255)]
     [DataType(DataType.MultilineText)]
     [Required(ErrorMessage = "Пожалуйста введите название матча (или мероприятия).")]
     public string Name { get; set; }
+
     /// <summary>
     /// Дата и время начала
     /// </summary>
@@ -37,6 +36,7 @@ namespace DATS
     [Range(typeof(DateTime), "01-01-2000", "01-01-2099")]
     [Required(ErrorMessage = "Пожалуйста введите дату и время начала (dd/MM/yyyy hh:mm).")]
     public DateTime BeginsAt { get; set; }
+
     /// <summary>
     /// Продолжительность в минутах
     /// </summary>
