@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel;
 
 namespace DATS
 {
@@ -21,10 +22,12 @@ namespace DATS
     /// </summary>
     [Required]
     [MinLength(10)]
+    [DisplayName("Название стадиона")]
     public string Name { get; set; }
     /// <summary>
     /// Адрес стадиона
     /// </summary>
+    [DisplayName("Адрес стадиона")]
     public string Address { get; set; }
     /// <summary>
     /// Путь к изображению со схемой

@@ -1,0 +1,14 @@
+﻿@{
+    ViewBag.Title = "Мероприятия";
+    Layout = "~/Views/Shared/_SettingsLayout.cshtml";
+}
+
+<div class="container bs-docs-container">
+    <ul class="nav nav-tabs">
+        <li><a href="/Settings/Stadiums">Стадионы</a></li>
+        <li><a href="/Settings/Sectors">Секторы</a></li>
+        <li class="active"><a href="/Settings/Matches">Мероприятия</a></li>
+        <li><a href="/Settings/Prices">Цены</a></li>
+    </ul>
+   @Html.Action("Index", "MatchSetting")
+</div>

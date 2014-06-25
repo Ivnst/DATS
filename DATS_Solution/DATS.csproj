@@ -149,6 +149,8 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MatchSettingController.cs" />
+    <Compile Include="Controllers\SettingsController.cs" />
+    <Compile Include="Controllers\StadiumSettingController.cs" />
     <Compile Include="DB\IRepository.cs" />
     <Compile Include="DB\Partials\SqlRep-SoldPlaces.cs" />
     <Compile Include="DB\Partials\SqlRep-Prices.cs" />
@@ -288,6 +290,15 @@
     <Content Include="Views\Home\EditSector.cshtml" />
     <Content Include="Views\Home\Error.cshtml" />
     <Content Include="Views\Shared\_HomeLayout.cshtml" />
+    <Content Include="Views\Settings\Stadiums.cshtml" />
+    <Content Include="Views\Shared\_SettingsLayout.cshtml" />
+    <Content Include="Views\StadiumSetting\Index.cshtml" />
+    <Content Include="Views\Settings\Matches.cshtml" />
+    <Content Include="Views\Settings\Sectors.cshtml" />
+    <Content Include="Views\Settings\Prices.cshtml" />
+    <Content Include="Views\StadiumSetting\Create.cshtml" />
+    <Content Include="Views\StadiumSetting\Edit.cshtml" />
+    <Content Include="Views\StadiumSetting\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -330,7 +341,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>31325</DevelopmentServerPort>
+          <DevelopmentServerPort>34051</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
