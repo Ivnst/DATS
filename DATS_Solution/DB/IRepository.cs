@@ -20,7 +20,6 @@ namespace DATS
 
     void SaveMatch(Match match);
     void DeleteMatch(Match match);
-    IQueryable<Stadium> Stadiumes { get; }
     
     //Stadiums
     List<Stadium> GetAllStadiums();
