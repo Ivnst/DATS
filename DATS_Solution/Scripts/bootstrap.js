@@ -1019,7 +1019,7 @@ if (typeof jQuery === 'undefined') { throw new Error('Bootstrap\'s JavaScript re
     .on('show.bs.modal', '.modal', function () { $(document.body).addClass('modal-open') })
     .on('hidden.bs.modal', '.modal', function () {
         $(document.body).removeClass('modal-open')
-        $(this).removeData('bs.modal');
+        $(this).removeData('bs.modal')
      })
 
 }(jQuery);

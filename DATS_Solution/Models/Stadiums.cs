@@ -20,8 +20,8 @@ namespace DATS
     /// <summary>
     /// Наименование стадиона
     /// </summary>
-    [Required]
-    [MinLength(10)]
+    [Required(ErrorMessage="Пожалуйста, укажите название нового стадиона!")]
+    [MinLength(10)]   //TODO: Убрать это ограничение
     [DisplayName("Название стадиона")]
     public string Name { get; set; }
     /// <summary>
