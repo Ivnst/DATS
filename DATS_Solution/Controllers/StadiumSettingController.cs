@@ -17,7 +17,6 @@ namespace DATS.Controllers
             return PartialView(Repository.Stadiums);
         }
 
-        [ChildActionOnly]
         public ActionResult Create()
         {
           return PartialView(new Stadium());
