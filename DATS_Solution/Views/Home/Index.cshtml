@@ -6,7 +6,7 @@
 <div>
   <div class="container bs-docs-container">
     <div class="bs-docs-section">
-      <h1 class="page-header">@ViewBag.CurrentMatch.Name</h1>
+      <h1 class="page-header" style="margin: 0">@ViewBag.CurrentMatch.Name</h1>
       <ul class="list-inline">
         <li><h4>Дата проведения: @ViewBag.CurrentMatch.BeginsAt</h4></li>
         <li><h4>Продолжительность: @ViewBag.CurrentMatch.Duration минут.</h4></li>
@@ -33,7 +33,7 @@
           <tbody>
           @foreach (DATS.SectorView sv in ViewBag.SectorsInfo)
           {
-            <tr onclick="window.document.location='/Home/EditSector?sid=@sv.SectorId';">
+            <tr onclick="window.document.location='/Sector/Configure?sid=@sv.SectorId';">
               <td class="text-center active">@sv.Name</td>
               <td class="text-center warning">@sv.TotalPlaces</td>
               <td class="text-center danger">@sv.SoldPlaces</td>

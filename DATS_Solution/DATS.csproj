@@ -149,6 +149,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MatchSettingController.cs" />
+    <Compile Include="Controllers\SectorController.cs" />
     <Compile Include="Controllers\SettingsController.cs" />
     <Compile Include="Controllers\StadiumSettingController.cs" />
     <Compile Include="DB\IRepository.cs" />
@@ -243,6 +244,7 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\Custom\SectorConfigure.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-US.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.ru-RU.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.ru.js" />
@@ -286,7 +288,6 @@
     <Content Include="Views\MatchSetting\Delete.cshtml" />
     <Content Include="Views\MatchSetting\Edit.cshtml" />
     <Content Include="Scripts\jquery.validate.globalize.min.js.map" />
-    <Content Include="Views\Home\EditSector.cshtml" />
     <Content Include="Views\Home\Error.cshtml" />
     <Content Include="Views\Shared\_HomeLayout.cshtml" />
     <Content Include="Views\Settings\Stadiums.cshtml" />
@@ -298,6 +299,8 @@
     <Content Include="Views\StadiumSetting\Create.cshtml" />
     <Content Include="Views\StadiumSetting\Edit.cshtml" />
     <Content Include="Views\StadiumSetting\Delete.cshtml" />
+    <Content Include="Views\Sector\Edit.cshtml" />
+    <Content Include="Views\Sector\Configure.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -340,7 +343,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>56328</DevelopmentServerPort>
+          <DevelopmentServerPort>64306</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
