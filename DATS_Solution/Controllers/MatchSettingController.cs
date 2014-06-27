@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Data.Entity;
 
 
 namespace DATS.Controllers
@@ -10,16 +11,16 @@ namespace DATS.Controllers
     public class MatchSettingController : BaseController
     {
 
-
-        public ViewResult Index()
+        [ChildActionOnly]
+        public ActionResult Index()
         {
-            return View(Repository.Matches);
+            return PartialView(Repository.Matches);
 
         }
 
         
 
-        public ViewResult Edit(int id)
+        public ActionResult Edit(int id)
         {
             
             Match match = Repository.Matches
@@ -37,7 +38,7 @@ namespace DATS.Controllers
             ViewBag.Stadiumes = selectList;
             // end selectList
 
-            return View(match);
+            return PartialView(match);
         }
 
         [HttpPost]
@@ -45,9 +46,10 @@ namespace DATS.Controllers
         {
             if (ModelState.IsValid)
             {
-                Repository.SaveMatch(match);
+                ((DbContext)Repository).Entry<Match>(match).State = EntityState.Modified;
+                Repository.SaveChanges();
                 TempData["message"] = string.Format(@"Мероприятие ""{0}"" успешно сохранено.", match.Name);
-                return RedirectToAction("Index");
+                return RedirectToAction("Matches", "Settings");
             }
             else
             {
@@ -70,7 +72,7 @@ namespace DATS.Controllers
 
 
         [HttpGet]
-        public ViewResult Create()
+        public ActionResult Create()
         {
             // start selectList
             IEnumerable<SelectListItem> selectList =
@@ -84,7 +86,7 @@ namespace DATS.Controllers
             ViewBag.Stadiumes = selectList;
             // end selectList
 
-            return View(new Match() );
+            return PartialView(new Match());
         }
 
         [HttpPost]
@@ -92,9 +94,10 @@ namespace DATS.Controllers
         {
             if (ModelState.IsValid)
             {
-                Repository.SaveMatch(match);
+                Repository.Matches.Add(match);
+                Repository.SaveChanges();
                 TempData["message"] = string.Format(@"Мероприятие ""{0}"" успешно создано.", match.Name);
-                return RedirectToAction("Index");
+                return RedirectToAction("Matches", "Settings");
             }
             else
             {
@@ -116,11 +119,11 @@ namespace DATS.Controllers
         }
 
 
-        public ViewResult Delete(int id)
+        public ActionResult Delete(int id)
         {
             Match match = Repository.Matches
               .FirstOrDefault(p => p.Id == id);
-            return View(match);
+            return PartialView(match);
         }
 
 
@@ -128,9 +131,10 @@ namespace DATS.Controllers
         [HttpPost]
         public ActionResult Delete(Match match)
         {
-                Repository.DeleteMatch(match);
+            ((DbContext)Repository).Entry<Match>(match).State = EntityState.Deleted;
+            Repository.SaveChanges();
                 TempData["message"] = string.Format(@"Мероприятие было удалено.", match.Name);
-                return RedirectToAction("Index");
+                return RedirectToAction("Matches", "Settings");
         }
 
 
