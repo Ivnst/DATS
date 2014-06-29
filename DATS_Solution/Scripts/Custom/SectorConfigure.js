@@ -17,7 +17,7 @@ function Shape(row, col, state, selected) {
     this.col = col || 0;
     this.state = state || 0;
     this.selected = selected || 0;
-    this.label = '';
+    this.label = 0;
 }
 
 // Determine if a point is inside the shape's bounds
@@ -129,6 +129,7 @@ function CanvasState(canvas, width, height) {
     }, true);
 
     canvas.addEventListener('mouseup', function (e) {
+        if (!myState.mousePressed) return;
         if (!myState.selection) {
             // myState.clearSelection();
             var mouse = myState.getMouse(e);
@@ -136,7 +137,8 @@ function CanvasState(canvas, width, height) {
 
             //change selection
             var shape = myState.shapes[itm.row][itm.col];
-            shape.selected = !shape.selected;
+            if (shape != undefined)
+                shape.selected = !shape.selected;
         }
         myState.selection = false;
         myState.mousePressed = false;
@@ -152,6 +154,20 @@ function CanvasState(canvas, width, height) {
     }, true);
 
     // **** Options! ****
+
+    //get sector places data
+    $.get("/Sector/SectorInfo?sid=" + params.sid,
+    function (data) {
+        for (var i = 0; i < data.length; i++) {
+            var itm = data[i];
+            myState.shapes[itm.Row][itm.Col].state = true;
+            myState.shapes[itm.Row][itm.Col].label = itm.Num;
+        }
+        myState.valid = false;
+        myState.showInfo();
+
+    })
+
 
     this.selectionColor = '#CC0000';
     this.selectionWidth = 2;
@@ -182,11 +198,17 @@ CanvasState.prototype.clearSelection = function () {
 }
 
 CanvasState.prototype.setSelectionTo = function (newState) {
+    var num = 1;
     for (var i = 0; i < this.maxRows; i++) {
+        num = 1;
         for (var j = 0; j < this.maxCols; j++) {
             var shape = this.shapes[i][j];
             if (shape.selected) {
                 shape.state = newState;
+            }
+            if (shape.state) {
+                shape.label = num;
+                num = num + 1;
             }
         }
     }
@@ -221,6 +243,12 @@ CanvasState.prototype.showInfo = function () {
 
 }
 
+CanvasState.prototype.scale = function (val) {
+    this.itemWidth = this.itemWidth + val;
+    this.itemHeight = this.itemHeight + val;
+    this.valid = false;
+}
+
 // While draw is called as often as the INTERVAL variable demands,
 // It only ever does something if the canvas gets invalidated by our code
 CanvasState.prototype.draw = function () {
@@ -253,7 +281,9 @@ CanvasState.prototype.draw = function () {
          if (this.selection) {
              ctx.strokeStyle = this.selectionColor;
              ctx.lineWidth = this.selectionWidth;
+             ctx.globalAlpha = 0.2;
              ctx.strokeRect(this.initialX, this.initialY, this.selectionX - this.initialX, this.selectionY - this.initialY);
+             ctx.globalAlpha = 1;
          }
 
         // ** Add stuff you want drawn on top all the time here **
@@ -288,6 +318,14 @@ CanvasState.prototype.drawShape = function (row, col, shape) {
     this.ctx.fillRect(x, y, this.itemWidth, this.itemHeight);
 
     this.ctx.beginPath();
+    this.ctx.moveTo(x, y + this.itemHeight);
+    this.ctx.lineTo(x + this.itemWidth, y + this.itemHeight);
+    this.ctx.lineTo(x + this.itemWidth, y);
+    this.ctx.lineWidth = 1;
+    this.ctx.strokeStyle = '#000000';
+    this.ctx.stroke();
+
+    this.ctx.beginPath();
     this.ctx.moveTo(x + this.itemWidth, y);
     this.ctx.lineTo(x, y);
     this.ctx.lineTo(x, y + this.itemHeight);
@@ -295,13 +333,13 @@ CanvasState.prototype.drawShape = function (row, col, shape) {
     this.ctx.strokeStyle = '#FFFFFF';
     this.ctx.stroke();
 
-    this.ctx.beginPath();
-    this.ctx.moveTo(x, y + this.itemHeight);
-    this.ctx.lineTo(x + this.itemWidth, y + this.itemHeight);
-    this.ctx.lineTo(x + this.itemWidth, y);
-    this.ctx.lineWidth = 1;
-    this.ctx.strokeStyle = '#000000';
-    this.ctx.stroke();
+    if (shape.state) {
+        this.ctx.fillStyle = '#FFFFFF';
+        this.ctx.textAlign = "center";
+        this.ctx.textBaseline = "middle";
+        this.ctx.font = "10pt Courier New";
+        this.ctx.fillText(shape.label, x + this.itemWidth / 2, y + this.itemHeight / 2);
+    }
 }
 
 
@@ -359,42 +397,89 @@ CanvasState.prototype.getItem = function (mx, my) {
     return { col: c, row: r };
 }
 
+CanvasState.prototype.sendData = function () {
+
+    var sectors = [];
+
+    for (var i = 0; i < this.maxRows; i++) {
+        for (var j = 0; j < this.maxCols; j++) {
+            var shape = this.shapes[i][j];
+            if (shape.state) {
+                var itm = new Object();
+                itm.Row = shape.row;
+                itm.Col = shape.col;
+                itm.Num = shape.label;
+
+                sectors.push(itm);
+            }
+        }
+    }
+    var resultString = JSON.stringify(sectors);
+
+    $.post("/Sector/StoreSectorInfo", { sid : params.sid, data : resultString },
+    function (data) {
+        alert(data);
+    })
+}
+
 // If you dont want to use <body onLoad='init()'>
 // You could uncomment this init() reference and place the script reference inside the body tag
 //init();
 
+var params = {};
+
 function init() {
-    
+
+    //get params from url
+    if (location.search) {
+        var parts = location.search.substring(1).split('&');
+
+        for (var i = 0; i < parts.length; i++) {
+            var nv = parts[i].split('=');
+            if (!nv[0]) continue;
+            params[nv[0]] = nv[1] || true;
+        }
+    }
+
+
     //настройка ширины канвы
     var canvasParent = document.getElementById('canvasParent');
     var s = new CanvasState(document.getElementById('canvas'), canvasParent.clientWidth - 10, canvasParent.clientHeight);
 
-    for (var i = 0; i < 15; i++) {
-        for (var j = 0; j < 10; j++) {
-            s.addShape(i, j, true); // The default is gray
-        } 
-    }
-    s.showInfo();
+//     for (var i = 0; i < 15; i++) {
+//         for (var j = 0; j < 10; j++) {
+//             s.addShape(i, j, true); // The default is gray
+//         } 
+//     }
 
-    var setState1 = document.getElementById('setState1');
-    setState1.onclick = function (e) {
+    document.getElementById('setState1').onclick = function (e) {
         s.setSelectionTo(true);
         s.clearSelection();
         s.showInfo();
     };
 
-    var setState0 = document.getElementById('setState0');
-    setState0.onclick = function (e) {
+    document.getElementById('setState0').onclick = function (e) {
         s.setSelectionTo(false); 
         s.clearSelection();
         s.showInfo();
     };
 
-    var clearSelectionBtn = document.getElementById('clearSelection');
-    clearSelectionBtn.onclick = function (e) {
+    document.getElementById('clearSelection').onclick = function (e) {
         s.clearSelection();
     };
 
+    document.getElementById('btnScalePlus').onclick = function (e) {
+            s.scale(5);
+    };
+
+    document.getElementById('btnScaleMinus').onclick = function (e) {
+        if (s.itemWidth > 10)
+            s.scale(-5);
+    };
+
+    document.getElementById('btnSave').onclick = function (e) {
+        s.sendData();
+    };
 
     //s.addShape(new Shape(50, 10, 30, 30, true, true));
     // Lets make some partially transparent
@@ -404,3 +489,18 @@ function init() {
 
 // Now go make something amazing!
 
+
+
+/*
+ *	$.get("my/uri", 
+    function(data) { 
+       // client side logic using the data from the server
+    })
+
+Sending data from javascript to the server works similarly:
+
+$.post("my/uri", { aValue : "put any data for the server here" }
+    function(data) { 
+       // client side logic using the data returned from the server
+    })
+ */

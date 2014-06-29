@@ -30,5 +30,20 @@ namespace DATS
              select sp;
       return list.Count<SoldPlace>();
     }
+
+    /// <summary>
+    /// Количество проданных мест у указанного сектора. Необходимо для проверки, были ли вообще проданы
+    /// какие-либо места у указанного сектора.
+    /// </summary>
+    /// <param name="sector"></param>
+    /// <returns></returns>
+    public int GetCountOfSoldPlacesInSector(Sector sector)
+    {
+      var list = from sp in SoldPlaces
+                 join p in Places on sp.PlaceId equals p.Id
+                 where p.SectorId == sector.Id
+                 select sp;
+      return list.Count<SoldPlace>();
+    }
   }
 }

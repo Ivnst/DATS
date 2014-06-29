@@ -27,5 +27,9 @@ namespace DATS
     //Matches
     List<Match> GetMatchesByStadium(Stadium stadium);
     List<SectorView> GetSectorsStatistics(Match match);
+
+    //Places
+    List<Place> GetPlacesBySector(Sector sector);
+    bool SavePlacesBySector(Sector sector, List<PlaceView> places);
   }
 }
