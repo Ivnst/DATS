@@ -12,9 +12,29 @@ namespace DATS.Controllers
     {
 
         [ChildActionOnly]
-        public ActionResult Index()
+        public ActionResult Index(int? sid)
         {
+          ViewBag.Stadiumes = Repository.GetAllStadiums();
+
+          if (sid == null)
+          {
+              int CookieId = ReadIntValueFromCookie("CurrSadiumForMatches");
+              if (CookieId != -1)
+              {
+                  sid = CookieId;
+              }
+          }
+        
+          if(sid == null)
+            {
+            ViewBag.ChooseStadium = "Фильтровать по стадионам";
             return PartialView(Repository.Matches);
+        } else
+            {
+                ViewBag.ChooseStadium = Repository.Stadiums.Where(s => s.Id == sid).Distinct().Select(k => k.Name).Max();
+            WriteIntValueIntoCookie("CurrSadiumForMatches", (int)sid);
+            return PartialView(Repository.Matches.Where(p => p.StadiumId == sid));
+            }
 
         }
 
