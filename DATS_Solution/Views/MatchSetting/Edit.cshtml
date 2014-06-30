@@ -35,7 +35,7 @@
              @Html.LabelFor(model => model.Name)
          </div>
          <div class="editor-field">
-             @Html.EditorFor(model => model.Name)
+             @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
              @Html.ValidationMessageFor(model => model.Name)
          </div>
 
@@ -43,7 +43,7 @@
              @Html.LabelFor(model => model.BeginsAt)
          </div>
          <div class="editor-field">
-             @Html.EditorFor(model => model.BeginsAt)
+             @Html.TextBoxFor(model => model.BeginsAt, new { @class = "form-control" })
              @Html.ValidationMessageFor(model => model.BeginsAt)
          </div>
 
@@ -51,7 +51,7 @@
              @Html.LabelFor(model => model.Duration)
          </div>
          <div class="editor-field">
-             @Html.EditorFor(model => model.Duration)
+             @Html.TextBoxFor(model => model.Duration, new { @class = "form-control" })
              @Html.ValidationMessageFor(model => model.Duration)
          </div>
 

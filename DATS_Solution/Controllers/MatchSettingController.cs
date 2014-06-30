@@ -16,6 +16,7 @@ namespace DATS.Controllers
         {
           ViewBag.Stadiumes = Repository.GetAllStadiums();
 
+          // Если не получили параметр, то пытаемся его прочесть в cookie
           if (sid == null)
           {
               int CookieId = ReadIntValueFromCookie("CurrSadiumForMatches");
@@ -27,11 +28,24 @@ namespace DATS.Controllers
         
           if(sid == null)
             {
-            ViewBag.ChooseStadium = "Фильтровать по стадионам";
-            return PartialView(Repository.Matches);
+            // если sid нет и в cookie выбераем первый встретившийся стадион
+            var FindFirst = Repository.Stadiums.FirstOrDefault<Stadium>(z => z.Id == z.Id);
+
+            if (FindFirst == null)
+            {
+            // если, справочник стадиона не заполнен, то показываем не фильтруя
+                ViewBag.ChooseStadium = "Фильтровать по стадионам";
+                return PartialView(Repository.Matches);
+            }
+            else
+            {
+                ViewBag.ChooseStadium = Repository.Stadiums.Where(s => s.Id == FindFirst.Id).Distinct().Select(k => k.Name).Max();
+                WriteIntValueIntoCookie("CurrSadiumForMatches", (int)FindFirst.Id);
+                return PartialView(Repository.Matches.Where(p => p.StadiumId == FindFirst.Id));
+            }
         } else
             {
-                ViewBag.ChooseStadium = Repository.Stadiums.Where(s => s.Id == sid).Distinct().Select(k => k.Name).Max();
+            ViewBag.ChooseStadium = Repository.Stadiums.Where(s => s.Id == sid).Distinct().Select(k => k.Name).Max();
             WriteIntValueIntoCookie("CurrSadiumForMatches", (int)sid);
             return PartialView(Repository.Matches.Where(p => p.StadiumId == sid));
             }

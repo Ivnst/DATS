@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Drawing;
@@ -19,12 +20,15 @@ namespace DATS
     /// <summary>
     /// Код стадиона
     /// </summary>
-    [Required]
+    [DisplayName("Стадион")]
+    [Required(ErrorMessage = "Пожалуйста выбирите стадион.")]
     public int StadiumId { get; set; }
     /// <summary>
     /// Название сектора. (Например, 1, 2, 3, VIP, Для инвалидов и тд)
     /// </summary>
-    [Required]
+    [DisplayName("Название сектора")]
+    [DataType(DataType.Text)]
+    [Required(ErrorMessage = "Пожалуйста введите название сектора.")]
     public string Name { get; set; }
     /// <summary>
     /// Цвет сектора
