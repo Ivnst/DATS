@@ -6,56 +6,64 @@
     Culture = "ru-RU";
 }
 
-<h2>Справочник мероприятий: Редактирование</h2>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+        &times;
+    </button>
+    <h4 class="modal-title" id="myModalLabel2">
+        Редактирование мероприятия
+    </h4>
+</div>
 
 @using (Html.BeginForm()) {
-    @Html.ValidationSummary()
+    @Html.ValidationSummary(true)
 
-    <fieldset>
-        <legend></legend>
-
-        <div class="editor-label">
-            @Html.LabelFor(model => model.StadiumId)
-        </div>
-        <div class="editor-field">
-            @Html.DropDownListFor(
+ <div class="modal-body">
+     <fieldset>
+         <div class="editor-label">
+             @Html.LabelFor(model => model.StadiumId)
+         </div>
+         <div class="editor-field">
+             @Html.DropDownListFor(
     model => model.StadiumId,
 (IEnumerable<SelectListItem>)ViewBag.Stadiumes,
-    "-- пожалуйста выберите стадион --"
-)
-        </div>
+    "-- пожалуйста выберите стадион --")
+             @Html.ValidationMessageFor(model => model.StadiumId)
+         </div>
 
-        <div class="editor-label">
-            @Html.LabelFor(model => model.Name)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.Name)
-        </div>
+         <div class="editor-label">
+             @Html.LabelFor(model => model.Name)
+         </div>
+         <div class="editor-field">
+             @Html.EditorFor(model => model.Name)
+             @Html.ValidationMessageFor(model => model.Name)
+         </div>
 
-        <div class="editor-label">
-            @Html.LabelFor(model => model.BeginsAt)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.BeginsAt)
-        </div>
+         <div class="editor-label">
+             @Html.LabelFor(model => model.BeginsAt)
+         </div>
+         <div class="editor-field">
+             @Html.EditorFor(model => model.BeginsAt)
+             @Html.ValidationMessageFor(model => model.BeginsAt)
+         </div>
 
-        <div class="editor-label">
-            @Html.LabelFor(model => model.Duration)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.Duration)
-        </div>
+         <div class="editor-label">
+             @Html.LabelFor(model => model.Duration)
+         </div>
+         <div class="editor-field">
+             @Html.EditorFor(model => model.Duration)
+             @Html.ValidationMessageFor(model => model.Duration)
+         </div>
 
-        @Html.HiddenFor(model => model.Id)
-
-        <p>
-            <input type="submit" value="Сохранить" />
-        </p>
-    </fieldset>
-}
-
-<div>
-    @Html.ActionLink("Обратно к списку", "Index")
+         @Html.HiddenFor(model => model.Id)
+     </fieldset>
 </div>
+
+         <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+          <input type="submit" class="btn btn-primary" value="Сохранить" />
+        </div>
+    
+}
 
 

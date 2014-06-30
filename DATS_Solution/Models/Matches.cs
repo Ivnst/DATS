@@ -16,7 +16,7 @@ namespace DATS
     /// <summary>
     /// Код стадиона
     /// </summary>
-    [DisplayName("Ид. стадиона")]
+    [DisplayName("Стадион")]
     [Required(ErrorMessage = "Пожалуйста выбирите стадион.")]
     public int StadiumId { get; set; }
 
@@ -24,7 +24,7 @@ namespace DATS
     /// Название матча (или мероприятия)
     /// </summary>
     [DisplayName("Название мероприятия")]
-    [DataType(DataType.MultilineText)]
+    [DataType(DataType.Text)]
     [Required(ErrorMessage = "Пожалуйста введите название матча (или мероприятия).")]
     public string Name { get; set; }
 

@@ -17,10 +17,7 @@ namespace DATS
     DbSet<SoldPlace> SoldPlaces { get; set; }
 
     int SaveChanges();
-
-    void SaveMatch(Match match);
-    void DeleteMatch(Match match);
-    
+         
     //Stadiums
     List<Stadium> GetAllStadiums();
 
