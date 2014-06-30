@@ -20,17 +20,9 @@
 
 <div class="modal-body">
     <fieldset>
-
-        <div class="editor-label">
-            @Html.LabelFor(model => model.StadiumId)
-        </div>
-        <div class="editor-field">
-            @Html.DropDownListFor(
-    model => model.StadiumId,
- (IEnumerable<SelectListItem>)ViewBag.Stadiumes,
-    "-- пожалуйста выберите стадион --")
-            @Html.ValidationMessageFor(model => model.StadiumId)
-        </div>
+        <h2 style="color: red;">
+            @ViewBag.StadiumName
+        </h2>
 
         <div class="editor-label">
             @Html.LabelFor(model => model.Name)
@@ -55,6 +47,8 @@
             @Html.TextBoxFor(model => model.Duration, new { @class = "form-control" })
             @Html.ValidationMessageFor(model => model.Duration)
         </div>
+
+        @Html.HiddenFor(model => model.StadiumId, new { @value = @ViewBag.StadiumId })
     </fieldset>
 </div>
 

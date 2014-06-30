@@ -10,5 +10,5 @@
         <li class="active"><a href="/Settings/Matches">Мероприятия</a></li>
         <li><a href="/Settings/Prices">Цены</a></li>
     </ul>
-   @{Html.RenderAction("Index", "MatchSetting");}
+   @{Html.RenderAction("Index", "MatchSetting", new { @value = @TempData["StadiumId"] });}
 </div>
