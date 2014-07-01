@@ -44,6 +44,7 @@ namespace DATS.Controllers
 
           if (stadium == null)
           {
+            logger.Warn("/StadiumSetting/Edit : Указанный стадион не найден. id = " + id.ToString());
             return RedirectToAction("Index");
           }
 

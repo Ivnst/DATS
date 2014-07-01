@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 using System.Data.Entity;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace DATS
 {
@@ -45,5 +47,23 @@ namespace DATS
                  select sp;
       return list.Count<SoldPlace>();
     }
+
+
+    /// <summary>
+    /// Возвращает список проданных мест на указанное мероприятие в указанном секторе. 
+    /// Включает также забронированные места (IsReserved == true)
+    /// </summary>
+    /// <param name="match"></param>
+    /// <param name="sector"></param>
+    /// <returns></returns>
+    public List<SoldPlace> GetSoldPlaces(Match match, Sector sector)
+    {
+      return (from sp in SoldPlaces
+                 join p in Places on sp.PlaceId equals p.Id
+                 where p.SectorId == sector.Id
+                 where sp.MatchId == match.Id
+                 select sp).ToList<SoldPlace>();
+    }
+
   }
 }

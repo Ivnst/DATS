@@ -326,6 +326,8 @@ CanvasState.prototype.draw = function () {
 // Draws this shape to a given context
 CanvasState.prototype.drawShape = function (row, col, shape) {
 
+    if (!shape.state) return;
+
     var x = col * this.itemWidth - this.offsetX;
     var y = row * this.itemHeight - this.offsetY;
 

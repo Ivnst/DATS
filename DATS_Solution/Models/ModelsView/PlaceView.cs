@@ -29,5 +29,10 @@ namespace DATS
     /// Аналог Place.Position. Порядковый номер места
     /// </summary>
     public int Num { get; set; }
+
+    /// <summary>
+    /// Состояние (для редактирования сектора - не используется. Для продажи - см. перечисление PlaceState).
+    /// </summary>
+    public int State { get; set; }
   }
 }
