@@ -448,6 +448,7 @@ CanvasState.prototype.sendData = function () {
 
     $.post("/Sector/StoreSectorInfo", { sid : params.sid, data : resultString },
     function (data) {
+        data = data.split("<!")[0];
         alert(data);
     })
 }

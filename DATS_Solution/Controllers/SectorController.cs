@@ -66,9 +66,81 @@ namespace DATS.Controllers
           }
 
           //достаём места необходимого сектора
-          PlaceView[][] places = GetSoldPlacesInfo(match, sector);
+          List<PlaceView> places = GetSoldPlacesInfo(match, sector);
 
           return Json(places, JsonRequestBehavior.AllowGet);
+        }
+
+
+        /// <summary>
+        /// Выполнение операции над билетами (продажа, возврат, бронь). ПЕРЕДЕЛАТЬ! (Временное решение)
+        /// </summary>
+        /// <param name="sid"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult StoreSectorSoldInfo(int sid, int mid, string data)
+        {
+          try
+          {
+            //check sector id
+            Sector sector = Repository.Sectors.FirstOrDefault<Sector>(s => s.Id == sid);
+            if (sector == null)
+            {
+              logger.Warn("/Sector/StoreSectorSoldInfo : Не найден указанный сектор. sid = " + sid.ToString());
+              return Content("Указанный сектор не существует!");
+            }
+
+            //check match id
+            Match match = Repository.Matches.FirstOrDefault<Match>(m => m.Id == mid);
+            if (sector == null)
+            {
+              logger.Warn("/Sector/StoreSectorSoldInfo : Не найдено указанное мероприятие. mid = " + mid.ToString());
+              return Content("Указанное мероприятие не существует!!");
+            }
+
+            //json to List
+            List<PlaceView> places = JsonConvert.DeserializeObject<List<PlaceView>>(data);
+            if(places.Count == 0)
+            {
+              return Content("Не выбраны места для осуществления операции!");
+            }
+
+            //проверка состояний переданных билетов
+            int state = places[0].State;
+            foreach (PlaceView pv in places)
+            {
+              if(pv.State != state)
+              {
+                logger.Warn("Выбраны билеты с разным статусом! Попробуйте ещё раз!");
+                return Content("Выбраны билеты с разным статусом! Попробуйте ещё раз.");
+              }
+            }
+
+            bool res = false;
+            if(state == (int)PlaceState.Sold)
+            {
+              res = Repository.ProcessTicketsSelling(match, sector, places);
+            }
+
+            if (state == (int)PlaceState.Free)
+            {
+              res = Repository.ProcessTicketsReturning(match, sector, places);
+            }
+
+            if (!res)
+            {
+              logger.Error(data, "Операция не была выполнена!");
+              return Content("Операция не была выполнена!");
+            }
+          }
+          catch (System.Exception ex)
+          {
+            logger.Error(data, ex);
+            return Content("Возникла ошибка при сохранении данных!");
+          }
+
+          return Content("Операция выполнена успешно!");
         }
         #endregion
 
@@ -168,7 +240,7 @@ namespace DATS.Controllers
         /// <param name="match"></param>
         /// <param name="sector"></param>
         /// <returns></returns>
-        private PlaceView[][] GetSoldPlacesInfo(Match match, Sector sector)
+        private List<PlaceView> GetSoldPlacesInfo(Match match, Sector sector)
         {
           if (match == null) throw new ArgumentNullException("match");
           if (sector == null) throw new ArgumentNullException("sector");
@@ -181,6 +253,8 @@ namespace DATS.Controllers
 
           //достаём места текущего сектора
           List<Place> places = Repository.GetPlacesBySector(sector);
+          if (places.Count == 0) return new List<PlaceView>();
+
           Dictionary<int, Place> placesDict = new Dictionary<int, Place>(); //id - place
           foreach (Place place in places)
           {
@@ -223,7 +297,16 @@ namespace DATS.Controllers
             pv.State = soldPlace.IsReservation ? (int)PlaceState.Reserved : (int)PlaceState.Sold;
           }
 
-          return placeMatrix;
+          //составляем результат
+          List<PlaceView> result = new List<PlaceView>();
+          for (int i = 0; i < height; i++)
+            for (int j = 0; j < width; j++)
+            {
+              if (placeMatrix[i][j] != null)
+                result.Add(placeMatrix[i][j]);
+            }
+
+          return result;
         }
         #endregion
     }

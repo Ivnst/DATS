@@ -52,29 +52,9 @@ function CanvasState(canvas, width, height) {
     this.htmlLeft = html.offsetLeft;
 
     // the collection of things to be drawn
-    this.shapes = [];
-    for(var i = 0; i < this.maxRows; i++){
-      this.shapes[i] = [];
-    }
+    this.shapes = null;
 
-    for (var i = 0; i < this.maxRows; i++) {
-        for (var j = 0; j < this.maxCols; j++) {
-            this.shapes[i][j] = new Shape(i, j, false, false);
-        }
-    }
-
-    //get sector places data
-    $.get("/Sector/SectorInfo?sid=" + params.sid,
-    function (data) {
-        for (var i = 0; i < data.length; i++) {
-            var itm = data[i];
-            myState.shapes[itm.Row][itm.Col].state = true;
-            myState.shapes[itm.Row][itm.Col].label = itm.Num;
-        }
-        myState.valid = false;
-        myState.showInfo();
-
-    })
+    this.reloadData();
 
     this.valid = false;     // when set to false, the canvas will redraw everything
     this.selection = false; //
@@ -112,30 +92,7 @@ function CanvasState(canvas, width, height) {
         //определяем координаты курсора мыши
         var mouse = myState.getMouse(e);
 
-        //autoscrolling
-        if (myState.itemWidth * myState.maxCols > myState.canvas.width) {
-            var sizeDiffX = myState.itemWidth * (myState.maxCols + 2) - myState.canvas.width;
-
-            //var percentX = mouse.x * 100 / myState.canvas.width;
-
-            myState.offsetX = parseInt(sizeDiffX * mouse.x / myState.canvas.width) - myState.itemWidth;
-        } else {
-            var sizeDiffX = myState.canvas.width - myState.itemWidth * myState.maxCols;
-            myState.offsetX = -parseInt(sizeDiffX / 2);
-        }
-
-
-        if (myState.itemHeight * myState.maxRows > myState.canvas.height) {
-            var sizeDiffY = myState.itemHeight * (myState.maxRows + 2) - myState.canvas.height;
-
-            //var percentY = mouse.y * 100 / myState.canvas.height;
-
-            myState.offsetY = parseInt(sizeDiffY * mouse.y / myState.canvas.height) - myState.itemHeight;
-        } else {
-            var sizeDiffY = myState.canvas.height - myState.itemHeight * myState.maxRows;
-            myState.offsetY = -parseInt(sizeDiffY / 2);
-        }
-        myState.valid = false;
+        myState.adjustPosition(mouse.x, mouse.y);
 
         //---------------------------------------------
         //if mouse button is not pressed - return
@@ -148,12 +105,18 @@ function CanvasState(canvas, width, height) {
         myState.selection = true;
 
         //set selection
-        for (var i = 0; i < myState.maxRows; i++) {
-            for (var j = 0; j < myState.maxCols; j++) {
-                var shape = myState.shapes[i][j];
-                shape.selected = myState.checkIntersection(shape);
+        var selectionCount = 0;
+        if (myState.shapes != null)
+            for (var i = 0; i < myState.maxRows; i++) {
+                for (var j = 0; j < myState.maxCols; j++) {
+                    var shape = myState.shapes[i][j];
+                    if (shape.state != -1)
+                        shape.selected = myState.checkIntersection(shape);
+                    if (shape.selected) selectionCount += 1;
+                }
             }
-        }
+
+        document.getElementById('lblCountSelected').innerHTML = selectionCount;
 
         myState.valid = false; // must redraw
     }, true);
@@ -167,14 +130,16 @@ function CanvasState(canvas, width, height) {
             mouse.y += myState.offsetY;
             var itm = myState.getItem(mouse.x, mouse.y);
 
-            if (itm.col >= 0 && itm.row >= 0 && itm.col < myState.maxCols && itm.row < myState.maxRows) {
-                //change selection
-                var shape = myState.shapes[itm.row][itm.col];
-                if (shape != undefined)
-                    shape.selected = !shape.selected;
-            }
-            else {
-                myState.clearSelection();
+            if (myState.shapes != null) {
+                if (itm.col >= 0 && itm.row >= 0 && itm.col < myState.maxCols && itm.row < myState.maxRows) {
+                    //change selection
+                    var shape = myState.shapes[itm.row][itm.col];
+                    if (shape != undefined)
+                        shape.selected = !shape.selected;
+                }
+                else {
+                    myState.clearSelection();
+                } 
             }
         }
         myState.selection = false;
@@ -195,9 +160,93 @@ function CanvasState(canvas, width, height) {
 }
 
 //Add new shape on canvas with specified position and state
+CanvasState.prototype.reloadData = function () {
+
+    var myState = this;
+
+    //get sector places data
+    $.get("/Sector/SectorSoldInfo?sid=" + params.sid + "&mid=" + params.mid,
+    function (data) {
+        myState.refresh(data);
+    })
+}
+
+//Add new shape on canvas with specified position and state
+CanvasState.prototype.refresh = function (data) {
+
+    var minRow = 100, maxRow = 0, minCol = 100, maxCol = 0;
+
+    //узнаём размерность сектора
+    for (var i = 0; i < data.length; i++) {
+        var itm = data[i];
+        if (itm.Row < minRow) minRow = itm.Row;
+        if (itm.Row > maxRow) maxRow = itm.Row;
+        if (itm.Col < minCol) minCol = itm.Col;
+        if (itm.Col > maxCol) maxCol = itm.Col;
+    }
+
+    //определяем ширину и высоту сектора
+    var width = maxCol - minCol + 1;
+    var height = maxRow - minRow + 1;
+
+    //создаём новую матрицу
+    var newShapes = [];
+    for (var i = 0; i < height; i++) {
+        newShapes[i] = [];
+    }
+    for (var i = 0; i < height; i++) {
+        for (var j = 0; j < width; j++) {
+            newShapes[i][j] = new Shape(i, j, -1, false);
+        }
+    }
+
+    //заполняем матрицу данными
+    for (var i = 0; i < data.length; i++) {
+        var itm = data[i];
+        newShapes[itm.Row - minRow][itm.Col - minCol].state = itm.State;
+        newShapes[itm.Row - minRow][itm.Col - minCol].label = itm.Num;
+    }
+
+    this.shapes = newShapes;
+    this.maxCols = width;
+    this.maxRows = height;
+    this.adjustPosition(0, 0);
+    this.valid = false;
+    this.showInfo();
+}
+
+//Add new shape on canvas with specified position and state
 CanvasState.prototype.addShape = function (row, col, state) {
     var shape = this.shapes[row][col];
     shape.state = state;
+    this.valid = false;
+}
+
+//Adjust places position
+CanvasState.prototype.adjustPosition = function (mx, my) {
+    //autoscrolling
+    if (this.itemWidth * this.maxCols > this.canvas.width) {
+        var sizeDiffX = this.itemWidth * (this.maxCols + 2) - this.canvas.width;
+
+        //var percentX = mouse.x * 100 / myState.canvas.width;
+
+        this.offsetX = parseInt(sizeDiffX * mx / this.canvas.width) - this.itemWidth;
+    } else {
+        var sizeDiffX = this.canvas.width - this.itemWidth * this.maxCols;
+        this.offsetX = -parseInt(sizeDiffX / 2);
+    }
+
+
+    if (this.itemHeight * this.maxRows > this.canvas.height) {
+        var sizeDiffY = this.itemHeight * (this.maxRows + 2) - this.canvas.height;
+
+        //var percentY = mouse.y * 100 / myState.canvas.height;
+
+        this.offsetY = parseInt(sizeDiffY * my / this.canvas.height) - this.itemHeight;
+    } else {
+        var sizeDiffY = this.canvas.height - this.itemHeight * this.maxRows;
+        this.offsetY = -parseInt(sizeDiffY / 2);
+    }
     this.valid = false;
 }
 
@@ -208,12 +257,13 @@ CanvasState.prototype.clear = function () {
 
 //Clear all selection
 CanvasState.prototype.clearSelection = function () {
-    for (var i = 0; i < this.maxRows; i++) {
-        for (var j = 0; j < this.maxCols; j++) {
-            var shape = this.shapes[i][j];
-            shape.selected = false;
+    if (this.shapes != null)
+        for (var i = 0; i < this.maxRows; i++) {
+            for (var j = 0; j < this.maxCols; j++) {
+                var shape = this.shapes[i][j];
+                shape.selected = false;
+            }
         }
-    }
     this.selection = false;
     this.mousePressed = false;
     this.valid = false;
@@ -240,29 +290,27 @@ CanvasState.prototype.setSelectionTo = function (newState) {
 
 //calculates total cells count
 CanvasState.prototype.showInfo = function () {
-    var totalBlue = 0;
-    var totalGray = 0;
-    var totalRows = 0;
-    var existsRow = false;
+    var totalPlaces = 0;
+    var totalFree = 0;
+    var totalSold = 0;
+    var totalReserved = 0;
+
     for (var i = 0; i < this.maxRows; i++) {
-        existsRow = false;
         for (var j = 0; j < this.maxCols; j++) {
             var shape = this.shapes[i][j];
-            if (shape.state) {
-                totalBlue = totalBlue + 1;
-                existsRow = true;
-            } else {
-                totalGray = totalGray + 1;
-            }
-        }
-        if (existsRow) {
-            totalRows = totalRows + 1;
+            if (shape.state == -1) continue;
+            totalPlaces += 1;
+            if (shape.state == 0) { totalFree += 1; }
+            if (shape.state == 1) { totalSold += 1; }
+            if (shape.state == 2) { totalReserved += 1; }
         }
     }
 
-    document.getElementById('labelBlue').innerHTML = totalBlue;
-    document.getElementById('labelGray').innerHTML = totalGray;
-    document.getElementById('labelRows').innerHTML = totalRows;
+    document.getElementById('lblCountAll').innerHTML = totalPlaces;
+    document.getElementById('lblCountFree').innerHTML = totalFree;
+    document.getElementById('lblCountSold').innerHTML = totalSold;
+    document.getElementById('lblCountReserved').innerHTML = totalReserved;
+    document.getElementById('lblPrice').innerHTML = 0;
 
 }
 
@@ -270,6 +318,7 @@ CanvasState.prototype.showInfo = function () {
 CanvasState.prototype.scale = function (val) {
     this.itemWidth = this.itemWidth + val;
     this.itemHeight = this.itemHeight + val;
+    this.adjustPosition(0, 0);
     this.valid = false;
 }
 
@@ -282,6 +331,7 @@ CanvasState.prototype.draw = function () {
         this.clear();
         var ctx = this.ctx;
         var shapes = this.shapes;
+        if (shapes == null) return;
 
         //border
         ctx.save();
@@ -326,7 +376,7 @@ CanvasState.prototype.draw = function () {
 // Draws this shape to a given context
 CanvasState.prototype.drawShape = function (row, col, shape) {
 
-    if (!shape.state) return;
+    if (shape.state == -1) return;
 
     var x = col * this.itemWidth - this.offsetX;
     var y = row * this.itemHeight - this.offsetY;
@@ -335,12 +385,9 @@ CanvasState.prototype.drawShape = function (row, col, shape) {
     if (x > this.canvas.width || y > this.canvas.height) return;
 
     //shape color
-    if (shape.selected) {
-        this.ctx.fillStyle = (shape.state) ? '#CCCC00' : '#EEEE00';
-    }
-    else {
-        this.ctx.fillStyle = (shape.state) ? '#0000AA' : '#CCCCCC';
-    }
+    if (shape.state == 0) { this.ctx.fillStyle = (shape.selected) ? '#CCCC00' : '#00AA00'; }
+    if (shape.state == 1) { this.ctx.fillStyle = (shape.selected) ? '#CCCC00' : '#AA0000'; }
+    if (shape.state == 2) { this.ctx.fillStyle = (shape.selected) ? '#CCCC00' : '#0000AA'; }
 
     this.ctx.fillRect(x, y, this.itemWidth, this.itemHeight);
 
@@ -363,7 +410,7 @@ CanvasState.prototype.drawShape = function (row, col, shape) {
     this.ctx.stroke();
 
     //label (place number)
-    if (shape.state) {
+    if (shape.state != -1) {
         this.ctx.fillStyle = '#FFFFFF';
         this.ctx.font = "10pt Courier New";
         this.ctx.fillText(shape.label, x + this.itemWidth / 2, y + this.itemHeight / 2);
@@ -429,27 +476,33 @@ CanvasState.prototype.getItem = function (mx, my) {
 }
 
 //Sends data to server
-CanvasState.prototype.sendData = function () {
+CanvasState.prototype.sendData = function (newState) {
 
     var sectors = [];
 
     for (var i = 0; i < this.maxRows; i++) {
         for (var j = 0; j < this.maxCols; j++) {
             var shape = this.shapes[i][j];
-            if (shape.state) {
+            if (shape.selected) {
                 var itm = new Object();
                 itm.Row = shape.row;
                 itm.Col = shape.col;
                 itm.Num = shape.label;
+                itm.State = newState;
 
                 sectors.push(itm);
             }
         }
     }
     var resultString = JSON.stringify(sectors);
+    var myState = this;
 
-    $.post("/Sector/StoreSectorInfo", { sid : params.sid, data : resultString },
+    $.post("/Sector/StoreSectorSoldInfo", { sid: params.sid, mid: params.mid, data: resultString },
     function (data) {
+
+        myState.reloadData();
+
+        data = data.split("<!")[0];
         alert(data);
     })
 }
@@ -479,16 +532,20 @@ function init() {
 
     //set buttons functionality
 
-    document.getElementById('setState1').onclick = function (e) {
-        s.setSelectionTo(true);
+    document.getElementById('btnSell').onclick = function (e) {
+        s.sendData(1);
         s.clearSelection();
-        s.showInfo();
     };
 
-    document.getElementById('setState0').onclick = function (e) {
-        s.setSelectionTo(false); 
+    document.getElementById('btnReturn').onclick = function (e) {
+        s.sendData(0);
         s.clearSelection();
-        s.showInfo();
+    };
+
+    document.getElementById('btnReserve').onclick = function (e) {
+        //         s.setSelectionTo(false); 
+        //         s.clearSelection();
+        //         s.showInfo();
     };
 
     document.getElementById('clearSelection').onclick = function (e) {
@@ -502,10 +559,6 @@ function init() {
     document.getElementById('btnScaleMinus').onclick = function (e) {
         if (s.itemWidth > 10)
             s.scale(-5);
-    };
-
-    document.getElementById('btnSave').onclick = function (e) {
-        s.sendData();
     };
 }
 
