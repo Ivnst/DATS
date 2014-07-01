@@ -32,6 +32,8 @@ function CanvasState(canvas, width, height) {
     this.canvas.height = height;
 
     this.ctx = canvas.getContext('2d');
+    this.ctx.textAlign = "center";
+    this.ctx.textBaseline = "middle";
 
     // This complicates things a little but but fixes mouse co-ordinate problems
     // when there's a border or padding. See getMouse for more detail
@@ -294,6 +296,20 @@ CanvasState.prototype.draw = function () {
             }
         }
 
+        //rows numbers
+        for (var i = 0; i < this.maxRows; i++) {
+
+            var y = i * this.itemHeight - this.offsetY;
+
+            this.ctx.font = "12pt Arial";
+            this.ctx.lineWidth = 2;
+            this.ctx.strokeStyle = 'black';
+            this.ctx.strokeText(i + 1, this.itemWidth / 2, y + this.itemHeight / 2);
+            ctx.fillStyle = 'white';
+            this.ctx.fillText(i + 1, this.itemWidth / 2, y + this.itemHeight / 2);
+        }
+
+
         // draw selection
         if (this.selection) {
             ctx.strokeStyle = '#CC0000';
@@ -347,8 +363,6 @@ CanvasState.prototype.drawShape = function (row, col, shape) {
     //label (place number)
     if (shape.state) {
         this.ctx.fillStyle = '#FFFFFF';
-        this.ctx.textAlign = "center";
-        this.ctx.textBaseline = "middle";
         this.ctx.font = "10pt Courier New";
         this.ctx.fillText(shape.label, x + this.itemWidth / 2, y + this.itemHeight / 2);
     }
