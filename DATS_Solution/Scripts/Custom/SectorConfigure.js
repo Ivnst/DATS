@@ -49,8 +49,6 @@ function CanvasState(canvas, width, height) {
     this.htmlTop = html.offsetTop;
     this.htmlLeft = html.offsetLeft;
 
-    // **** Keep track of state! ****
-
     // the collection of things to be drawn
     this.shapes = [];
     for(var i = 0; i < this.maxRows; i++){
@@ -63,14 +61,25 @@ function CanvasState(canvas, width, height) {
         }
     }
 
-    this.valid = false; // when set to false, the canvas will redraw everything
-    //this.dragging = false; // Keep track of when we are dragging
-    // the current selected object. In the future we could turn this into an array for multiple selection
+    //get sector places data
+    $.get("/Sector/SectorInfo?sid=" + params.sid,
+    function (data) {
+        for (var i = 0; i < data.length; i++) {
+            var itm = data[i];
+            myState.shapes[itm.Row][itm.Col].state = true;
+            myState.shapes[itm.Row][itm.Col].label = itm.Num;
+        }
+        myState.valid = false;
+        myState.showInfo();
+
+    })
+
+    this.valid = false;     // when set to false, the canvas will redraw everything
     this.selection = false; //
-    this.initialX = 0; // начальное положение указателя мыши при выделении
+    this.initialX = 0;      // начальное положение указателя мыши при выделении
     this.initialY = 0;
-    this.selectionX = 0;
-    this.selectionY = 0;   //текущее положение указателя мыши во время выделения
+    this.selectionX = 0;    //текущее положение указателя мыши во время выделения
+    this.selectionY = 0;
     this.mousePressed = false; //нажата кнопка мыши
     this.firstSelectedItem = null;
 
@@ -86,13 +95,13 @@ function CanvasState(canvas, width, height) {
     //fixes a problem where double clicking causes text to get selected on the canvas
     canvas.addEventListener('selectstart', function (e) { e.preventDefault(); return false; }, false);
 
-    // Up, down, and move are for dragging
+    // Up, down, and move
     canvas.addEventListener('mousedown', function (e) {
         var mouse = myState.getMouse(e);
         myState.initialX = mouse.x + myState.offsetX;
         myState.initialY = mouse.y + myState.offsetY;
         myState.mousePressed = true;
-        myState.firstSelectedItem = myState.getItem(mouse.x, mouse.y);
+        myState.firstSelectedItem = myState.getItem(myState.initialX, myState.initialY);
 
     }, true);
 
@@ -101,6 +110,7 @@ function CanvasState(canvas, width, height) {
         //определяем координаты курсора мыши
         var mouse = myState.getMouse(e);
 
+        //autoscrolling
         if (myState.itemWidth * myState.maxCols > myState.canvas.width) {
             var sizeDiffX = myState.itemWidth * (myState.maxCols + 2) - myState.canvas.width;
 
@@ -125,13 +135,15 @@ function CanvasState(canvas, width, height) {
         }
         myState.valid = false;
 
-
+        //---------------------------------------------
+        //if mouse button is not pressed - return
         if (!myState.mousePressed) return;
-        var itm = myState.getItem(mouse.x, mouse.y);
-        if (itm.row == myState.firstSelectedItem.row && itm.col == myState.firstSelectedItem.col && !myState.selection) return;
-        myState.selection = true;
+
         myState.selectionX = mouse.x + myState.offsetX;
         myState.selectionY = mouse.y + myState.offsetY;
+        var itm = myState.getItem(myState.selectionX, myState.selectionY);
+        if (itm.row == myState.firstSelectedItem.row && itm.col == myState.firstSelectedItem.col && !myState.selection) return;
+        myState.selection = true;
 
         //set selection
         for (var i = 0; i < myState.maxRows; i++) {
@@ -141,7 +153,7 @@ function CanvasState(canvas, width, height) {
             }
         }
 
-        myState.valid = false; // Something's dragging so we must redraw
+        myState.valid = false; // must redraw
     }, true);
 
     canvas.addEventListener('mouseup', function (e) {
@@ -149,13 +161,18 @@ function CanvasState(canvas, width, height) {
         if (!myState.selection) {
             // myState.clearSelection();
             var mouse = myState.getMouse(e);
+            mouse.x += myState.offsetX;
+            mouse.y += myState.offsetY;
             var itm = myState.getItem(mouse.x, mouse.y);
 
-            if(itm.col != -1 && itm.row != -1 && itm.col < myState.maxCols && itm.row < myState.maxRows) {
+            if (itm.col >= 0 && itm.row >= 0 && itm.col < myState.maxCols && itm.row < myState.maxRows) {
                 //change selection
                 var shape = myState.shapes[itm.row][itm.col];
                 if (shape != undefined)
                     shape.selected = !shape.selected;
+            }
+            else {
+                myState.clearSelection();
             }
         }
         myState.selection = false;
@@ -165,44 +182,29 @@ function CanvasState(canvas, width, height) {
 
     }, true);
 
-    // double click for making new shapes
+    // double click
     canvas.addEventListener('dblclick', function (e) {
-//         var mouse = myState.getMouse(e);
-//         myState.addShape(new Shape(mouse.x - 10, mouse.y - 10, 20, 20, 'rgba(0,255,0,.6)'));
     }, true);
 
-    // **** Options! ****
 
-    //get sector places data
-    $.get("/Sector/SectorInfo?sid=" + params.sid,
-    function (data) {
-        for (var i = 0; i < data.length; i++) {
-            var itm = data[i];
-            myState.shapes[itm.Row][itm.Col].state = true;
-            myState.shapes[itm.Row][itm.Col].label = itm.Num;
-        }
-        myState.valid = false;
-        myState.showInfo();
-
-    })
-
-
-    this.selectionColor = '#CC0000';
-    this.selectionWidth = 2;
+    //refresh interval!
     this.interval = 30;
     setInterval(function () { myState.draw(); }, myState.interval);
 }
 
+//Add new shape on canvas with specified position and state
 CanvasState.prototype.addShape = function (row, col, state) {
     var shape = this.shapes[row][col];
     shape.state = state;
     this.valid = false;
 }
 
+//Clear all canvas
 CanvasState.prototype.clear = function () {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 }
 
+//Clear all selection
 CanvasState.prototype.clearSelection = function () {
     for (var i = 0; i < this.maxRows; i++) {
         for (var j = 0; j < this.maxCols; j++) {
@@ -215,6 +217,7 @@ CanvasState.prototype.clearSelection = function () {
     this.valid = false;
 }
 
+//changes selected cell's state to specified value
 CanvasState.prototype.setSelectionTo = function (newState) {
     var num = 1;
     for (var i = 0; i < this.maxRows; i++) {
@@ -233,7 +236,7 @@ CanvasState.prototype.setSelectionTo = function (newState) {
     this.valid = false;
 }
 
-
+//calculates total cells count
 CanvasState.prototype.showInfo = function () {
     var totalBlue = 0;
     var totalGray = 0;
@@ -261,6 +264,7 @@ CanvasState.prototype.showInfo = function () {
 
 }
 
+//change item size on specified value
 CanvasState.prototype.scale = function (val) {
     this.itemWidth = this.itemWidth + val;
     this.itemHeight = this.itemHeight + val;
@@ -272,41 +276,33 @@ CanvasState.prototype.scale = function (val) {
 CanvasState.prototype.draw = function () {
     // if our state is invalid, redraw and validate!
     if (!this.valid) {
+        this.valid = true;
         this.clear();
         var ctx = this.ctx;
         var shapes = this.shapes;
 
         //border
+        ctx.save();
         ctx.strokeStyle = '#000000';
         ctx.lineWidth = 1;
         ctx.strokeRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-        // ** Add stuff you want drawn in the background all the time here **
-
         // draw all shapes
         for (var i = 0; i < this.maxRows; i++) {
             for (var j = 0; j < this.maxCols; j++) {
-                var shape = shapes[i][j];
-                // We can skip the drawing of elements that have moved off the screen:
-                //if (shape.x > this.width || shape.y > this.height ||
-                //shape.x + shape.w < 0 || shape.y + shape.h < 0) continue;
-                this.drawShape(i, j, shape);
+                this.drawShape(i, j, shapes[i][j]);
             }
         }
 
         // draw selection
-        // right now this is just a stroke along the edge of the selected Shape
-         if (this.selection) {
-             ctx.strokeStyle = this.selectionColor;
-             ctx.lineWidth = this.selectionWidth;
-             ctx.globalAlpha = 0.6;
-             ctx.strokeRect(this.initialX - this.offsetX, this.initialY - this.offsetY, this.selectionX - this.initialX, this.selectionY - this.initialY);
-             ctx.globalAlpha = 1;
-         }
-
-        // ** Add stuff you want drawn on top all the time here **
-
-        this.valid = true;
+        if (this.selection) {
+            ctx.strokeStyle = '#CC0000';
+            ctx.lineWidth = 2;
+            ctx.globalAlpha = 0.6;
+            ctx.strokeRect(this.initialX - this.offsetX, this.initialY - this.offsetY, this.selectionX - this.initialX, this.selectionY - this.initialY);
+            ctx.globalAlpha = 1;
+        }
+        ctx.restore();
     }
 }
 
@@ -317,27 +313,20 @@ CanvasState.prototype.drawShape = function (row, col, shape) {
     var x = col * this.itemWidth - this.offsetX;
     var y = row * this.itemHeight - this.offsetY;
 
-    if (x + this.itemWidth < 0 || y + this.itemHeight < 0) return;
+    if (x < -this.itemWidth || y < -this.itemHeight) return;
     if (x > this.canvas.width || y > this.canvas.height) return;
 
+    //shape color
     if (shape.selected) {
-        if (shape.state) {
-            this.ctx.fillStyle = '#CCCC00';
-        } else {
-            this.ctx.fillStyle = '#EEEE00';
-        }
-
+        this.ctx.fillStyle = (shape.state) ? '#CCCC00' : '#EEEE00';
     }
     else {
-        if (shape.state) {
-            this.ctx.fillStyle = '#0000AA';
-        } else {
-            this.ctx.fillStyle = '#CCCCCC';
-        }
+        this.ctx.fillStyle = (shape.state) ? '#0000AA' : '#CCCCCC';
     }
 
     this.ctx.fillRect(x, y, this.itemWidth, this.itemHeight);
 
+    //border line
     this.ctx.beginPath();
     this.ctx.moveTo(x, y + this.itemHeight);
     this.ctx.lineTo(x + this.itemWidth, y + this.itemHeight);
@@ -346,6 +335,7 @@ CanvasState.prototype.drawShape = function (row, col, shape) {
     this.ctx.strokeStyle = '#000000';
     this.ctx.stroke();
 
+    //border line
     this.ctx.beginPath();
     this.ctx.moveTo(x + this.itemWidth, y);
     this.ctx.lineTo(x, y);
@@ -354,6 +344,7 @@ CanvasState.prototype.drawShape = function (row, col, shape) {
     this.ctx.strokeStyle = '#FFFFFF';
     this.ctx.stroke();
 
+    //label (place number)
     if (shape.state) {
         this.ctx.fillStyle = '#FFFFFF';
         this.ctx.textAlign = "center";
@@ -363,15 +354,13 @@ CanvasState.prototype.drawShape = function (row, col, shape) {
     }
 }
 
-
+//check item intersection with selection rectangle
 CanvasState.prototype.checkIntersection = function (shape) {
 
-    var shapeX = shape.col * this.itemWidth - this.offsetX;
-    var shapeY = shape.row * this.itemHeight - this.offsetY;
+    var shapeX = shape.col * this.itemWidth;
+    var shapeY = shape.row * this.itemHeight;
     var selX = this.initialX < this.selectionX ? this.initialX : this.selectionX;
     var selY = this.initialY < this.selectionY ? this.initialY : this.selectionY;
-    selX = selX - this.offsetX;
-    selY = selY - this.offsetY;
 
     var selWidth = Math.abs(this.selectionX - this.initialX);
     var selHeight = Math.abs(this.selectionY - this.initialY);
@@ -412,16 +401,18 @@ CanvasState.prototype.getMouse = function (e) {
     return { x: mx, y: my };
 }
 
+//gets item coordinates accroding to mouse coordinates
 CanvasState.prototype.getItem = function (mx, my) {
-    mx = mx + this.offsetX;
-    my = my + this.offsetY;
-    if (my < 0 || mx < 0) return { col: -1, row: -1 };
+    var signY = 1, signX = 1;
+    if (mx < 0) { signX = -1; mx = -mx; }
+    if (my < 0) { signY = -1; my = -my; }
 
-    var r = parseInt(my / this.itemHeight);
-    var c = parseInt(mx / this.itemWidth);
+    var r = parseInt(my / this.itemHeight) * signY;
+    var c = parseInt(mx / this.itemWidth) * signX;
     return { col: c, row: r };
 }
 
+//Sends data to server
 CanvasState.prototype.sendData = function () {
 
     var sectors = [];
@@ -466,16 +457,11 @@ function init() {
         }
     }
 
-
-    //настройка ширины канвы
+    //create canvas
     var canvasParent = document.getElementById('canvasParent');
     var s = new CanvasState(document.getElementById('canvas'), canvasParent.clientWidth - 10, canvasParent.clientHeight);
 
-//     for (var i = 0; i < 15; i++) {
-//         for (var j = 0; j < 10; j++) {
-//             s.addShape(i, j, true); // The default is gray
-//         } 
-//     }
+    //set buttons functionality
 
     document.getElementById('setState1').onclick = function (e) {
         s.setSelectionTo(true);
@@ -505,15 +491,7 @@ function init() {
     document.getElementById('btnSave').onclick = function (e) {
         s.sendData();
     };
-
-    //s.addShape(new Shape(50, 10, 30, 30, true, true));
-    // Lets make some partially transparent
-    //s.addShape(new Shape(90, 10, 30, 30, true, false));
-    //s.addShape(new Shape(130, 10, 30, 30, true));
 }
-
-// Now go make something amazing!
-
 
 
 /*
