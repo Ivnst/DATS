@@ -20,7 +20,7 @@
 
  <div class="modal-body">
      <fieldset>
-         <h2 style="color: red;">
+         <h2 style="color: green;">
              @ViewBag.StadiumName
          </h2>
 
@@ -49,7 +49,7 @@
          </div>
 
          @Html.HiddenFor(model => model.Id)
-         @Html.HiddenFor(model => model.StadiumId, new { @value = @ViewBag.StadiumId })
+         @Html.HiddenFor(model => model.StadiumId)
      </fieldset>
 </div>
 

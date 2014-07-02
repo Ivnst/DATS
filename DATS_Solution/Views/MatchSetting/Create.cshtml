@@ -6,6 +6,13 @@
     Culture = "ru-RU";
 }
 
+<script>
+    function doThis(myForm) {
+        document.getElementById('StadiumId').value = @ViewBag.StadiumId
+        myForm.submit();
+    }
+</script>
+
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
         &times;
@@ -20,7 +27,7 @@
 
 <div class="modal-body">
     <fieldset>
-        <h2 style="color: red;">
+        <h2 style="color: green;">
             @ViewBag.StadiumName
         </h2>
 
@@ -48,7 +55,7 @@
             @Html.ValidationMessageFor(model => model.Duration)
         </div>
 
-        @Html.HiddenFor(model => model.StadiumId, new { @value = @ViewBag.StadiumId })
+        @Html.HiddenFor(model => model.StadiumId)
     </fieldset>
 </div>
 
@@ -56,7 +63,7 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">
                     Закрыть
                 </button>
-                <input type="submit" class="btn btn-primary" value="Сохранить" />
+                <input type="submit" class="btn btn-primary" value="Сохранить" onclick="doThis(this.form)" />
             </div>
 
 }
