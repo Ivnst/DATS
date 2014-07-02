@@ -161,6 +161,7 @@
     <Compile Include="DB\Partials\SqlRep-Sectors.cs" />
     <Compile Include="DB\Partials\SqlRep-Stadiums.cs" />
     <Compile Include="DB\SqlRep.cs" />
+    <Compile Include="Enums\PlaceState.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -245,6 +246,7 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\Custom\SectorEdit.js" />
     <Content Include="Scripts\Custom\SectorConfigure.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-US.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.ru-RU.js" />

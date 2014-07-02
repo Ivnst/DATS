@@ -1,6 +1,48 @@
 ﻿@{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Продажа билетов";
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
 }
 
-<h2>Edit</h2>
+<script src="~/Scripts/Custom/SectorEdit.js?v=4" type="text/javascript"></script>
+
+<script>
+    $().ready(function () {
+        init();
+    });
+</script>
+
+  <div class="container-fluid">
+    <div class="bs-docs-section">
+      <h1 class="page-header" style="margin: 0">Продажа билетов в секторе "@ViewBag.CurrentSector.Name"</h1>
+      <ul class="list-inline">
+        <li><h4>Стадион: @ViewBag.CurrentStadium.Name,</h4></li>
+        <li><h4>@ViewBag.CurrentMatch.Name,</h4></li>
+        <li><h4>@ViewBag.CurrentMatch.BeginsAt</h4></li>
+      </ul>
+    </div>
+
+    <div class="row">
+
+      <div id="canvasParent" class="col-md-10" style="height: 80vh">
+       <canvas id="canvas">Ваш браузер не поддерживается!</canvas>
+      </div>
+
+      <div class="col-md-2">
+        <p><button id="btnSell"        class="btn btn-primary btn-lg">Продать</button></p>
+        <p><button id="btnReturn"      class="btn btn-primary btn-lg">Возврат</button></p>
+        <p><button id="btnReserve"     class="btn btn-primary btn-lg" disabled="disabled">Забронировать</button></p>
+        <p><button id="clearSelection" class="btn btn-primary btn-sm">Снять выделение</button></p>
+        <p><button id="btnScalePlus"   class="btn btn-primary btn-sm">Масштаб +</button>
+           <button id="btnScaleMinus"   class="btn btn-primary btn-sm">Масштаб -</button></p>
+        <p><label>Всего билетов:</label> <label id="lblCountAll"></label></p>
+        <p><label>В наличии:</label> <label id="lblCountFree"></label></p>
+        <p><label>Продано:</label> <label id="lblCountSold"></label></p>
+        <p><label>Забронировано:</label> <label id="lblCountReserved"></label></p>
+        <p><label>Цена билета:</label> <label id="lblPrice"></label></p>
+        <p></p>
+        <p><label>Выбрано мест:</label> <label id="lblCountSelected"></label></p>
+        <p><label>Сумма:</label> <label id="lblSumm"></label></p>
+      </div>
+
+    </div>
+  </div>

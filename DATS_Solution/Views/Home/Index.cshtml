@@ -33,7 +33,7 @@
           <tbody>
           @foreach (DATS.SectorView sv in ViewBag.SectorsInfo)
           {
-            <tr onclick="window.document.location='/Sector/Configure?sid=@sv.SectorId';">
+            <tr onclick="window.document.location='/Sector/Edit?sid=@sv.SectorId&mid=@ViewBag.CurrentMatch.Id';">
               <td class="text-center active">@sv.Name</td>
               <td class="text-center warning">@sv.TotalPlaces</td>
               <td class="text-center danger">@sv.SoldPlaces</td>

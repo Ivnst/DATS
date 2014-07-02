@@ -28,5 +28,10 @@ namespace DATS
     //Places
     List<Place> GetPlacesBySector(Sector sector);
     bool SavePlacesBySector(Sector sector, List<PlaceView> places);
+
+    //SoldPlaces
+    List<SoldPlace> GetSoldPlaces(Match match, Sector sector);
+    bool ProcessTicketsSelling(Match match, Sector sector, List<PlaceView> places);
+    bool ProcessTicketsReturning(Match match, Sector sector, List<PlaceView> places);
   }
 }
