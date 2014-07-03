@@ -63,9 +63,9 @@ namespace DATS.Controllers
             {
                 ((DbContext)Repository).Entry<Match>(match).State = EntityState.Modified;
                 Repository.SaveChanges();
-                TempData["StadiumId"] = match.StadiumId;
+                int TDStadiumId = match.StadiumId;
                 TempData["message"] = string.Format(@"Мероприятие ""{0}"" успешно сохранено.", match.Name);
-                return RedirectToAction("Matches", "Settings");
+                return RedirectToAction("Matches", "Settings", new { sid = TDStadiumId });
             }
             else
             {
@@ -97,9 +97,9 @@ namespace DATS.Controllers
                 ((DbContext)Repository).Entry<Match>(match).State = EntityState.Added;
                 // Repository.Matches.Add(match);
                 Repository.SaveChanges();
-                TempData["StadiumId"] = match.StadiumId;
+                int TDStadiumId = match.StadiumId;
                 TempData["message"] = string.Format(@"Мероприятие ""{0}"" успешно создано.", match.Name);
-                return RedirectToAction("Matches", "Settings");
+                return RedirectToAction("Matches", "Settings", new { sid = TDStadiumId });
             }
             else
             {
@@ -129,11 +129,11 @@ namespace DATS.Controllers
         [HttpPost]
         public ActionResult Delete(Match match)
         {
+            int TDStadiumId = match.StadiumId;
             ((DbContext)Repository).Entry<Match>(match).State = EntityState.Deleted;
-                TempData["StadiumId"] = match.StadiumId;
-                Repository.SaveChanges();
+                 Repository.SaveChanges();
                 TempData["message"] = string.Format(@"Мероприятие было удалено.", match.Name);
-                return RedirectToAction("Matches", "Settings");
+                return RedirectToAction("Matches", "Settings", new { sid = TDStadiumId });
         }
 
 
