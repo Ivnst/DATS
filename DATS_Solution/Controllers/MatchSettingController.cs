@@ -18,13 +18,13 @@ namespace DATS.Controllers
        
           if(sid == null)
             {
-            // если sid нет и в cookie выбераем первый встретившийся стадион
+            // если sid нет выбераем первый встретившийся стадион
             var FindFirst = Repository.Stadiums.FirstOrDefault<Stadium>(z => z.Id == z.Id);
 
             if (FindFirst == null)
             {
             // если, справочник стадиона не заполнен, то показываем не фильтруя (мероприятия ещё не создавались)
-                ViewBag.ChooseStadium = "Фильтровать по стадионам";
+                ViewBag.ChooseStadium = "Сначала необходимо добавить хотябы один стадион.";
                 return PartialView(Repository.Matches);
             }
             else
@@ -95,7 +95,6 @@ namespace DATS.Controllers
             if (ModelState.IsValid)
             {
                 ((DbContext)Repository).Entry<Match>(match).State = EntityState.Added;
-                // Repository.Matches.Add(match);
                 Repository.SaveChanges();
                 int TDStadiumId = match.StadiumId;
                 TempData["message"] = string.Format(@"Мероприятие ""{0}"" успешно создано.", match.Name);

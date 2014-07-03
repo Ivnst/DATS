@@ -300,6 +300,9 @@
     <Content Include="Views\StadiumSetting\Edit.cshtml" />
     <Content Include="Views\StadiumSetting\Delete.cshtml" />
     <Content Include="Views\SectorSetting\Index.cshtml" />
+    <Content Include="Views\SectorSetting\Edit.cshtml" />
+    <Content Include="Views\SectorSetting\Create.cshtml" />
+    <Content Include="Views\SectorSetting\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
