@@ -15,20 +15,27 @@ namespace DATS
     [Required]
     public int SectorId { get; set; }
     /// <summary>
-    /// Ряд
+    /// Ряд. Начинается с единицы, нумерация направлена ВВЕРХ.
     /// </summary>
     [Required]
     public int Row { get; set; }
     /// <summary>
-    /// Номер места
+    /// Номер места. Начинается с единицы, нумерация направлена вправо.
     /// </summary>
     [Required]
-    public int Position { get; set; }
+    public int Column { get; set; }
+
     /// <summary>
-    /// Позиция места (для отображения)
+    /// Позиция ряда (для отображения). Начинается с нуля, нумерация направлена вниз.
     /// </summary>
     [Required]
-    public int Location { get; set; }
+    public int RowPos { get; set; }
+
+    /// <summary>
+    /// Позиция места (для отображения). Начинается с нуля, нумерация направлена вправо.
+    /// </summary>
+    [Required]
+    public int ColumnPos { get; set; }
 
     //------------------------------------------------------------------------------
     /// <summary>

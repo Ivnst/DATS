@@ -189,7 +189,7 @@ namespace DATS.Controllers
           List<PlaceView> result = new List<PlaceView>();
           foreach (Place place in places)
           {
-            result.Add(new PlaceView(place.Row, place.Location, place.Position));
+            result.Add(new PlaceView(place.Row, place.ColumnPos, place.Column));
           }
 
           return Json(result, JsonRequestBehavior.AllowGet);
@@ -260,8 +260,8 @@ namespace DATS.Controllers
           {
             if (place.Row < minRow) minRow = place.Row;
             if (place.Row > maxRow) maxRow = place.Row;
-            if (place.Location < minCol) minCol = place.Location;
-            if (place.Location > maxCol) maxCol = place.Location;
+            if (place.ColumnPos < minCol) minCol = place.ColumnPos;
+            if (place.ColumnPos > maxCol) maxCol = place.ColumnPos;
             placesDict.Add(place.Id, place);
           }
 
@@ -277,9 +277,9 @@ namespace DATS.Controllers
           //Заполняем матрицу мест
           foreach (Place place in places)
           {
-            PlaceView pv = new PlaceView(place.Row, place.Location, place.Position);
+            PlaceView pv = new PlaceView(place.Row, place.ColumnPos, place.Column);
             pv.State = (int)PlaceState.Free;
-            placeMatrix[place.Row - minRow][place.Location - minCol] = pv;
+            placeMatrix[place.Row - minRow][place.ColumnPos - minCol] = pv;
           }
 
           //Достаём информацию о проданных или забронированных местах
@@ -293,7 +293,7 @@ namespace DATS.Controllers
             }
 
             Place place = placesDict[soldPlace.PlaceId];
-            PlaceView pv = placeMatrix[place.Row - minRow][place.Location - minCol];
+            PlaceView pv = placeMatrix[place.Row - minRow][place.ColumnPos - minCol];
             pv.State = soldPlace.IsReservation ? (int)PlaceState.Reserved : (int)PlaceState.Sold;
           }
 

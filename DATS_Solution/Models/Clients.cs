@@ -25,5 +25,10 @@ namespace DATS
     /// </summary>
     [Required]
     public DateTime Date { get; set; }
+    /// <summary>
+    /// Если true - бронь по текущему клиенту активна.
+    /// </summary>
+    [Required]
+    public bool IsActive { get; set; }
   }
 }

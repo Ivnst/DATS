@@ -26,6 +26,7 @@ namespace DATS
     [DisplayName("Название мероприятия")]
     [DataType(DataType.Text)]
     [Required(ErrorMessage = "Пожалуйста введите название матча (или мероприятия).")]
+    [StringLength(255)]
     public string Name { get; set; }
 
     /// <summary>

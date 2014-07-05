@@ -21,7 +21,7 @@ namespace DATS
     /// Наименование стадиона
     /// </summary>
     [Required(ErrorMessage="Пожалуйста, укажите название нового стадиона!")]
-    [MinLength(10)]   //TODO: Убрать это ограничение
+    [StringLength(255)]
     [DisplayName("Название стадиона")]
     public string Name { get; set; }
     /// <summary>

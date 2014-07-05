@@ -16,6 +16,11 @@ namespace DATS
     [Required]
     public int MatchId { get; set; }
     /// <summary>
+    /// Код сектора (для облегчения поиска)
+    /// </summary>
+    [Required]
+    public int SectorId { get; set; }
+    /// <summary>
     /// Код места
     /// </summary>
     [Required]
@@ -38,7 +43,7 @@ namespace DATS
     /// <summary>
     /// Ссылка на человека, который забронировал место
     /// </summary>
-    public int ClientId { get; set; }
+    public int? ClientId { get; set; }
 
     //------------------------------------------------------------------------------
     /// <summary>

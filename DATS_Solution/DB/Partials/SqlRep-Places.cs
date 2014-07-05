@@ -95,8 +95,8 @@ namespace DATS
           PlaceView currPlaceView = places[0];
           places.RemoveAt(0);
           place.Row = currPlaceView.Row;
-          place.Location = currPlaceView.Col;
-          place.Position = currPlaceView.Num;
+          place.ColumnPos = currPlaceView.Col;
+          place.Column = currPlaceView.Num;
           Entry<Place>(place).State = EntityState.Modified;
         }
         else
@@ -112,8 +112,8 @@ namespace DATS
       {
         Place newPlace = new Place();
         newPlace.Row = placeView.Row;
-        newPlace.Location = placeView.Col;
-        newPlace.Position = placeView.Num;
+        newPlace.ColumnPos = placeView.Col;
+        newPlace.Column = placeView.Num;
         newPlace.SectorId = sector.Id;
         Places.Add(newPlace);
       }

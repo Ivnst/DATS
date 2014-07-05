@@ -91,7 +91,7 @@ namespace DATS
       {
         bool exists = false;
         foreach (Place place in sectorPlaces)
-          if (place.Position == pv.Num && place.Row == pv.Row)
+          if (place.Column == pv.Num && place.Row == pv.Row)
           {
             exists = true;
             placesDict.Add(pv, place);
@@ -112,7 +112,7 @@ namespace DATS
           Place place = Places.FirstOrDefault<Place>(p => p.Id == soldplace.PlaceId);
           if (place == null) return false;
 
-          if (place.Position == pv.Num && place.Row == pv.Row)
+          if (place.Column == pv.Num && place.Row == pv.Row)
             return false;
         }
 
@@ -159,7 +159,7 @@ namespace DATS
           Place place = Places.FirstOrDefault<Place>(p => p.Id == soldplace.PlaceId);
           if (place == null) return false;
              
-          if (place.Position == pv.Num && place.Row == pv.Row)
+          if (place.Column == pv.Num && place.Row == pv.Row)
           {
             exists = true;
             toRemove.Add(soldplace);

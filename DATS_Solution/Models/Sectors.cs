@@ -29,11 +29,8 @@ namespace DATS
     [DisplayName("Название сектора")]
     [DataType(DataType.Text)]
     [Required(ErrorMessage = "Пожалуйста введите название сектора.")]
+    [StringLength(255)]
     public string Name { get; set; }
-    /// <summary>
-    /// Цвет сектора
-    /// </summary>
-    public int Color { get; set; }
 
     //------------------------------------------------------------------------------
     /// <summary>
