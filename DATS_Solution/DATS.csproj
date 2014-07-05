@@ -170,6 +170,10 @@
     <Compile Include="Migrations\201406031421127_initial.Designer.cs">
       <DependentUpon>201406031421127_initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201407052031046_upgrading.cs" />
+    <Compile Include="Migrations\201407052031046_upgrading.Designer.cs">
+      <DependentUpon>201407052031046_upgrading.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Clients.cs" />
     <Compile Include="Models\ModelsView\PlaceView.cs" />
@@ -334,6 +338,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201406031421127_initial.resx">
       <DependentUpon>201406031421127_initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201407052031046_upgrading.resx">
+      <DependentUpon>201407052031046_upgrading.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
