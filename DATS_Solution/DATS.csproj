@@ -150,6 +150,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MatchSettingController.cs" />
     <Compile Include="Controllers\SectorController.cs" />
+    <Compile Include="Controllers\SectorSettingController.cs" />
     <Compile Include="Controllers\SettingsController.cs" />
     <Compile Include="Controllers\StadiumSettingController.cs" />
     <Compile Include="DB\IRepository.cs" />
@@ -304,6 +305,10 @@
     <Content Include="Views\StadiumSetting\Delete.cshtml" />
     <Content Include="Views\Sector\Edit.cshtml" />
     <Content Include="Views\Sector\Configure.cshtml" />
+    <Content Include="Views\SectorSetting\Index.cshtml" />
+    <Content Include="Views\SectorSetting\Edit.cshtml" />
+    <Content Include="Views\SectorSetting\Create.cshtml" />
+    <Content Include="Views\SectorSetting\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

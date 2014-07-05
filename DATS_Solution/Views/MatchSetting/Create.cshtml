@@ -6,6 +6,13 @@
     Culture = "ru-RU";
 }
 
+<script>
+    function doThis(myForm) {
+        document.getElementById('StadiumId').value = @ViewBag.StadiumId
+        myForm.submit();
+    }
+</script>
+
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
         &times;
@@ -20,23 +27,15 @@
 
 <div class="modal-body">
     <fieldset>
-
-        <div class="editor-label">
-            @Html.LabelFor(model => model.StadiumId)
-        </div>
-        <div class="editor-field">
-            @Html.DropDownListFor(
-    model => model.StadiumId,
- (IEnumerable<SelectListItem>)ViewBag.Stadiumes,
-    "-- пожалуйста выберите стадион --")
-            @Html.ValidationMessageFor(model => model.StadiumId)
-        </div>
+        <h2 style="color: green;">
+            @ViewBag.StadiumName
+        </h2>
 
         <div class="editor-label">
             @Html.LabelFor(model => model.Name)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.Name)
+            @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
             @Html.ValidationMessageFor(model => model.Name)
         </div>
 
@@ -44,7 +43,7 @@
             @Html.LabelFor(model => model.BeginsAt)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.BeginsAt)
+            @Html.TextBoxFor(model => model.BeginsAt, new { @class = "form-control" })
             @Html.ValidationMessageFor(model => model.BeginsAt)
         </div>
 
@@ -52,9 +51,11 @@
             @Html.LabelFor(model => model.Duration)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.Duration)
+            @Html.TextBoxFor(model => model.Duration, new { @class = "form-control" })
             @Html.ValidationMessageFor(model => model.Duration)
         </div>
+
+        @Html.HiddenFor(model => model.StadiumId)
     </fieldset>
 </div>
 
@@ -62,7 +63,7 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">
                     Закрыть
                 </button>
-                <input type="submit" class="btn btn-primary" value="Сохранить" />
+                <input type="submit" class="btn btn-primary" value="Сохранить" onclick="doThis(this.form)" />
             </div>
 
 }

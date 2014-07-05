@@ -15,24 +15,28 @@ namespace DATS.Controllers
         public ActionResult Index(int? sid)
         {
           ViewBag.Stadiumes = Repository.GetAllStadiums();
-
-          if (sid == null)
-          {
-              int CookieId = ReadIntValueFromCookie("CurrSadiumForMatches");
-              if (CookieId != -1)
-              {
-                  sid = CookieId;
-              }
-          }
-        
+       
           if(sid == null)
             {
-            ViewBag.ChooseStadium = "Фильтровать по стадионам";
-            return PartialView(Repository.Matches);
+            // если sid нет выбераем первый встретившийся стадион
+            var FindFirst = Repository.Stadiums.FirstOrDefault<Stadium>(z => z.Id == z.Id);
+
+            if (FindFirst == null)
+            {
+            // если, справочник стадиона не заполнен, то показываем не фильтруя (мероприятия ещё не создавались)
+                ViewBag.ChooseStadium = "Сначала необходимо добавить хотябы один стадион.";
+                return PartialView(Repository.Matches);
+            }
+            else
+            {
+                ViewBag.ChooseStadiumId = FindFirst.Id;
+                ViewBag.ChooseStadium = FindFirst.Name;
+                return PartialView(Repository.Matches.Where(p => p.StadiumId == FindFirst.Id));
+            }
         } else
             {
-                ViewBag.ChooseStadium = Repository.Stadiums.Where(s => s.Id == sid).Distinct().Select(k => k.Name).Max();
-            WriteIntValueIntoCookie("CurrSadiumForMatches", (int)sid);
+            ViewBag.ChooseStadiumId = sid;
+            ViewBag.ChooseStadium = Repository.Stadiums.Where(s => s.Id == sid).Distinct().Select(k => k.Name).Max();
             return PartialView(Repository.Matches.Where(p => p.StadiumId == sid));
             }
 
@@ -46,17 +50,8 @@ namespace DATS.Controllers
             Match match = Repository.Matches
               .FirstOrDefault(p => p.Id == id);
 
-            // start selectList
-            IEnumerable<SelectListItem> selectList =
-            from s in Repository.Stadiums
-            select new SelectListItem
-            {
-                Selected = (s.Id == match.StadiumId),
-                Value = s.Id.ToString(),
-                Text = s.Name
-            };
-            ViewBag.Stadiumes = selectList;
-            // end selectList
+            ViewBag.StadiumId = match.StadiumId;
+            ViewBag.StadiumName = Repository.Stadiums.Where(p => p.Id == match.StadiumId).Select(p => p.Name).Max();
 
             return PartialView(match);
         }
@@ -68,22 +63,15 @@ namespace DATS.Controllers
             {
                 ((DbContext)Repository).Entry<Match>(match).State = EntityState.Modified;
                 Repository.SaveChanges();
+                int TDStadiumId = match.StadiumId;
                 TempData["message"] = string.Format(@"Мероприятие ""{0}"" успешно сохранено.", match.Name);
-                return RedirectToAction("Matches", "Settings");
+                return RedirectToAction("Matches", "Settings", new { sid = TDStadiumId });
             }
             else
             {
-                // start selectList
-                IEnumerable<SelectListItem> selectList =
-                from s in Repository.Stadiums
-                select new SelectListItem
-                {
-                    Selected = (s.Id == match.StadiumId),
-                    Value = s.Id.ToString(),
-                    Text = s.Name
-                };
-                ViewBag.Stadiumes = selectList;
-                // end selectList
+
+                ViewBag.StadiumId = match.StadiumId;
+                ViewBag.StadiumName = Repository.Stadiums.Where(p => p.Id == match.StadiumId).Select(p => p.Name).Max();
 
                 return View(match);
 
@@ -92,19 +80,11 @@ namespace DATS.Controllers
 
 
         [HttpGet]
-        public ActionResult Create()
+        public ActionResult Create(int id)
         {
-            // start selectList
-            IEnumerable<SelectListItem> selectList =
-            from s in Repository.Stadiums
-            select new SelectListItem
-            {
-                Selected = false,
-                Value = s.Id.ToString(),
-                Text = s.Name
-            };
-            ViewBag.Stadiumes = selectList;
-            // end selectList
+
+            ViewBag.StadiumId = id;
+            ViewBag.StadiumName = Repository.Stadiums.Where(p => p.Id == id).Select(p => p.Name).Max();
 
             return PartialView(new Match());
         }
@@ -114,24 +94,17 @@ namespace DATS.Controllers
         {
             if (ModelState.IsValid)
             {
-                Repository.Matches.Add(match);
+                ((DbContext)Repository).Entry<Match>(match).State = EntityState.Added;
                 Repository.SaveChanges();
+                int TDStadiumId = match.StadiumId;
                 TempData["message"] = string.Format(@"Мероприятие ""{0}"" успешно создано.", match.Name);
-                return RedirectToAction("Matches", "Settings");
+                return RedirectToAction("Matches", "Settings", new { sid = TDStadiumId });
             }
             else
             {
-                // start selectList
-                IEnumerable<SelectListItem> selectList =
-                from s in Repository.Stadiums
-                select new SelectListItem
-                {
-                    Selected = (s.Id == match.StadiumId),
-                    Value = s.Id.ToString(),
-                    Text = s.Name
-                };
-                ViewBag.Stadiumes = selectList;
-                // end selectList
+
+                ViewBag.StadiumId = match.StadiumId;
+                ViewBag.StadiumName = Repository.Stadiums.Where(p => p.Id == match.StadiumId).Select(p => p.Name).Max();
 
                 return View(match);
 
@@ -143,6 +116,10 @@ namespace DATS.Controllers
         {
             Match match = Repository.Matches
               .FirstOrDefault(p => p.Id == id);
+
+            ViewBag.StadiumId = match.StadiumId;
+            ViewBag.StadiumName = Repository.Stadiums.Where(p => p.Id == match.StadiumId).Select(p => p.Name).Max();
+
             return PartialView(match);
         }
 
@@ -151,10 +128,11 @@ namespace DATS.Controllers
         [HttpPost]
         public ActionResult Delete(Match match)
         {
+            int TDStadiumId = match.StadiumId;
             ((DbContext)Repository).Entry<Match>(match).State = EntityState.Deleted;
-            Repository.SaveChanges();
+                 Repository.SaveChanges();
                 TempData["message"] = string.Format(@"Мероприятие было удалено.", match.Name);
-                return RedirectToAction("Matches", "Settings");
+                return RedirectToAction("Matches", "Settings", new { sid = TDStadiumId });
         }
 
 
