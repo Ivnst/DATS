@@ -1,19 +1,4 @@
-﻿//some links
-//http://blog.mariusschulz.com/2014/02/05/passing-net-server-side-data-to-javascript
-//http://simonsarris.com/blog/510-making-html5-canvas-useful
-//http://www.w3schools.com/tags/ref_canvas.asp
-
-// Constructor for Shape objects to hold data for all drawn objects.
-// For now they will just be defined as rectangles.
-function Shape(row, col, state, selected) {
-    // This is a very simple and unsafe constructor. All we're doing is checking if the values exist.
-    // "x || 0" just means "if there is a value for x, use that. Otherwise use 0."
-    // But we aren't checking anything else! We could put "Lalala" for the value of x 
-    this.row = row || 0;
-    this.col = col || 0;
-    this.state = state || 0;
-    this.selected = selected || 0;
-}
+﻿var form = 1;
 
 function CanvasState(canvas, width, height) {
     // **** First some setup! ****
@@ -112,30 +97,7 @@ function CanvasState(canvas, width, height) {
         //определяем координаты курсора мыши
         var mouse = myState.getMouse(e);
 
-        //autoscrolling
-        if (myState.itemWidth * myState.maxCols > myState.canvas.width) {
-            var sizeDiffX = myState.itemWidth * (myState.maxCols + 2) - myState.canvas.width;
-
-            //var percentX = mouse.x * 100 / myState.canvas.width;
-
-            myState.offsetX = parseInt(sizeDiffX * mouse.x / myState.canvas.width) - myState.itemWidth;
-        } else {
-            var sizeDiffX = myState.canvas.width - myState.itemWidth * myState.maxCols;
-            myState.offsetX = -parseInt(sizeDiffX / 2);
-        }
-
-
-        if (myState.itemHeight * myState.maxRows > myState.canvas.height) {
-            var sizeDiffY = myState.itemHeight * (myState.maxRows + 2) - myState.canvas.height;
-
-            //var percentY = mouse.y * 100 / myState.canvas.height;
-
-            myState.offsetY = parseInt(sizeDiffY * mouse.y / myState.canvas.height) - myState.itemHeight;
-        } else {
-            var sizeDiffY = myState.canvas.height - myState.itemHeight * myState.maxRows;
-            myState.offsetY = -parseInt(sizeDiffY / 2);
-        }
-        myState.valid = false;
+        myState.adjustPosition(mouse.x, mouse.y);
 
         //---------------------------------------------
         //if mouse button is not pressed - return
@@ -194,30 +156,6 @@ function CanvasState(canvas, width, height) {
     setInterval(function () { myState.draw(); }, myState.interval);
 }
 
-//Add new shape on canvas with specified position and state
-CanvasState.prototype.addShape = function (row, col, state) {
-    var shape = this.shapes[row][col];
-    shape.state = state;
-    this.valid = false;
-}
-
-//Clear all canvas
-CanvasState.prototype.clear = function () {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-}
-
-//Clear all selection
-CanvasState.prototype.clearSelection = function () {
-    for (var i = 0; i < this.maxRows; i++) {
-        for (var j = 0; j < this.maxCols; j++) {
-            var shape = this.shapes[i][j];
-            shape.selected = false;
-        }
-    }
-    this.selection = false;
-    this.mousePressed = false;
-    this.valid = false;
-}
 
 //changes selected cell's state to specified value
 CanvasState.prototype.setSelectionTo = function (newState) {
@@ -266,165 +204,17 @@ CanvasState.prototype.showInfo = function () {
 
 }
 
-//change item size on specified value
-CanvasState.prototype.scale = function (val) {
-    this.itemWidth = this.itemWidth + val;
-    this.itemHeight = this.itemHeight + val;
-    this.valid = false;
-}
 
-// While draw is called as often as the INTERVAL variable demands,
-// It only ever does something if the canvas gets invalidated by our code
-CanvasState.prototype.draw = function () {
-    // if our state is invalid, redraw and validate!
-    if (!this.valid) {
-        this.valid = true;
-        this.clear();
-        var ctx = this.ctx;
-        var shapes = this.shapes;
-
-        //border
-        ctx.save();
-        ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 1;
-        ctx.strokeRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
-        // draw all shapes
-        for (var i = 0; i < this.maxRows; i++) {
-            for (var j = 0; j < this.maxCols; j++) {
-                this.drawShape(i, j, shapes[i][j]);
-            }
-        }
-
-        //rows numbers
-        for (var i = 0; i < this.maxRows; i++) {
-
-            var y = i * this.itemHeight - this.offsetY;
-
-            this.ctx.font = "12pt Arial";
-            this.ctx.lineWidth = 2;
-            this.ctx.strokeStyle = 'black';
-            this.ctx.strokeText(this.maxRows - i , this.itemWidth / 2, y + this.itemHeight / 2);
-            ctx.fillStyle = 'white';
-            this.ctx.fillText(this.maxRows - i, this.itemWidth / 2, y + this.itemHeight / 2);
-        }
-
-
-        // draw selection
-        if (this.selection) {
-            ctx.strokeStyle = '#CC0000';
-            ctx.lineWidth = 2;
-            ctx.globalAlpha = 0.6;
-            ctx.strokeRect(this.initialX - this.offsetX, this.initialY - this.offsetY, this.selectionX - this.initialX, this.selectionY - this.initialY);
-            ctx.globalAlpha = 1;
-        }
-        ctx.restore();
-    }
-}
-
-
-// Draws this shape to a given context
-CanvasState.prototype.drawShape = function (row, col, shape) {
-
-    var x = col * this.itemWidth - this.offsetX;
-    var y = row * this.itemHeight - this.offsetY;
-
-    if (x < -this.itemWidth || y < -this.itemHeight) return;
-    if (x > this.canvas.width || y > this.canvas.height) return;
-
+CanvasState.prototype.getShapeColor = function (shape) {
     //shape color
     if (shape.selected) {
-        this.ctx.fillStyle = (shape.state) ? '#CCCC00' : '#EEEE00';
+        return (shape.state) ? '#CCCC00' : '#EEEE00';
     }
     else {
-        this.ctx.fillStyle = (shape.state) ? '#0000AA' : '#CCCCCC';
-    }
-
-    this.ctx.fillRect(x, y, this.itemWidth, this.itemHeight);
-
-    //border line
-    this.ctx.beginPath();
-    this.ctx.moveTo(x, y + this.itemHeight);
-    this.ctx.lineTo(x + this.itemWidth, y + this.itemHeight);
-    this.ctx.lineTo(x + this.itemWidth, y);
-    this.ctx.lineWidth = 1;
-    this.ctx.strokeStyle = '#000000';
-    this.ctx.stroke();
-
-    //border line
-    this.ctx.beginPath();
-    this.ctx.moveTo(x + this.itemWidth, y);
-    this.ctx.lineTo(x, y);
-    this.ctx.lineTo(x, y + this.itemHeight);
-    this.ctx.lineWidth = 1;
-    this.ctx.strokeStyle = '#FFFFFF';
-    this.ctx.stroke();
-
-    //label (place number)
-    if (shape.state) {
-        this.ctx.fillStyle = '#FFFFFF';
-        this.ctx.font = "10pt Courier New";
-        this.ctx.fillText(shape.col, x + this.itemWidth / 2, y + this.itemHeight / 2);
+        return (shape.state) ? '#0000AA' : '#CCCCCC';
     }
 }
 
-//check item intersection with selection rectangle
-CanvasState.prototype.checkIntersection = function (x, y) {
-
-    var shapeX = x * this.itemWidth;
-    var shapeY = y * this.itemHeight;
-    var selX = this.initialX < this.selectionX ? this.initialX : this.selectionX;
-    var selY = this.initialY < this.selectionY ? this.initialY : this.selectionY;
-
-    var selWidth = Math.abs(this.selectionX - this.initialX);
-    var selHeight = Math.abs(this.selectionY - this.initialY);
-
-    return !(selX + selWidth < shapeX ||
-           shapeX + this.itemWidth < selX ||
-           selY + selHeight < shapeY ||
-           shapeY + this.itemHeight < selY);
-
-    //     return !(rectA.x + rectA.width < rectB.x ||
-    //            rectB.x + rectB.width < rectA.x ||
-    //            rectA.y + rectA.height < rectB.y ||
-    //            rectB.y + rectB.height < rectA.y);
-}; 
-
-// Creates an object with x and y defined, set to the mouse position relative to the state's canvas
-// If you wanna be super-correct this can be tricky, we have to worry about padding and borders
-CanvasState.prototype.getMouse = function (e) {
-    var element = this.canvas, offsetX = 0, offsetY = 0, mx, my;
-
-    // Compute the total offset
-    if (element.offsetParent !== undefined) {
-        do {
-            offsetX += element.offsetLeft;
-            offsetY += element.offsetTop;
-        } while ((element = element.offsetParent));
-    }
-
-    // Add padding and border style widths to offset
-    // Also add the <html> offsets in case there's a position:fixed bar
-    offsetX += this.stylePaddingLeft + this.styleBorderLeft + this.htmlLeft;
-    offsetY += this.stylePaddingTop + this.styleBorderTop + this.htmlTop;
-
-    mx = e.pageX - offsetX;
-    my = e.pageY - offsetY;
-
-    // We return a simple javascript object (a hash) with x and y defined
-    return { x: mx, y: my };
-}
-
-//gets item coordinates accroding to mouse coordinates
-CanvasState.prototype.getItem = function (mx, my) {
-    var signY = 1, signX = 1;
-    if (mx < 0) { signX = -1; mx = -mx; }
-    if (my < 0) { signY = -1; my = -my; }
-
-    var r = parseInt(my / this.itemHeight) * signY;
-    var c = parseInt(mx / this.itemWidth) * signX;
-    return { colPos: c, rowPos: r };
-}
 
 //Sends data to server
 CanvasState.prototype.sendData = function () {

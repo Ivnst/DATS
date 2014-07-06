@@ -251,6 +251,7 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\Custom\SectorCommon.js" />
     <Content Include="Scripts\Custom\SectorEdit.js" />
     <Content Include="Scripts\Custom\SectorConfigure.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-US.js" />
