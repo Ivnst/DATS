@@ -23,5 +23,16 @@ namespace DATS
     {
       return Stadiums.ToList<Stadium>();
     }
+
+
+    /// <summary>
+    /// Возвращает стадион с указанным кодом или null, если такой стадион не найден.
+    /// </summary>
+    /// <param name="sid"></param>
+    /// <returns></returns>
+    public Stadium FindStadium(int sid)
+    {
+      return Stadiums.FirstOrDefault<Stadium>(s => s.Id == sid);
+    }
   }
 }

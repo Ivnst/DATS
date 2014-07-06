@@ -38,7 +38,7 @@ namespace DATS.Controllers
         /// <returns></returns>
         public ActionResult Stadium(int sid)
         {
-          Stadium stadium = Repository.Stadiums.FirstOrDefault<Stadium>(s => s.Id == sid);
+          Stadium stadium = Repository.FindStadium(sid);
           if(stadium != null)
           {
             this.CurrentStadium = stadium;

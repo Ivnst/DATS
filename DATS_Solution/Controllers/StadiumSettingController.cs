@@ -40,7 +40,7 @@ namespace DATS.Controllers
 
         public ActionResult Edit(int id)
         {
-          Stadium stadium = Repository.Stadiums.FirstOrDefault(p => p.Id == id);
+          Stadium stadium = Repository.FindStadium(id);
 
           if (stadium == null)
           {
@@ -74,7 +74,7 @@ namespace DATS.Controllers
         /// <returns></returns>
         public ActionResult Delete(int id)
         {
-          Stadium item = Repository.Stadiums.FirstOrDefault(p => p.Id == id);
+          Stadium item = Repository.FindStadium(id);
           return PartialView(item);
         }
 

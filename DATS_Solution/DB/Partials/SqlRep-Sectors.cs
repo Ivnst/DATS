@@ -33,5 +33,16 @@ namespace DATS
     {
       return Sectors.Where<Sector>(s => s.StadiumId == stadiumId).ToList<Sector>();
     }
+
+
+    /// <summary>
+    /// Возвращает сектор с указанным кодом или null, если такой сектор не найден.
+    /// </summary>
+    /// <param name="sid"></param>
+    /// <returns></returns>
+    public Sector FindSector(int sid)
+    {
+      return Sectors.FirstOrDefault<Sector>(s => s.Id == sid);
+    }
   }
 }

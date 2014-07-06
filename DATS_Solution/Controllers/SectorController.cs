@@ -84,7 +84,7 @@ namespace DATS.Controllers
           try
           {
             //check sector id
-            Sector sector = Repository.Sectors.FirstOrDefault<Sector>(s => s.Id == sid);
+            Sector sector = Repository.FindSector(sid);
             if (sector == null)
             {
               logger.Warn("/Sector/StoreSectorSoldInfo : Не найден указанный сектор. sid = " + sid.ToString());
@@ -92,7 +92,7 @@ namespace DATS.Controllers
             }
 
             //check match id
-            Match match = Repository.Matches.FirstOrDefault<Match>(m => m.Id == mid);
+            Match match = Repository.FindMatch(mid);
             if (sector == null)
             {
               logger.Warn("/Sector/StoreSectorSoldInfo : Не найдено указанное мероприятие. mid = " + mid.ToString());
@@ -103,6 +103,7 @@ namespace DATS.Controllers
             List<PlaceView> places = JsonConvert.DeserializeObject<List<PlaceView>>(data);
             if(places.Count == 0)
             {
+              logger.Warn("/Sector/StoreSectorSoldInfo : Не выбраны места для осуществления операции. mid = " + mid.ToString());
               return Content("Не выбраны места для осуществления операции!");
             }
 
@@ -117,6 +118,7 @@ namespace DATS.Controllers
               }
             }
 
+            //выполнение операции
             bool res = false;
             if(state == (int)PlaceState.Sold)
             {
@@ -128,6 +130,7 @@ namespace DATS.Controllers
               res = Repository.ProcessTicketsReturning(match, sector, places);
             }
 
+            //проверка результата выполнения операции
             if (!res)
             {
               logger.Error(data, "Операция не была выполнена!");
@@ -152,14 +155,14 @@ namespace DATS.Controllers
         /// <returns></returns>
         public ActionResult Configure(int sid)
         {
-          Sector sector = Repository.Sectors.FirstOrDefault<Sector>(s => s.Id == sid);
+          Sector sector = Repository.FindSector(sid);
           if (sector == null)
           {
             logger.Warn("/Sector/Configure : Не найден указанный сектор. sid = " + sid.ToString());
             return RedirectToAction("Sectors", "Settings");
           }
 
-          Stadium stadium = Repository.Stadiums.FirstOrDefault<Stadium>(s => s.Id == sector.StadiumId);
+          Stadium stadium = Repository.FindStadium(sector.StadiumId);
 
           ViewBag.CurrentSector = sector;
           ViewBag.CurrentStadium = stadium;
@@ -175,8 +178,8 @@ namespace DATS.Controllers
         /// <returns></returns>
         public ActionResult SectorInfo(int sid)
         {
-          Sector sector = Repository.Sectors.FirstOrDefault<Sector>(s => s.Id == sid);
-          if(sector == null)
+          Sector sector = Repository.FindSector(sid);
+          if (sector == null)
           {
             logger.Warn("/Sector/SectorInfo : Не найден указанный сектор. sid = " + sid.ToString());
             return Json(null, JsonRequestBehavior.AllowGet);
@@ -207,20 +210,25 @@ namespace DATS.Controllers
         {
           try
           {
-            Sector sector = Repository.Sectors.FirstOrDefault<Sector>(s => s.Id == sid);
+            //проверка кода сектора
+            Sector sector = Repository.FindSector(sid);
             if (sector == null)
             {
               logger.Warn("/Sector/SectorInfo : Не найден указанный сектор. sid = " + sid.ToString());
               return Content("Текущий редактируемый сектор не существует!");
             }
             
+            //десериализация полученных данных
             List<PlaceView> places = JsonConvert.DeserializeObject<List<PlaceView>>(data);
+
+            //сохранение расположения мест
             bool res = Repository.SavePlacesBySector(sector, places);
             if (!res)
             {
               logger.Error(data, "Данные не были сохранены! Обратитесь к администратору!");
               return Content("Данные не были сохранены! Обратитесь к администратору!"); 
             }
+
             logger.Debug(string.Format("Обновление расположение мест в секторе '{0}' ({1})", sector.Name, sector.Id));
           }
           catch (System.Exception ex)

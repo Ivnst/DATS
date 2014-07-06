@@ -25,7 +25,7 @@ namespace DATS.Controllers
           int stadiumId = ReadIntValueFromCookie("ss");//SS - selected stadium
 
           //search stadium (check cookie value)
-          Stadium stadium = Repository.Stadiums.FirstOrDefault<Stadium>(s => s.Id == stadiumId);
+          Stadium stadium = Repository.FindStadium(stadiumId);
           if (stadium == null)
           {
             //Если не нашли, берем первый стадион

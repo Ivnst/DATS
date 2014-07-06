@@ -18,6 +18,17 @@ namespace DATS
 
 
     /// <summary>
+    /// Возвращает мероприятие с указанным кодом или null, если такое мероприятие не найдено.
+    /// </summary>
+    /// <param name="mid"></param>
+    /// <returns></returns>
+    public Match FindMatch(int mid)
+    {
+      return Matches.FirstOrDefault<Match>(m => m.Id == mid);
+    }
+
+
+    /// <summary>
     /// Возвращает список мероприятий у указанного стадиона
     /// </summary>
     /// <param name="stadium"></param>

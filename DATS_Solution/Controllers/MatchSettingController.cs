@@ -24,7 +24,7 @@ namespace DATS.Controllers
             if (FindFirst == null)
             {
             // если, справочник стадиона не заполнен, то показываем не фильтруя (мероприятия ещё не создавались)
-                ViewBag.ChooseStadium = "Сначала необходимо добавить хотябы один стадион.";
+                ViewBag.ChooseStadium = "Сначала необходимо добавить хотя бы один стадион.";
                 return PartialView(Repository.Matches);
             }
             else

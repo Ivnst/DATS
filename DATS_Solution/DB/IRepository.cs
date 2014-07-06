@@ -20,8 +20,10 @@ namespace DATS
          
     //Stadiums
     List<Stadium> GetAllStadiums();
+    Stadium FindStadium(int sid);
 
     //Matches
+    Match FindMatch(int mid);
     List<Match> GetMatchesByStadium(Stadium stadium);
     List<SectorView> GetSectorsStatistics(Match match);
 
@@ -33,5 +35,8 @@ namespace DATS
     List<SoldPlace> GetSoldPlaces(Match match, Sector sector);
     bool ProcessTicketsSelling(Match match, Sector sector, List<PlaceView> places);
     bool ProcessTicketsReturning(Match match, Sector sector, List<PlaceView> places);
+
+    //Sectors
+    Sector FindSector(int sid);
   }
 }
