@@ -34,13 +34,13 @@ namespace DATS
     /// </summary>
     /// <param name="sector"></param>
     /// <param name="places"></param>
-    public bool SavePlacesBySector(Sector sector, List<PlaceView> places)
+    public void SavePlacesBySector(Sector sector, List<PlaceView> places)
     {
       if (sector == null) throw new ArgumentNullException("sector");
       if (places == null) throw new ArgumentNullException("places");
-      if (Sectors.Count<Sector>(s => s.Id == sector.Id) == 0) throw new ArgumentException("Sector not exists");
+      if (Sectors.Count<Sector>(s => s.Id == sector.Id) == 0) throw new ArgumentException("Указанный сектор не существует!");
 
-      if (!CanEditSector(sector)) return false;
+      if (!CanEditSector(sector)) throw new InvalidOperationException("По данному сектору уже проводились продажи! Редактирование запрещено!");
 
       //Далее мы составляем матрицу мест, чтобы распределить номера мест (не путать с положением)
       //а также чтобы избежать некоторых других ошибок (например наложение мест друг на друга)
@@ -50,8 +50,8 @@ namespace DATS
       int maxRow = 0;
       foreach (PlaceView pv in places)
       {
-        if(pv.Row > maxRow) maxRow = pv.Row;
-        if(pv.Col > maxCol) maxCol = pv.Col;
+        if (pv.RowPos > maxRow) maxRow = pv.RowPos;
+        if (pv.ColPos > maxCol) maxCol = pv.ColPos;
       }
       maxCol++;
       maxRow++;
@@ -66,23 +66,30 @@ namespace DATS
       //распределяем места по матрице
       foreach (PlaceView pv in places)
       {
-        if (placeMatrix[pv.Row][pv.Col] != null) continue; //если уже есть такое место, то пропускаем
-        placeMatrix[pv.Row][pv.Col] = pv;
+        if (placeMatrix[pv.RowPos][pv.ColPos] != null) continue; //если уже есть такое место, то пропускаем
+        placeMatrix[pv.RowPos][pv.ColPos] = pv;
       }
 
       //Нумеруем места
+      int currentRow = 1;
       int currentPlace = 0;
-      for (int i = 0; i < maxRow; i++)
+      bool existRow = false;
+
+      for (int i = maxRow - 1; i >= 0; i--) //ряды нумеруются снизу вверх
       {
         currentPlace = 1;
+        existRow = false;
         for (int j = 0; j < maxCol; j++)
         {
-          if(placeMatrix[i][j] != null)
+          if (placeMatrix[i][j] != null)
           {
-            placeMatrix[i][j].Num = currentPlace;
+            placeMatrix[i][j].Col = currentPlace;
+            placeMatrix[i][j].Row = currentRow;
             currentPlace++;
+            existRow = true;
           }
         }
+        if (existRow) currentRow++;
       }
 
       //удаление или обновление старых мест
@@ -95,8 +102,9 @@ namespace DATS
           PlaceView currPlaceView = places[0];
           places.RemoveAt(0);
           place.Row = currPlaceView.Row;
-          place.ColumnPos = currPlaceView.Col;
-          place.Column = currPlaceView.Num;
+          place.Column = currPlaceView.Col;
+          place.RowPos = currPlaceView.RowPos;
+          place.ColumnPos = currPlaceView.ColPos;
           Entry<Place>(place).State = EntityState.Modified;
         }
         else
@@ -112,16 +120,15 @@ namespace DATS
       {
         Place newPlace = new Place();
         newPlace.Row = placeView.Row;
-        newPlace.ColumnPos = placeView.Col;
-        newPlace.Column = placeView.Num;
+        newPlace.Column = placeView.Col;
+        newPlace.RowPos = placeView.RowPos;
+        newPlace.ColumnPos = placeView.ColPos;
         newPlace.SectorId = sector.Id;
         Places.Add(newPlace);
       }
 
       //сохранение изменений
       SaveChanges();
-
-      return true;
     }
 
     /// <summary>

@@ -29,7 +29,7 @@ namespace DATS
 
     //Places
     List<Place> GetPlacesBySector(Sector sector);
-    bool SavePlacesBySector(Sector sector, List<PlaceView> places);
+    void SavePlacesBySector(Sector sector, List<PlaceView> places);
 
     //SoldPlaces
     List<SoldPlace> GetSoldPlaces(Match match, Sector sector);

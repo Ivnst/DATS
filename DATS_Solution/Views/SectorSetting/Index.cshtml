@@ -25,6 +25,12 @@
         <th>
             @Html.DisplayNameFor(model => model.Name)
         </th>
+        <th>
+            Редактирование мест
+        </th>
+        <th>
+            
+        </th>
     </tr>
 
     @foreach (var item in Model)
@@ -34,8 +40,8 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.ActionLink("Редактировать места", "EditPlaces", new { id = item.Id }) |
-                @Html.ActionLink("Копировать", "Copy", new { id = item.Id })
+                <a href="/Sector/Configure?sid=@item.Id" class="btn btn-success">Редактировать места</a>
+                <a href="/Sector/Configure?sid=@item.Id" class="btn btn-info">Создать копию</a>
             </td>
             <td>
                 <button data-toggle="modal" data-target="#myModal" href="/SectorSetting/Edit/@item.Id" class="btn glyphicon glyphicon-pencil"></button>

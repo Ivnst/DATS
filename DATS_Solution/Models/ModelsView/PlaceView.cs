@@ -8,27 +8,50 @@ namespace DATS
   /// </summary>
   public class PlaceView
   {
-    public PlaceView(int row, int col, int label)
+    public PlaceView()
+    {
+    }
+
+    public PlaceView(Place place)
+    {
+      this.Row = place.Row;
+      this.Col = place.Column;
+      this.RowPos = place.RowPos;
+      this.ColPos = place.ColumnPos;
+    }
+    
+    public PlaceView(int row, int col, int rowPos, int colPos)
     {
       this.Row = row;
-      this.Num = label;
       this.Col = col;
+      this.RowPos = rowPos;
+      this.ColPos = colPos;
     }
 
     /// <summary>
-    /// Аналог Place.Row. Позиция места по вертикали
+    /// Код места
+    /// </summary>
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Ряд
     /// </summary>
     public int Row { get; set; }
 
     /// <summary>
-    /// Аналог Place.Location. Позиция места по горизонтали
+    /// Номер места
     /// </summary>
     public int Col { get; set; }
 
     /// <summary>
-    /// Аналог Place.Position. Порядковый номер места
+    /// Позиция ряда
     /// </summary>
-    public int Num { get; set; }
+    public int RowPos { get; set; }
+
+    /// <summary>
+    /// Позиция места
+    /// </summary>
+    public int ColPos { get; set; }
 
     /// <summary>
     /// Состояние (для редактирования сектора - не используется. Для продажи - см. перечисление PlaceState).

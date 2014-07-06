@@ -13,7 +13,6 @@ function Shape(row, col, state, selected) {
     this.col = col || 0;
     this.state = state || 0;
     this.selected = selected || 0;
-    this.label = 0;
 }
 
 function CanvasState(canvas, width, height) {
@@ -101,7 +100,7 @@ function CanvasState(canvas, width, height) {
         myState.selectionX = mouse.x + myState.offsetX;
         myState.selectionY = mouse.y + myState.offsetY;
         var itm = myState.getItem(myState.selectionX, myState.selectionY);
-        if (itm.row == myState.firstSelectedItem.row && itm.col == myState.firstSelectedItem.col && !myState.selection) return;
+        if (itm.rowPos == myState.firstSelectedItem.rowPos && itm.colPos == myState.firstSelectedItem.colPos && !myState.selection) return;
         myState.selection = true;
 
         //set selection
@@ -111,7 +110,7 @@ function CanvasState(canvas, width, height) {
                 for (var j = 0; j < myState.maxCols; j++) {
                     var shape = myState.shapes[i][j];
                     if (shape.state != -1)
-                        shape.selected = myState.checkIntersection(shape);
+                        shape.selected = myState.checkIntersection(j, i);
                     if (shape.selected) selectionCount += 1;
                 }
             }
@@ -131,9 +130,9 @@ function CanvasState(canvas, width, height) {
             var itm = myState.getItem(mouse.x, mouse.y);
 
             if (myState.shapes != null) {
-                if (itm.col >= 0 && itm.row >= 0 && itm.col < myState.maxCols && itm.row < myState.maxRows) {
+                if (itm.colPos >= 0 && itm.rowPos >= 0 && itm.colPos < myState.maxCols && itm.rowPos < myState.maxRows) {
                     //change selection
-                    var shape = myState.shapes[itm.row][itm.col];
+                    var shape = myState.shapes[itm.rowPos][itm.colPos];
                     if (shape != undefined)
                         shape.selected = !shape.selected;
                 }
@@ -203,8 +202,10 @@ CanvasState.prototype.refresh = function (data) {
     //заполняем матрицу данными
     for (var i = 0; i < data.length; i++) {
         var itm = data[i];
-        newShapes[itm.Row - minRow][itm.Col - minCol].state = itm.State;
-        newShapes[itm.Row - minRow][itm.Col - minCol].label = itm.Num;
+        var shape = newShapes[itm.Row - minRow][itm.Col - minCol];
+        shape.state = itm.State;
+        shape.row = itm.Row;
+        shape.col = itm.Col;
     }
 
     this.shapes = newShapes;
@@ -269,24 +270,6 @@ CanvasState.prototype.clearSelection = function () {
     this.valid = false;
 }
 
-//changes selected cell's state to specified value
-CanvasState.prototype.setSelectionTo = function (newState) {
-    var num = 1;
-    for (var i = 0; i < this.maxRows; i++) {
-        num = 1;
-        for (var j = 0; j < this.maxCols; j++) {
-            var shape = this.shapes[i][j];
-            if (shape.selected) {
-                shape.state = newState;
-            }
-            if (shape.state) {
-                shape.label = num;
-                num = num + 1;
-            }
-        }
-    }
-    this.valid = false;
-}
 
 //calculates total cells count
 CanvasState.prototype.showInfo = function () {
@@ -354,9 +337,9 @@ CanvasState.prototype.draw = function () {
             this.ctx.font = "12pt Arial";
             this.ctx.lineWidth = 2;
             this.ctx.strokeStyle = 'black';
-            this.ctx.strokeText(i + 1, this.itemWidth / 2, y + this.itemHeight / 2);
+            this.ctx.strokeText(this.maxRows - i, this.itemWidth / 2, y + this.itemHeight / 2);
             ctx.fillStyle = 'white';
-            this.ctx.fillText(i + 1, this.itemWidth / 2, y + this.itemHeight / 2);
+            this.ctx.fillText(this.maxRows - i, this.itemWidth / 2, y + this.itemHeight / 2);
         }
 
 
@@ -413,15 +396,15 @@ CanvasState.prototype.drawShape = function (row, col, shape) {
     if (shape.state != -1) {
         this.ctx.fillStyle = '#FFFFFF';
         this.ctx.font = "10pt Courier New";
-        this.ctx.fillText(shape.label, x + this.itemWidth / 2, y + this.itemHeight / 2);
+        this.ctx.fillText(shape.col, x + this.itemWidth / 2, y + this.itemHeight / 2);
     }
 }
 
 //check item intersection with selection rectangle
-CanvasState.prototype.checkIntersection = function (shape) {
+CanvasState.prototype.checkIntersection = function (x, y) {
 
-    var shapeX = shape.col * this.itemWidth;
-    var shapeY = shape.row * this.itemHeight;
+    var shapeX = x * this.itemWidth;
+    var shapeY = y * this.itemHeight;
     var selX = this.initialX < this.selectionX ? this.initialX : this.selectionX;
     var selY = this.initialY < this.selectionY ? this.initialY : this.selectionY;
 
@@ -472,7 +455,7 @@ CanvasState.prototype.getItem = function (mx, my) {
 
     var r = parseInt(my / this.itemHeight) * signY;
     var c = parseInt(mx / this.itemWidth) * signX;
-    return { col: c, row: r };
+    return { colPos: c, rowPos: r };
 }
 
 //Sends data to server
@@ -487,7 +470,8 @@ CanvasState.prototype.sendData = function (newState) {
                 var itm = new Object();
                 itm.Row = shape.row;
                 itm.Col = shape.col;
-                itm.Num = shape.label;
+                itm.RowPos = i;
+                itm.ColPos = j;
                 itm.State = newState;
 
                 sectors.push(itm);

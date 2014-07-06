@@ -91,7 +91,7 @@ namespace DATS
       {
         bool exists = false;
         foreach (Place place in sectorPlaces)
-          if (place.Column == pv.Num && place.Row == pv.Row)
+          if (place.Column == pv.Col && place.Row == pv.Row)
           {
             exists = true;
             placesDict.Add(pv, place);
@@ -112,7 +112,7 @@ namespace DATS
           Place place = Places.FirstOrDefault<Place>(p => p.Id == soldplace.PlaceId);
           if (place == null) return false;
 
-          if (place.Column == pv.Num && place.Row == pv.Row)
+          if (place.Column == pv.Col && place.Row == pv.Row)
             return false;
         }
 
@@ -120,11 +120,12 @@ namespace DATS
       foreach (PlaceView pv in places)
       {
         SoldPlace sp = new SoldPlace();
-        sp.ClientId = 1; //Исправить!
+        sp.ClientId = null;
         sp.Date = DateTime.UtcNow;
         sp.IsReservation = false;
         sp.MatchId = match.Id;
         sp.PlaceId = placesDict[pv].Id;
+        sp.SectorId = sector.Id;
         sp.Summ = 0;
         SoldPlaces.Add(sp);
       }
@@ -159,7 +160,7 @@ namespace DATS
           Place place = Places.FirstOrDefault<Place>(p => p.Id == soldplace.PlaceId);
           if (place == null) return false;
              
-          if (place.Column == pv.Num && place.Row == pv.Row)
+          if (place.Column == pv.Col && place.Row == pv.Row)
           {
             exists = true;
             toRemove.Add(soldplace);

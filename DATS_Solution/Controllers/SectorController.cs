@@ -189,10 +189,10 @@ namespace DATS.Controllers
           List<Place> places = Repository.GetPlacesBySector(sector);
 
           //Переводим список объектов класса Place в список объектов класса PlaceView
-          List<PlaceView> result = new List<PlaceView>();
+          List<PlaceView> result = new List<PlaceView>(places.Count);
           foreach (Place place in places)
           {
-            result.Add(new PlaceView(place.Row, place.ColumnPos, place.Column));
+            result.Add(new PlaceView(place));
           }
 
           return Json(result, JsonRequestBehavior.AllowGet);
@@ -208,35 +208,41 @@ namespace DATS.Controllers
         [HttpPost]
         public ActionResult StoreSectorInfo(int sid, string data)
         {
+          //проверка кода сектора
+          Sector sector = Repository.FindSector(sid);
+          if (sector == null)
+          {
+            logger.Warn("/Sector/SectorInfo : Не найден указанный сектор. sid = " + sid.ToString());
+            return Content("Текущий редактируемый сектор не существует!");
+          }
+
+
+          //десериализация полученных данных
+          List<PlaceView> places = new List<PlaceView>();
           try
           {
-            //проверка кода сектора
-            Sector sector = Repository.FindSector(sid);
-            if (sector == null)
-            {
-              logger.Warn("/Sector/SectorInfo : Не найден указанный сектор. sid = " + sid.ToString());
-              return Content("Текущий редактируемый сектор не существует!");
-            }
-            
-            //десериализация полученных данных
-            List<PlaceView> places = JsonConvert.DeserializeObject<List<PlaceView>>(data);
-
-            //сохранение расположения мест
-            bool res = Repository.SavePlacesBySector(sector, places);
-            if (!res)
-            {
-              logger.Error(data, "Данные не были сохранены! Обратитесь к администратору!");
-              return Content("Данные не были сохранены! Обратитесь к администратору!"); 
-            }
-
-            logger.Debug(string.Format("Обновление расположение мест в секторе '{0}' ({1})", sector.Name, sector.Id));
+            places = JsonConvert.DeserializeObject<List<PlaceView>>(data);
           }
           catch (System.Exception ex)
           {
             logger.Error(data, ex);
-            return Content("Возникла ошибка при сохранении данных!");
+            return Content("Получены некорректные данные! Ошибка десериализации!");
           }
 
+
+          //сохранение расположения мест
+          try
+          {
+            Repository.SavePlacesBySector(sector, places);
+          }
+          catch (System.Exception ex)
+          {
+            logger.Error(data, ex);
+            return Content("Возникла ошибка при сохранении данных!\n" + ex.Message);
+          }
+
+          //успешное завершение
+          logger.Debug(string.Format("Обновление расположение мест в секторе '{0}' ({1})", sector.Name, sector.Id));
           return Content("Данные успешно сохранены");
         }
         #endregion
@@ -268,8 +274,8 @@ namespace DATS.Controllers
           {
             if (place.Row < minRow) minRow = place.Row;
             if (place.Row > maxRow) maxRow = place.Row;
-            if (place.ColumnPos < minCol) minCol = place.ColumnPos;
-            if (place.ColumnPos > maxCol) maxCol = place.ColumnPos;
+            if (place.Column < minCol) minCol = place.Column;
+            if (place.Column > maxCol) maxCol = place.Column;
             placesDict.Add(place.Id, place);
           }
 
@@ -285,9 +291,9 @@ namespace DATS.Controllers
           //Заполняем матрицу мест
           foreach (Place place in places)
           {
-            PlaceView pv = new PlaceView(place.Row, place.ColumnPos, place.Column);
+            PlaceView pv = new PlaceView(place);
             pv.State = (int)PlaceState.Free;
-            placeMatrix[place.Row - minRow][place.ColumnPos - minCol] = pv;
+            placeMatrix[place.Row - minRow][place.Column - minCol] = pv;
           }
 
           //Достаём информацию о проданных или забронированных местах
@@ -301,7 +307,7 @@ namespace DATS.Controllers
             }
 
             Place place = placesDict[soldPlace.PlaceId];
-            PlaceView pv = placeMatrix[place.Row - minRow][place.ColumnPos - minCol];
+            PlaceView pv = placeMatrix[place.Row - minRow][place.Column - minCol];
             pv.State = soldPlace.IsReservation ? (int)PlaceState.Reserved : (int)PlaceState.Sold;
           }
 
