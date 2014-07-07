@@ -96,15 +96,7 @@ CanvasState.prototype.draw = function () {
 
         //rows numbers
         for (var i = 0; i < this.maxRows; i++) {
-
-            var y = i * this.itemHeight - this.offsetY;
-
-            this.ctx.font = "12pt Arial";
-            this.ctx.lineWidth = 2;
-            this.ctx.strokeStyle = 'black';
-            this.ctx.strokeText(this.maxRows - i, this.itemWidth / 2, y + this.itemHeight / 2);
-            ctx.fillStyle = 'white';
-            this.ctx.fillText(this.maxRows - i, this.itemWidth / 2, y + this.itemHeight / 2);
+            this.drawRowNumber(i, this.maxRows - i, false);
         }
 
 
@@ -157,9 +149,29 @@ CanvasState.prototype.drawShape = function (row, col, shape) {
     //label (place number)
     if ((shape.state && form == 1) || (shape.state != -1 && form == 2)) {
         this.ctx.fillStyle = '#FFFFFF';
-        this.ctx.font = "10pt Courier New";
+        var fontSize = parseInt(this.itemWidth / 5 + 9);
+        this.ctx.font = fontSize + "pt Sans Serif";
         this.ctx.fillText(shape.col, x + this.itemWidth / 2, y + this.itemHeight / 2);
     }
+}
+
+
+// Draws row number on left side of the canvas
+CanvasState.prototype.drawRowNumber = function (row, val, highlight) {
+    var y = row * this.itemHeight - this.offsetY;
+    var fontSize = parseInt(this.itemWidth / 5 + 11);
+    this.ctx.font = fontSize + "pt Arial";
+    this.ctx.lineWidth = 2;
+    this.ctx.strokeStyle = 'black';
+    this.ctx.strokeText(val, this.itemWidth / 2, y + this.itemHeight / 2);
+
+    if (highlight) {
+        this.ctx.fillStyle = 'red';
+    } else {
+        this.ctx.fillStyle = 'white';
+    }
+
+    this.ctx.fillText(val, this.itemWidth / 2, y + this.itemHeight / 2);
 }
 
 

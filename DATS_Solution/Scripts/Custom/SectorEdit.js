@@ -118,12 +118,14 @@ function CanvasState(canvas, width, height) {
                 if (itm.colPos >= 0 && itm.rowPos >= 0 && itm.colPos < myState.maxCols && itm.rowPos < myState.maxRows) {
                     //change selection
                     var shape = myState.shapes[itm.rowPos][itm.colPos];
-                    if (shape != undefined)
+                    if (shape != null && shape.state != -1)
                         shape.selected = !shape.selected;
+                    else
+                        myState.clearSelection();
                 }
                 else {
                     myState.clearSelection();
-                } 
+                }
             }
         }
         myState.selection = false;
