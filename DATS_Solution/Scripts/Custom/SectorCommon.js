@@ -89,16 +89,14 @@ CanvasState.prototype.draw = function () {
 
         // draw all shapes
         for (var i = 0; i < this.maxRows; i++) {
+            var hasSelected = false;
             for (var j = 0; j < this.maxCols; j++) {
                 this.drawShape(i, j, shapes[i][j]);
+                if (shapes[i][j].selected) hasSelected = true;
             }
+            //rows numbers
+            this.drawRowNumber(i, this.maxRows - i, hasSelected);
         }
-
-        //rows numbers
-        for (var i = 0; i < this.maxRows; i++) {
-            this.drawRowNumber(i, this.maxRows - i, false);
-        }
-
 
         // draw selection
         if (this.selection) {
@@ -159,14 +157,14 @@ CanvasState.prototype.drawShape = function (row, col, shape) {
 // Draws row number on left side of the canvas
 CanvasState.prototype.drawRowNumber = function (row, val, highlight) {
     var y = row * this.itemHeight - this.offsetY;
-    var fontSize = parseInt(this.itemWidth / 5 + 11);
-    this.ctx.font = fontSize + "pt Arial";
+    var fontSize = parseInt(this.itemWidth / 5 + 11).toString();
+    this.ctx.font = (highlight ? "bold " : " ") + fontSize + "pt Arial";
     this.ctx.lineWidth = 2;
     this.ctx.strokeStyle = 'black';
     this.ctx.strokeText(val, this.itemWidth / 2, y + this.itemHeight / 2);
 
     if (highlight) {
-        this.ctx.fillStyle = 'red';
+        this.ctx.fillStyle = 'DarkOrange';
     } else {
         this.ctx.fillStyle = 'white';
     }
