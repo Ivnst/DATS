@@ -158,15 +158,16 @@ CanvasState.prototype.reloadData = function () {
 //Add new shape on canvas with specified position and state
 CanvasState.prototype.refresh = function (data) {
 
-    var minRow = 100, maxRow = 0, minCol = 100, maxCol = 0;
+    var maxRow = 0, maxCol = 0;
+    var minRow = 100, minCol = 100;
 
     //узнаём размерность сектора
     for (var i = 0; i < data.length; i++) {
         var itm = data[i];
-        if (itm.Row < minRow) minRow = itm.Row;
-        if (itm.Row > maxRow) maxRow = itm.Row;
-        if (itm.Col < minCol) minCol = itm.Col;
-        if (itm.Col > maxCol) maxCol = itm.Col;
+        if (itm.RowPos > maxRow) maxRow = itm.RowPos;
+        if (itm.ColPos > maxCol) maxCol = itm.ColPos;
+        if (itm.RowPos < minRow) minRow = itm.RowPos;
+        if (itm.ColPos < minCol) minCol = itm.ColPos;
     }
 
     //определяем ширину и высоту сектора
@@ -187,7 +188,7 @@ CanvasState.prototype.refresh = function (data) {
     //заполняем матрицу данными
     for (var i = 0; i < data.length; i++) {
         var itm = data[i];
-        var shape = newShapes[itm.Row - minRow][itm.Col - minCol];
+        var shape = newShapes[itm.RowPos - minRow][itm.ColPos - minCol];
         shape.state = itm.State;
         shape.row = itm.Row;
         shape.col = itm.Col;
