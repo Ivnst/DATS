@@ -16,23 +16,20 @@
         }
 
     </ul>
-    <button data-toggle="modal" data-target="#myModal" href="/SectorSetting/Create/@ViewBag.ChooseStadiumId" class="btn btn-primary" style="margin: 0 0 0 10px">Добавить сектор</button>
+    <button data-toggle="modal" data-target="#myModal" href="/SectorSetting/Create/@ViewBag.ChooseStadiumId" class="btn btn-success" style="margin: 0 0 0 10px">Добавить сектор</button>
 </div>
 
 
 <table class="table table-striped table-bordered table-hover">
-    <tr>
+    <thead>
         <th>
             @Html.DisplayNameFor(model => model.Name)
         </th>
         <th>
-            Редактирование мест
+            Возможные действия
         </th>
-        <th>
-            
-        </th>
-    </tr>
-
+    </thead>
+    <tbody>
     @foreach (var item in Model)
     {
         <tr>
@@ -40,16 +37,14 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                <a href="/Sector/Configure?sid=@item.Id" class="btn btn-success">Редактировать места</a>
-                <a href="/Sector/Configure?sid=@item.Id" class="btn btn-info">Создать копию</a>
-            </td>
-            <td>
-                <button data-toggle="modal" data-target="#myModal" href="/SectorSetting/Edit/@item.Id" class="btn glyphicon glyphicon-pencil"></button>
-                <button data-toggle="modal" data-target="#myModal" href="/SectorSetting/Delete/@item.Id" class="btn glyphicon glyphicon-trash"></button>
+                <a href="/Sector/Configure?sid=@item.Id" class="btn btn-sm btn-primary">Редактировать места</a>
+                <a href="/Sector/Configure?sid=@item.Id" class="btn btn-sm btn-primary">Создать копию</a>
+                <button data-toggle="modal" data-target="#myModal" href="/SectorSetting/Edit/@item.Id" class="btn btn-primary glyphicon glyphicon-pencil"></button>
+                <button data-toggle="modal" data-target="#myModal" href="/SectorSetting/Delete/@item.Id" class="btn btn-primary glyphicon glyphicon-trash"></button>
             </td>
         </tr>
     }
-
+    </tbody>
 </table>
 
 <!-- Modal-->
