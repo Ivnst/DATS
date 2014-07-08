@@ -38,5 +38,6 @@ namespace DATS
 
     //Sectors
     Sector FindSector(int sid);
+    Sector CopySector(Sector sector);
   }
 }

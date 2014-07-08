@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using System.Data.Entity;
 using System.Collections.Generic;
+using System;
+using System.Transactions;
 
 namespace DATS
 {
@@ -44,5 +46,37 @@ namespace DATS
     {
       return Sectors.FirstOrDefault<Sector>(s => s.Id == sid);
     }
+
+    /// <summary>
+    /// Создание копии указанного сектора
+    /// </summary>
+    /// <param name="sector"></param>
+    public Sector CopySector(Sector sector)
+    {
+      if (sector == null) throw new ArgumentNullException("sector");
+
+      using (TransactionScope scope = new TransactionScope())
+      {
+        Sector newSector = new Sector();
+        newSector.Name = "Копия " + sector.Name;
+        newSector.StadiumId = sector.StadiumId;
+
+        Sectors.Add(newSector);
+        SaveChanges();
+
+        List<Place> places = this.GetPlacesBySector(sector);
+
+        foreach (Place place in places)
+        {
+          place.SectorId = newSector.Id;
+          this.Entry<Place>(place).State = EntityState.Added;
+        }
+        SaveChanges();
+
+        scope.Complete();
+        return newSector;
+      }
+    }
+
   }
 }

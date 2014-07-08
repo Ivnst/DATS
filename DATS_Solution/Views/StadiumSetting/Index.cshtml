@@ -6,7 +6,7 @@
 }
 
 <p style="margin: 10px 0 10px">
-    <button data-toggle="modal" data-target="#myModal" href="/StadiumSetting/Create"  class="btn btn-success">Добавить стадион</button>
+    <button data-toggle="modal" data-target="#myModal" href="/StadiumSetting/Create"  class="btn btn-success" title="Создание нового стадиона">Добавить стадион</button>
 </p>
 <table class="table table-striped table-bordered table-hover">
     <thead>
@@ -32,8 +32,10 @@
                     @Html.DisplayFor(p => item.Address)
                 </td>
                 <td>
-                    <button data-toggle="modal" data-target="#myModal" href="/StadiumSetting/Edit/@item.Id"   class="btn btn-primary glyphicon glyphicon-pencil"></button>
-                    <button data-toggle="modal" data-target="#myModal" href="/StadiumSetting/Delete/@item.Id" class="btn btn-primary glyphicon glyphicon-trash"></button>
+                    <button data-toggle="modal" data-target="#myModal" href="/StadiumSetting/Edit/@item.Id"   
+                        class="btn btn-primary glyphicon glyphicon-pencil" title="Редактирование стадиона"></button>
+                    <button data-toggle="modal" data-target="#myModal" href="/StadiumSetting/Delete/@item.Id" 
+                        class="btn btn-primary glyphicon glyphicon-trash" title="Удаление стадиона"></button>
                 </td>
             </tr>
         }

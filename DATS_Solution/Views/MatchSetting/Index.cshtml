@@ -17,7 +17,8 @@
         }
 
     </ul>
-    <button data-toggle="modal" data-target="#myModal" href="/MatchSetting/Create/@((int)@ViewBag.Stadium.Id)" class="btn btn-success" style="margin: 0 0 0 10px">Добавить мероприятие</button>
+    <button data-toggle="modal" data-target="#myModal" href="/MatchSetting/Create/@((int)@ViewBag.Stadium.Id)" 
+        class="btn btn-success" style="margin: 0 0 0 10px" title="Создание нового мероприятия">Добавить мероприятие</button>
 </div>
 
 <table class="table table-striped table-bordered table-hover">
@@ -47,8 +48,10 @@
                 @Html.DisplayFor(modelItem => item.Duration)
             </td>
             <td>
-                <button data-toggle="modal" data-target="#myModal" href="/MatchSetting/Edit/@item.Id" class="btn btn-primary glyphicon glyphicon-pencil"></button>
-                <button data-toggle="modal" data-target="#myModal" href="/MatchSetting/Delete/@item.Id" class="btn btn-primary glyphicon glyphicon-trash"></button>
+                <button data-toggle="modal" data-target="#myModal" href="/MatchSetting/Edit/@item.Id" 
+                    class="btn btn-primary glyphicon glyphicon-pencil" title="Редактирование мероприятия"></button>
+                <button data-toggle="modal" data-target="#myModal" href="/MatchSetting/Delete/@item.Id" 
+                    class="btn btn-primary glyphicon glyphicon-trash" title="Удаление мероприятия"></button>
             </td>
         </tr>
     }

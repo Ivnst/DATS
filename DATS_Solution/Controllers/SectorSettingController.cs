@@ -125,5 +125,26 @@ namespace DATS.Controllers
         }
 
 
+        [HttpPost]
+        public ActionResult Copy(int id)
+        {
+          Sector sector =  Repository.FindSector(id);
+          if(sector == null)
+          {
+             return RedirectToAction("Sectors", "Settings");
+          }
+
+          try
+          {
+            Sector newSector = Repository.CopySector(sector);
+            TempData["message"] = string.Format(@"Сектор ""{0}"" успешно скопирован в новый сектор ""{1}"".", sector.Name, newSector.Name);
+          }
+          catch (System.Exception ex)
+          {
+            TempData["message"] = "При копировании сектора произошла ошибка! " + ex.Message;
+          }
+
+          return RedirectToAction("Sectors", "Settings", new { sid = sector.StadiumId });
+        }
     }
 }
