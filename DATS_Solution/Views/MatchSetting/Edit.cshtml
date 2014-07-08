@@ -1,5 +1,4 @@
 ﻿@model DATS.Match
-@using DATS;
 
 @{
     ViewBag.Title = "Справочник мероприятий: Редактирование";
@@ -22,7 +21,7 @@
  <div class="modal-body">
      <fieldset>
          <h2 style="color: green;">
-             @((string)@ViewBag.Stadium.Name)
+             @ViewBag.Stadium.Name
          </h2>
 
          <div class="editor-label">
