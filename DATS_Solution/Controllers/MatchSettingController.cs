@@ -18,26 +18,22 @@ namespace DATS.Controllers
        
           if(sid == null)
             {
-            // если sid нет выбераем первый встретившийся стадион
-            var FindFirst = Repository.Stadiums.FirstOrDefault<Stadium>(z => z.Id == z.Id);
+            // если sid нет, выбераем первый встретившийся стадион
+                var FindFirstStadium = Repository.Stadiums.FirstOrDefault<Stadium>(z => z.Id == z.Id);
 
-            if (FindFirst == null)
+                if (FindFirstStadium == null)
             {
-            // если, справочник стадиона не заполнен, то показываем не фильтруя (мероприятия ещё не создавались)
-                ViewBag.ChooseStadium = "Сначала необходимо добавить хотя бы один стадион.";
-                return PartialView(Repository.Matches);
+                throw new ArgumentNullException("Ошибка! Отсутсвуют стадионы в справочнике стадионов.");
             }
             else
             {
-                ViewBag.ChooseStadiumId = FindFirst.Id;
-                ViewBag.ChooseStadium = FindFirst.Name;
-                return PartialView(Repository.Matches.Where(p => p.StadiumId == FindFirst.Id));
+                ViewBag.Stadium = FindFirstStadium;
+                return PartialView(Repository.Matches.Where(p => p.StadiumId == FindFirstStadium.Id));
             }
         } else
             {
-            ViewBag.ChooseStadiumId = sid;
-            ViewBag.ChooseStadium = Repository.Stadiums.Where(s => s.Id == sid).Distinct().Select(k => k.Name).Max();
-            return PartialView(Repository.Matches.Where(p => p.StadiumId == sid));
+            ViewBag.Stadium = Repository.FindStadium((int)sid);
+            return PartialView(Repository.Matches.Where(p => p.StadiumId == (int)sid));
             }
 
         }
@@ -46,12 +42,10 @@ namespace DATS.Controllers
 
         public ActionResult Edit(int id)
         {
-            
-            Match match = Repository.Matches
-              .FirstOrDefault(p => p.Id == id);
 
-            ViewBag.StadiumId = match.StadiumId;
-            ViewBag.StadiumName = Repository.Stadiums.Where(p => p.Id == match.StadiumId).Select(p => p.Name).Max();
+            Match match = Repository.FindMatch(id);
+
+            ViewBag.Stadium = Repository.FindStadium(match.StadiumId);
 
             return PartialView(match);
         }
@@ -70,8 +64,7 @@ namespace DATS.Controllers
             else
             {
 
-                ViewBag.StadiumId = match.StadiumId;
-                ViewBag.StadiumName = Repository.Stadiums.Where(p => p.Id == match.StadiumId).Select(p => p.Name).Max();
+                ViewBag.Stadium = Repository.FindStadium(match.StadiumId);
 
                 return View(match);
 
@@ -82,11 +75,12 @@ namespace DATS.Controllers
         [HttpGet]
         public ActionResult Create(int id)
         {
+            ViewBag.Stadium = Repository.FindStadium(id);
 
-            ViewBag.StadiumId = id;
-            ViewBag.StadiumName = Repository.Stadiums.Where(p => p.Id == id).Select(p => p.Name).Max();
+            Match match = new Match();
+            match.StadiumId = id;
 
-            return PartialView(new Match());
+            return PartialView(match);
         }
 
         [HttpPost]
@@ -102,23 +96,16 @@ namespace DATS.Controllers
             }
             else
             {
-
-                ViewBag.StadiumId = match.StadiumId;
-                ViewBag.StadiumName = Repository.Stadiums.Where(p => p.Id == match.StadiumId).Select(p => p.Name).Max();
+                ViewBag.Stadium = Repository.FindStadium(match.StadiumId);
 
                 return View(match);
-
             }
         }
 
 
         public ActionResult Delete(int id)
         {
-            Match match = Repository.Matches
-              .FirstOrDefault(p => p.Id == id);
-
-            ViewBag.StadiumId = match.StadiumId;
-            ViewBag.StadiumName = Repository.Stadiums.Where(p => p.Id == match.StadiumId).Select(p => p.Name).Max();
+            Match match = Repository.FindMatch(id);
 
             return PartialView(match);
         }

@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<DATS.Match>
+@using DATS;
 
 @{
     ViewBag.Title = "Справочник мероприятий: Список";
@@ -7,7 +8,7 @@
 
 <div class="btn-group" style="margin: 10px 0 10px">
     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-        @ViewBag.ChooseStadium <span class="caret"></span>
+        @((string)@ViewBag.Stadium.Name) <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" role="menu">
         @foreach (var sv in ViewBag.Stadiumes)
@@ -16,7 +17,7 @@
         }
 
     </ul>
-    <button data-toggle="modal" data-target="#myModal" href="/MatchSetting/Create/@ViewBag.ChooseStadiumId" class="btn btn-success" style="margin: 0 0 0 10px">Добавить мероприятие</button>
+    <button data-toggle="modal" data-target="#myModal" href="/MatchSetting/Create/@((int)@ViewBag.Stadium.Id)" class="btn btn-success" style="margin: 0 0 0 10px">Добавить мероприятие</button>
 </div>
 
 <table class="table table-striped table-bordered table-hover">

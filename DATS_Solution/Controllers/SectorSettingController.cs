@@ -17,27 +17,23 @@ namespace DATS.Controllers
 
             if (sid == null)
             {
-                // если sid нет выбераем первый встретившийся стадион
-                var FindFirst = Repository.Stadiums.FirstOrDefault<Stadium>(z => z.Id == z.Id);
+                // если sid нет, выбераем первый встретившийся стадион
+                var FindFirstStadium = Repository.Stadiums.FirstOrDefault<Stadium>(z => z.Id == z.Id);
 
-                if (FindFirst == null)
+                if (FindFirstStadium == null)
                 {
-                    // если, справочник стадиона не заполнен, то показываем не фильтруя (сектора ещё не создавались)
-                    ViewBag.ChooseStadium = "Сначала необходимо добавить хотябы один стадион.";
-                    return PartialView(Repository.Sectors);
+                    throw new ArgumentNullException("Ошибка! Отсутсвуют стадионы в справочнике стадионов.");
                 }
                 else
                 {
-                    ViewBag.ChooseStadiumId = FindFirst.Id;
-                    ViewBag.ChooseStadium = FindFirst.Name;
-                    return PartialView(Repository.Sectors.Where(p => p.StadiumId == FindFirst.Id));
+                    ViewBag.Stadium = FindFirstStadium;
+                    return PartialView(Repository.Sectors.Where(p => p.StadiumId == FindFirstStadium.Id));
                 }
             }
             else
             {
-                ViewBag.ChooseStadiumId = sid;
-                ViewBag.ChooseStadium = Repository.Stadiums.Where(s => s.Id == sid).Distinct().Select(k => k.Name).Max();
-                return PartialView(Repository.Sectors.Where(p => p.StadiumId == sid));
+                ViewBag.Stadium = Repository.FindStadium((int)sid);
+                return PartialView(Repository.Sectors.Where(p => p.StadiumId == (int)sid));
             }
 
         }
@@ -46,10 +42,9 @@ namespace DATS.Controllers
         public ActionResult Edit(int id)
         {
 
-            Sector sector = Repository.Sectors.FirstOrDefault(p => p.Id == id);
+            Sector sector = Repository.FindSector(id);
 
-            ViewBag.StadiumId = sector.StadiumId;
-            ViewBag.StadiumName = Repository.Stadiums.Where(p => p.Id == sector.StadiumId).Select(p => p.Name).Max();
+            ViewBag.Stadium = Repository.FindStadium(sector.StadiumId);
 
             return PartialView(sector);
         }
@@ -68,8 +63,7 @@ namespace DATS.Controllers
             else
             {
 
-                ViewBag.StadiumId = sector.StadiumId;
-                ViewBag.StadiumName = Repository.Stadiums.Where(p => p.Id == sector.StadiumId).Select(p => p.Name).Max();
+                ViewBag.Stadium = Repository.FindStadium(sector.StadiumId);
 
                 return View(sector);
 
@@ -81,10 +75,12 @@ namespace DATS.Controllers
         public ActionResult Create(int id)
         {
 
-            ViewBag.StadiumId = id;
-            ViewBag.StadiumName = Repository.Stadiums.Where(p => p.Id == id).Select(p => p.Name).Max();
+            ViewBag.Stadium = Repository.FindStadium(id);
 
-            return PartialView(new Sector());
+            Sector sector = new Sector();
+            sector.StadiumId = id;
+
+            return PartialView(sector);
         }
 
         [HttpPost]
@@ -101,8 +97,7 @@ namespace DATS.Controllers
             else
             {
 
-                ViewBag.StadiumId = sector.StadiumId;
-                ViewBag.StadiumName = Repository.Stadiums.Where(p => p.Id == sector.StadiumId).Select(p => p.Name).Max();
+                ViewBag.Stadium = Repository.FindStadium(sector.StadiumId);
 
                 return View(sector);
 
@@ -112,11 +107,7 @@ namespace DATS.Controllers
 
         public ActionResult Delete(int id)
         {
-            Sector sector = Repository.Sectors
-              .FirstOrDefault(p => p.Id == id);
-
-            ViewBag.StadiumId = sector.StadiumId;
-            ViewBag.StadiumName = Repository.Stadiums.Where(p => p.Id == sector.StadiumId).Select(p => p.Name).Max();
+            Sector sector = Repository.FindSector(id);
 
             return PartialView(sector);
         }

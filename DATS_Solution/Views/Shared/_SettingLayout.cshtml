@@ -16,7 +16,14 @@
     <div>
         @if (TempData["message"] != null)
         {
-            <div class="Message">@TempData["message"]</div>
+            
+        /*  <div class="Message">@TempData["message"]</div> */
+        
+  <div class="alert alert-warning alert-dismissible" role="alert" style="margin: 10px 0 0 0;" >
+  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+  <strong>Внимание!</strong> @TempData["message"]
+  </div>
+            
         }
         @RenderBody()
     </div>
