@@ -250,7 +250,11 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\ball.png" />
+    <Content Include="Images\coins.png" />
     <Content Include="Images\favicon.ico" />
+    <Content Include="Images\sector.png" />
+    <Content Include="Images\stadium.png" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\Custom\SectorCommon.js" />
     <Content Include="Scripts\Custom\SectorEdit.js" />
@@ -361,7 +365,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>64306</DevelopmentServerPort>
+          <DevelopmentServerPort>27414</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
