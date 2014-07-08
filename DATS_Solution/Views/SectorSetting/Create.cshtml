@@ -1,17 +1,11 @@
 ﻿@model DATS.Sector
+@using DATS;
 
 @{
     ViewBag.Title = "Справочник секторов: Создание";
     Layout = "~/Views/Shared/_SettingLayout.cshtml";
     Culture = "ru-RU";
 }
-
-<script>
-    function doThis(myForm) {
-        document.getElementById('StadiumId').value = @ViewBag.StadiumId
-        myForm.submit();
-    }
-</script>
 
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
@@ -29,7 +23,7 @@
     <div class="modal-body">
         <fieldset>
             <h2 style="color: green;">
-                @ViewBag.StadiumName
+                @((string)@ViewBag.Stadium.Name)
             </h2>
 
             <div class="editor-label">
@@ -48,7 +42,7 @@
         <button type="button" class="btn btn-default" data-dismiss="modal">
             Закрыть
         </button>
-        <input type="submit" class="btn btn-primary" value="Сохранить" onclick="doThis(this.form)" />
+        <input type="submit" class="btn btn-primary" value="Сохранить" />
     </div>
 
 }
