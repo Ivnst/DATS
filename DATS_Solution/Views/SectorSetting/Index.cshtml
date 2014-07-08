@@ -5,6 +5,16 @@
     Layout = "~/Views/Shared/_SettingLayout.cshtml";
 }
 
+<script type="text/javascript">
+
+    function copyBtn(id) {
+        $.post("/SectorSetting/Copy", { id: id },
+        function (data) {
+            location.reload();
+        })
+    }
+</script>
+
 <div class="btn-group" style="margin: 10px 0 10px">
     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
         @ViewBag.ChooseStadium <span class="caret"></span>
@@ -16,7 +26,9 @@
         }
 
     </ul>
-    <button data-toggle="modal" data-target="#myModal" href="/SectorSetting/Create/@ViewBag.ChooseStadiumId" class="btn btn-success" style="margin: 0 0 0 10px">Добавить сектор</button>
+    <button data-toggle="modal" data-target="#myModal" href="/SectorSetting/Create/@ViewBag.ChooseStadiumId" 
+        class="btn btn-success" style="margin: 0 0 0 10px" 
+        title="Создание нового сектора в выбранном стадионе">Добавить сектор</button>
 </div>
 
 
@@ -37,10 +49,19 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                <a href="/Sector/Configure?sid=@item.Id" class="btn btn-sm btn-primary">Редактировать места</a>
-                <a href="/Sector/Configure?sid=@item.Id" class="btn btn-sm btn-primary">Создать копию</a>
-                <button data-toggle="modal" data-target="#myModal" href="/SectorSetting/Edit/@item.Id" class="btn btn-primary glyphicon glyphicon-pencil"></button>
-                <button data-toggle="modal" data-target="#myModal" href="/SectorSetting/Delete/@item.Id" class="btn btn-primary glyphicon glyphicon-trash"></button>
+                <div class="form-group">
+                <a href="/Sector/Configure?sid=@item.Id" class="btn btn-sm btn-primary" title="Редактирование мест в секторе">
+                    <span class="glyphicon glyphicon-th"></span> Места
+                </a>
+                <button data-toggle="modal" data-target="#myModal" onClick="copyBtn(@item.Id);"
+                    class="btn btn-primary glyphicon glyphicon-plus" title="Создание копии сектора">
+                    </button>
+                     
+                <button data-toggle="modal" data-target="#myModal" href="/SectorSetting/Edit/@item.Id" 
+                    class="btn btn-primary glyphicon glyphicon-pencil" title="Редактирование сектора"></button>
+                <button data-toggle="modal" data-target="#myModal" href="/SectorSetting/Delete/@item.Id" 
+                    class="btn btn-primary glyphicon glyphicon-trash" title="Удаление сектора"></button>
+                </div>
             </td>
         </tr>
     }
