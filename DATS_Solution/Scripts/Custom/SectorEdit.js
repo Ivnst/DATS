@@ -245,8 +245,13 @@ CanvasState.prototype.getShapeColor = function (shape) {
 CanvasState.prototype.sendData = function (newState) {
 
     var sectors = [];
+    var ticketsString = "";
+    var tempString = "";
+    var totalCount = 0;
+    var totalPrice = 0;
 
     for (var i = 0; i < this.maxRows; i++) {
+        tempString = "";
         for (var j = 0; j < this.maxCols; j++) {
             var shape = this.shapes[i][j];
             if (shape.selected) {
@@ -258,20 +263,65 @@ CanvasState.prototype.sendData = function (newState) {
                 itm.State = newState;
 
                 sectors.push(itm);
+
+                //составляем список мест в строке
+                if (tempString == "")
+                    tempString = "Ряд " + itm.Row + ": ";
+                else tempString += ", ";
+                tempString += itm.Col;
+                totalCount += 1;
+                totalPrice += 100; //исправить на корректную цену                   TODO!
             }
         }
+
+        if (tempString != "") {
+            ticketsString += tempString + "\n";
+        }
+
     }
+
+    //если ничего не выбрали, то сообщаем об этом пользователю и ничего не делаем
+    if (totalCount == 0) {
+        alert("Не выбраны места для осуществления операции!");
+        return;
+    }
+
+    //составляем сообщения пользователю для подстверждения операции
+    var msg = "Подтвердите " + ((newState == 1) ? "ПРОДАЖУ" : "ВОЗВРАТ") + " следующих билетов:\n\n";
+    msg += ticketsString;
+    msg += "\nКоличество билетов: " + totalCount;
+    msg += "\nЦена одного билета: 100 (временное значение для отладки)";
+    msg += "\nОбщая стоимость: " + totalPrice;
+    msg += "\n\nВыполнить операцию?";
+
+    if (!confirm(msg)) {
+        return;
+    }
+
+    //кодируем места в json
     var resultString = JSON.stringify(sectors);
     var myState = this;
+
+    this.disableButtons(true);
 
     $.post("/Sector/StoreSectorSoldInfo", { sid: params.sid, mid: params.mid, data: resultString },
     function (data) {
 
         myState.reloadData();
+        myState.clearSelection();
+        myState.disableButtons(false);
 
         data = data.split("<!")[0];
         alert(data);
     })
+}
+
+
+//Disables sell and return buttons
+CanvasState.prototype.disableButtons = function (boolState) {
+
+    $('#btnSell').prop("disabled", boolState);
+    $('#btnReturn').prop("disabled", boolState);
 }
 
 // If you dont want to use <body onLoad='init()'>
@@ -301,12 +351,10 @@ function init() {
 
     document.getElementById('btnSell').onclick = function (e) {
         s.sendData(1);
-        s.clearSelection();
     };
 
     document.getElementById('btnReturn').onclick = function (e) {
         s.sendData(0);
-        s.clearSelection();
     };
 
     document.getElementById('btnReserve').onclick = function (e) {
