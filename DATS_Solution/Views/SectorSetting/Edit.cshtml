@@ -1,11 +1,4 @@
 ﻿@model DATS.Sector
-@using DATS;
-
-@{
-    ViewBag.Title = "Справочник секторов: Редактирование";
-    Layout = "~/Views/Shared/_SettingLayout.cshtml";
-    Culture = "ru-RU";
-}
 
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
@@ -23,7 +16,7 @@
     <div class="modal-body">
         <fieldset>
             <h2 style="color: green;">
-                @((string)@ViewBag.Stadium.Name)
+                @ViewBag.Stadium.Name
             </h2>
 
             <div class="editor-label">
