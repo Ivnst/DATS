@@ -150,6 +150,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MatchSettingController.cs" />
+    <Compile Include="Controllers\ReservationController.cs" />
     <Compile Include="Controllers\SectorController.cs" />
     <Compile Include="Controllers\SectorSettingController.cs" />
     <Compile Include="Controllers\SettingsController.cs" />
@@ -320,6 +321,8 @@
     <Content Include="Views\SectorSetting\Edit.cshtml" />
     <Content Include="Views\SectorSetting\Create.cshtml" />
     <Content Include="Views\SectorSetting\Delete.cshtml" />
+    <Content Include="Views\Reservation\Index.cshtml" />
+    <Content Include="Views\Reservation\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

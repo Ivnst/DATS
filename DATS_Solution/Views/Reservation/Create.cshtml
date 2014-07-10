@@ -1,0 +1,38 @@
+﻿@model DATS.Client
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+        &times;</button>
+    <h4 class="modal-title" id="myModalLabel">
+        Бронирование</h4>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+
+    <div class="modal-body">
+        <fieldset>
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Name)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Contact)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(model => model.Contact, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Contact)
+            </div>
+        </fieldset>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+            Закрыть</button>
+        <input type="submit" class="btn btn-success" value="Сохранить" />
+    </div>
+
+}

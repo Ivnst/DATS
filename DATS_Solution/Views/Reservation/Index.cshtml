@@ -1,0 +1,59 @@
+﻿@{
+    ViewBag.Title = "Забронированные билеты";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+<div>
+  <div class="container bs-docs-container">
+    <div class="bs-docs-section">
+      <h1 class="page-header" style="margin: 0">Список забронированных мест</h1>
+      <ul class="list-inline">
+        <li><h4>Стадион: @ViewBag.CurrentStadium.Name</h4></li>
+        <li><h4>Матч: @ViewBag.CurrentMatch.Name</h4></li>
+      </ul>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <table class="table table-striped table-bordered table-hover">
+          <thead>
+            <tr>
+              <td class="text-center">№ брони</td>
+              <td class="text-center">ФИО</td>
+              <td class="text-center">Контакт</td>
+              <td class="text-center">Сектор</td>
+              <td class="text-center">Количество</td>
+              <td class="text-center">Цена</td>
+              <td class="text-center">Стоимость</td>
+              <td class="text-center">Дата</td>
+              <td class="text-center">Статус</td>
+              <td></td>
+            </tr>
+          </thead>
+          <tbody>
+@*          @foreach (DATS.ClientView sv in ViewBag.ClientViews)
+          {
+            <tr>
+              <td class="text-center"></td>
+              <td class="text-center"></td>
+              <td class="text-center"></td>
+              <td class="text-center"></td>
+              <td class="text-center"></td>
+            </tr>
+          }*@
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal-->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
