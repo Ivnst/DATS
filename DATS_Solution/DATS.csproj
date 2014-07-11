@@ -149,6 +149,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MatchSettingController.cs" />
+    <Compile Include="Controllers\PriceSettingController.cs" />
     <Compile Include="Controllers\SectorController.cs" />
     <Compile Include="Controllers\SectorSettingController.cs" />
     <Compile Include="Controllers\SettingsController.cs" />
@@ -177,6 +178,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Clients.cs" />
     <Compile Include="Models\ModelsView\PlaceView.cs" />
+    <Compile Include="Models\ModelsView\PriceView.cs" />
     <Compile Include="Models\ModelsView\SectorView.cs" />
     <Compile Include="Models\SoldPlaces.cs" />
     <Compile Include="Models\Prices.cs" />
@@ -319,6 +321,7 @@
     <Content Include="Views\SectorSetting\Edit.cshtml" />
     <Content Include="Views\SectorSetting\Create.cshtml" />
     <Content Include="Views\SectorSetting\Delete.cshtml" />
+    <Content Include="Views\PriceSetting\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

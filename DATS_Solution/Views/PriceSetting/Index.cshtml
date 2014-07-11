@@ -1,0 +1,73 @@
+﻿@model IEnumerable<DATS.PriceView>
+@using DATS;
+
+@{
+    ViewBag.Title = "Справочник цен: Список";
+    Layout = "~/Views/Shared/_SettingLayout.cshtml";
+}
+
+<div style="margin: 0 0 10px">
+    <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            @ViewBag.Stadium.Name <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+            @foreach (var sv in ViewBag.Stadiumes)
+            {
+                <li><a href="/Settings/Prices?sid=@sv.Id">@sv.Name</a></li>
+            }
+
+        </ul>
+    </div>
+    <div class="btn-group" style="margin: 0 0 0 10px">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            @ViewBag.Match.Name <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+            @foreach (var mv in ViewBag.Matchess)
+            {
+                <li><a href="/Settings/Prices?sid=@ViewBag.Stadium.Id&&mid=@mv.Id">@mv.Name</a></li>
+            }
+
+        </ul>
+    </div>
+    <button data-toggle="modal" data-target="#myModal" href="/PriceSetting/Save" class="btn btn-success" style="margin: 0 0 0 10px">Сохранить</button>
+</div>
+
+<div>
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PriceValue)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(modelItem => item.PriceValue, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(modelItem => item.PriceValue)
+                    </td>
+                </tr>
+            }
+        </tbody>
+</table>
+</div>
+
+<!-- Modal-->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+
