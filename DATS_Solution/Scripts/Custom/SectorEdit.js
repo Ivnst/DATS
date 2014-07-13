@@ -282,7 +282,9 @@ CanvasState.prototype.sendData = function (newState) {
 
     //если ничего не выбрали, то сообщаем об этом пользователю и ничего не делаем
     if (totalCount == 0) {
-        alert("Не выбраны места для осуществления операции!");
+        $('#myModal').modal({
+            remote: '/Home/MessageBox?header=' + encodeURIComponent('Внимание!') + '&message='+ encodeURIComponent('Не выбраны места для осуществления операции!')
+        })
         return;
     }
 
@@ -312,7 +314,10 @@ CanvasState.prototype.sendData = function (newState) {
         myState.disableButtons(false);
 
         data = data.split("<!")[0];
-        alert(data);
+
+        $('#myModal').modal({
+            remote: '/Home/MessageBox?header=Результат&message=' + encodeURIComponent(data) 
+        })
     })
 }
 

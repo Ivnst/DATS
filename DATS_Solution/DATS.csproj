@@ -323,6 +323,7 @@
     <Content Include="Views\SectorSetting\Delete.cshtml" />
     <Content Include="Views\Reservation\Index.cshtml" />
     <Content Include="Views\Reservation\Create.cshtml" />
+    <Content Include="Views\Home\MessageBox.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
