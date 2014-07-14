@@ -217,6 +217,7 @@ namespace DATS
       }
       catch (System.Exception ex)
       {
+        logger.Error("Переданы ошибочные данные!", ex);
         throw new InvalidOperationException("Переданы ошибочные данные!");
       }
 
@@ -274,7 +275,9 @@ namespace DATS
       
       foreach (Place place in sectorPlaces)
       {
-        result.Add(getPlaceHash(place.Row, place.Column), place);
+        int hash = getPlaceHash(place.Row, place.Column);
+        if (!result.ContainsKey(hash))
+          result.Add(hash, place);
       }
 
       return result;
@@ -298,7 +301,9 @@ namespace DATS
       foreach (SoldPlace soldPlace in soldPlaces)
       {
         Place place = placesDict[soldPlace.PlaceId];
-        result.Add(getPlaceHash(place.Row, place.Column), soldPlace);
+        int hash = getPlaceHash(place.Row, place.Column);
+        if (!result.ContainsKey(hash))
+          result.Add(hash, soldPlace);
       }
 
       return result;
