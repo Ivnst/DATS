@@ -91,19 +91,6 @@ namespace DATS.Controllers
 
 
         /// <summary>
-        /// Всплывающее окно с заданным содержимым и заголовком
-        /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        public ActionResult MessageBox(string message, string header)
-        {
-          ViewBag.Message = message;
-          ViewBag.Header = header;
-          return PartialView();
-        }
-
-
-        /// <summary>
         /// Пример использования Twitter Bootstrap
         /// </summary>
         /// <returns></returns>

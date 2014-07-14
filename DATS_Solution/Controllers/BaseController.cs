@@ -3,6 +3,8 @@ using Ninject;
 using System;
 using System.Web;
 using System.Linq;
+using System.Collections.Concurrent;
+using System.Collections;
 
 namespace DATS.Controllers
 {
@@ -11,7 +13,18 @@ namespace DATS.Controllers
       [Inject]
       public IRepository Repository { get; set; }
 
+      #region <Fields>
+      /// <summary>
+      /// Логгер
+      /// </summary>
       protected static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+
+      /// <summary>
+      /// Различная информация (кэш)
+      /// </summary>
+      ConcurrentDictionary<string, string> cachedData = new ConcurrentDictionary<string, string>();
+
+      #endregion
 
       #region <Properties>
       /// <summary>
@@ -125,6 +138,48 @@ namespace DATS.Controllers
         ViewBag.CurrentMatch = currentMatch;
         ViewBag.Matches = Repository.GetMatchesByStadium(currentStadium);
         ViewBag.SectorsInfo = Repository.GetSectorsStatistics(currentMatch);
+      }
+
+
+      /// <summary>
+      /// Сохраняет значение в кэш и возвращает ключ, по которому это значение можно достать.
+      /// </summary>
+      /// <param name="data"></param>
+      /// <returns></returns>
+      protected string StoreDataInCache(string data)
+      {
+        long t = DateTime.UtcNow.Ticks;
+        string key = t.ToString();
+        lock (cachedData)
+        {
+          while (cachedData.ContainsKey(key))
+          {
+            t++;
+            key = t.ToString();
+          }
+          bool res = cachedData.TryAdd(key, data);
+        }
+        return key;
+      }
+
+
+      /// <summary>
+      /// Достаёт значение из кэша по ключу и удаляет значение из кэша.
+      /// </summary>
+      /// <param name="key"></param>
+      /// <returns></returns>
+      protected string GetDataFromCache(string key)
+      {
+        lock (cachedData)
+        {
+          if (!cachedData.ContainsKey(key))
+          {
+            return null;
+          }
+          string str;
+          bool res = cachedData.TryRemove(key, out str);
+          return str;
+        }
       }
 
       #endregion

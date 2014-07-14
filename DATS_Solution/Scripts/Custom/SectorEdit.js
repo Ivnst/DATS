@@ -290,7 +290,7 @@ CanvasState.prototype.sendData = function (newState) {
     //если ничего не выбрали, то сообщаем об этом пользователю и ничего не делаем
     if (totalCount == 0) {
         $('#myModal').modal({
-            remote: '/Home/MessageBox?header=' + encodeURIComponent('Внимание!') + '&message='+ encodeURIComponent('Не выбраны места для осуществления операции!')
+            remote: '/Utils/MessageBox?header=' + encodeURIComponent('Внимание!') + '&message=' + encodeURIComponent('Не выбраны места для осуществления операции!')
         })
         return;
     }
@@ -323,7 +323,7 @@ CanvasState.prototype.sendData = function (newState) {
         data = data.split("<!")[0];
 
         $('#myModal').modal({
-            remote: '/Home/MessageBox?header=Результат&message=' + encodeURIComponent(data) 
+            remote: '/Utils/MessageBox?header=Результат&message=' + encodeURIComponent(data) 
         })
     })
 }
@@ -357,7 +357,7 @@ CanvasState.prototype.sendDataForReservation = function (newState) {
     //если ничего не выбрали, то сообщаем об этом пользователю и ничего не делаем
     if (totalCount == 0) {
         $('#myModal').modal({
-            remote: '/Home/MessageBox?header=' + encodeURIComponent('Внимание!') + '&message=' + encodeURIComponent('Не выбраны места для осуществления операции!')
+            remote: '/Utils/MessageBox?header=' + encodeURIComponent('Внимание!') + '&message=' + encodeURIComponent('Не выбраны места для осуществления операции!')
         })
         return;
     }

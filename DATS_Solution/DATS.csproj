@@ -155,6 +155,7 @@
     <Compile Include="Controllers\SectorSettingController.cs" />
     <Compile Include="Controllers\SettingsController.cs" />
     <Compile Include="Controllers\StadiumSettingController.cs" />
+    <Compile Include="Controllers\UtilsController.cs" />
     <Compile Include="DB\IRepository.cs" />
     <Compile Include="DB\Partials\SqlRep-SoldPlaces.cs" />
     <Compile Include="DB\Partials\SqlRep-Prices.cs" />
@@ -324,7 +325,7 @@
     <Content Include="Views\SectorSetting\Delete.cshtml" />
     <Content Include="Views\Reservation\Index.cshtml" />
     <Content Include="Views\Reservation\Create.cshtml" />
-    <Content Include="Views\Home\MessageBox.cshtml" />
+    <Content Include="Views\Utils\MessageBox.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
