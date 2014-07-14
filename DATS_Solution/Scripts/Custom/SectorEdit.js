@@ -103,6 +103,7 @@ function CanvasState(canvas, width, height) {
         document.getElementById('lblCountSelected').innerHTML = selectionCount;
 
         myState.valid = false; // must redraw
+        myState.RefreshButtons();
     }, true);
 
     canvas.addEventListener('mouseup', function (e) {
@@ -132,6 +133,8 @@ function CanvasState(canvas, width, height) {
         myState.mousePressed = false;
         myState.firstSelectedItem = null;
         myState.valid = false; // Need to clear the old selection border
+        myState.RefreshButtons();
+        myState.showInfo();
 
     }, true);
 
@@ -202,6 +205,7 @@ CanvasState.prototype.refresh = function (data) {
     this.adjustPosition(0, 0);
     this.valid = false;
     this.showInfo();
+    this.RefreshButtons();
 }
 
 
@@ -211,10 +215,12 @@ CanvasState.prototype.showInfo = function () {
     var totalFree = 0;
     var totalSold = 0;
     var totalReserved = 0;
+    var totalSelected = 0;
 
     for (var i = 0; i < this.maxRows; i++) {
         for (var j = 0; j < this.maxCols; j++) {
             var shape = this.shapes[i][j];
+            if (shape.selected) totalSelected++;
             if (shape.state == -1) continue;
             totalPlaces += 1;
             if (shape.state == 0) { totalFree += 1; }
@@ -234,9 +240,9 @@ CanvasState.prototype.showInfo = function () {
 
 CanvasState.prototype.getShapeColor = function (shape) {
     //shape color
-    if (shape.state == 0) { return (shape.selected) ? '#CCCC00' : '#00AA00'; }
-    if (shape.state == 1) { return (shape.selected) ? '#CCCC00' : '#AA0000'; }
-    if (shape.state == 2) { return (shape.selected) ? '#CCCC00' : '#0000AA'; }
+    if (shape.state == 0) { return (shape.selected) ? '#CCCC00' : '#00AA00'; } //free
+    if (shape.state == 1) { return (shape.selected) ? '#CCAA00' : '#AA0000'; } //sold
+    if (shape.state == 2) { return (shape.selected) ? '#CCCCAA' : '#0000AA'; } //reserved
     return '000000';
 }
 
@@ -304,14 +310,14 @@ CanvasState.prototype.sendData = function (newState) {
     var resultString = JSON.stringify(sectors);
     var myState = this;
 
-    this.disableButtons(true);
+    this.RefreshButtons();
 
     $.post("/Sector/StoreSectorSoldInfo", { sid: params.sid, mid: params.mid, data: resultString },
     function (data) {
 
         myState.reloadData();
         myState.clearSelection();
-        myState.disableButtons(false);
+        myState.RefreshButtons();
 
         data = data.split("<!")[0];
 
@@ -366,11 +372,41 @@ CanvasState.prototype.sendDataForReservation = function (newState) {
 
 
 //Disables sell and return buttons
-CanvasState.prototype.disableButtons = function (boolState) {
+CanvasState.prototype.RefreshButtons = function () {
 
-    $('#btnSell').prop("disabled", boolState);
-    $('#btnReturn').prop("disabled", boolState);
-    $('#btnReserve').prop("disabled", boolState);
+    var showSell = true;
+    var showReturn = true;
+    var showReserve = true;
+    var lastState = -1;
+    var selectedCount = 0;
+
+    for (var i = 0; i < this.maxRows; i++) {
+        for (var j = 0; j < this.maxCols; j++) {
+            var shape = this.shapes[i][j];
+            if (shape.selected) {
+
+                //если выделены ячейки с разным статусом
+                if (lastState != -1 && lastState != shape.state) {
+                    showSell = showReturn = showReserve = false;
+                    continue;
+                }
+
+                if (shape.state == 1) { showSell = showReserve = false; }
+                if (shape.state == 0) showReturn = false;
+                if (shape.state == 2) showReserve = false;
+                lastState = shape.state;
+                selectedCount++;
+            }
+        }
+    }
+
+    if (selectedCount == 0) {
+        showSell = showReturn = showReserve = false;
+    }
+
+    $('#btnSell').prop("disabled", !showSell);
+    $('#btnReturn').prop("disabled", !showReturn);
+    $('#btnReserve').prop("disabled", !showReserve);
 }
 
 // If you dont want to use <body onLoad='init()'>
@@ -411,6 +447,7 @@ function init() {
     };
 
     document.getElementById('clearSelection').onclick = function (e) {
+        s.reloadData();
         s.clearSelection();
     };
 
