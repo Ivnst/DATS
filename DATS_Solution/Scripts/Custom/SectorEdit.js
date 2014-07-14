@@ -323,7 +323,7 @@ CanvasState.prototype.sendData = function (newState) {
         data = data.split("<!")[0];
 
         $('#myModal').modal({
-            remote: '/Utils/MessageBox?header=Результат&message=' + encodeURIComponent(data) 
+            remote: '/Utils/MessageBox?header=Результат&message=' + encodeURIComponent(data)
         })
     })
 }
@@ -335,6 +335,7 @@ CanvasState.prototype.sendDataForReservation = function (newState) {
     var sectors = [];
     var totalCount = 0;
 
+    //collect selected shapes
     for (var i = 0; i < this.maxRows; i++) {
         for (var j = 0; j < this.maxCols; j++) {
             var shape = this.shapes[i][j];
@@ -366,9 +367,17 @@ CanvasState.prototype.sendDataForReservation = function (newState) {
     var resultString = JSON.stringify(sectors);
     var myState = this;
 
-    $('#myModal').modal({
-        remote: '/Reservation/Create?sid=' + params.sid + '&mid=' + params.mid + '&data=' + encodeURIComponent(resultString)
+
+    $.post("/Utils/CacheData", { data: resultString },
+    function (data) {
+        //здесь data - это ключ, полученный от метода Utils/CacheData
+
+        $('#myModal').modal({
+            remote: '/Reservation/Create?sid=' + params.sid + '&mid=' + params.mid + '&data=' + data
+        })
+
     })
+
 }
 
 
@@ -434,32 +443,12 @@ function init() {
     var s = new CanvasState(document.getElementById('canvas'), canvasParent.clientWidth - 10, canvasParent.clientHeight);
 
     //set buttons functionality
-
-    document.getElementById('btnSell').onclick = function (e) {
-        s.sendData(1);
-    };
-
-    document.getElementById('btnReturn').onclick = function (e) {
-        s.sendData(0);
-    };
-
-    document.getElementById('btnReserve').onclick = function (e) {
-        s.sendDataForReservation();
-    };
-
-    document.getElementById('clearSelection').onclick = function (e) {
-        s.reloadData();
-        s.clearSelection();
-    };
-
-    document.getElementById('btnScalePlus').onclick = function (e) {
-            s.scale(5);
-    };
-
-    document.getElementById('btnScaleMinus').onclick = function (e) {
-        if (s.itemWidth > 10)
-            s.scale(-5);
-    };
+    document.getElementById('btnSell').onclick = function (e) { s.sendData(1); };
+    document.getElementById('btnReturn').onclick = function (e) { s.sendData(0); };
+    document.getElementById('btnReserve').onclick = function (e) { s.sendDataForReservation(); };
+    document.getElementById('btnScalePlus').onclick = function (e) { s.scale(5); };
+    document.getElementById('btnScaleMinus').onclick = function (e) { if (s.itemWidth > 10) s.scale(-5); };
+    document.getElementById('clearSelection').onclick = function (e) { s.reloadData(); s.clearSelection(); };
 }
 
 

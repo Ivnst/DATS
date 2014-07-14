@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Newtonsoft.Json;
 
 namespace DATS.Controllers
 {
@@ -35,7 +36,23 @@ namespace DATS.Controllers
         {
           if (ModelState.IsValid)
           {
-            Repository.ProcessTicketsReservation(client);
+            //определяем места (в client.Data хранится ключ, по которому из кэша достаём json-данные, переданные туда заранее с помощью javscript)
+            List<PlaceView> places = new List<PlaceView>();
+            try
+            {
+              string jsonData = GetDataFromCache(client.Data);
+              places = JsonConvert.DeserializeObject<List<PlaceView>>(jsonData);
+            }
+            catch (System.Exception ex)
+            {
+              logger.Error("Переданы ошибочные данные!", ex);
+              throw new InvalidOperationException("Переданы ошибочные данные!");
+            }
+
+            //обрабатываем бронирование
+            Repository.ProcessTicketsReservation(client, places);
+
+            //перенаправляем снова на страницу продажи
             return RedirectToAction("Edit", "Sector", new { sid = client.SectorId, mid = client.MatchId });
           }
           else

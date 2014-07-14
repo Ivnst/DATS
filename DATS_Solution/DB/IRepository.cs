@@ -35,7 +35,7 @@ namespace DATS
     List<SoldPlace> GetSoldPlaces(Match match, Sector sector);
     bool ProcessTicketsSelling(Match match, Sector sector, List<PlaceView> places);
     bool ProcessTicketsReturning(Match match, Sector sector, List<PlaceView> places);
-    bool ProcessTicketsReservation(ClientView clientView);
+    bool ProcessTicketsReservation(ClientView clientView, List<PlaceView> places);
 
     //Sectors
     Sector FindSector(int sid);

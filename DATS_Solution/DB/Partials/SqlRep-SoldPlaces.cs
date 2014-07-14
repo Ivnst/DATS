@@ -193,7 +193,7 @@ namespace DATS
     /// <param name="match"></param>
     /// <param name="sector"></param>
     /// <returns></returns>
-    public bool ProcessTicketsReservation(ClientView clientView)
+    public bool ProcessTicketsReservation(ClientView clientView, List<PlaceView> places)
     {
       if (clientView == null) throw new ArgumentNullException("clientView");
       if (clientView.Data == null) throw new ArgumentNullException("clientView.Data");
@@ -212,18 +212,6 @@ namespace DATS
       //ищем мероприятие
       Match match = this.FindMatch(clientView.MatchId);
       if (match == null) throw new InvalidOperationException("Указанное мероприятие не найдено!");
-
-      //определяем места
-      List<PlaceView> places = new List<PlaceView>();
-      try
-      {
-        places = JsonConvert.DeserializeObject<List<PlaceView>>(clientView.Data);
-      }
-      catch (System.Exception ex)
-      {
-        logger.Error("Переданы ошибочные данные!", ex);
-        throw new InvalidOperationException("Переданы ошибочные данные!");
-      }
 
       //достаём места сектора
       Dictionary<int, Place> sectorPlaces = GetPlacesDictionary(sector);

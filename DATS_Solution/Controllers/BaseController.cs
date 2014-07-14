@@ -150,15 +150,14 @@ namespace DATS.Controllers
       {
         long t = DateTime.UtcNow.Ticks;
         string key = t.ToString();
-        lock (cachedData)
+
+        while (System.Web.HttpContext.Current.Cache[key] != null)
         {
-          while (cachedData.ContainsKey(key))
-          {
-            t++;
-            key = t.ToString();
-          }
-          bool res = cachedData.TryAdd(key, data);
+          t++;
+          key = t.ToString();
         }
+        System.Web.HttpContext.Current.Cache[key] = data;
+
         return key;
       }
 
@@ -170,16 +169,9 @@ namespace DATS.Controllers
       /// <returns></returns>
       protected string GetDataFromCache(string key)
       {
-        lock (cachedData)
-        {
-          if (!cachedData.ContainsKey(key))
-          {
-            return null;
-          }
-          string str;
-          bool res = cachedData.TryRemove(key, out str);
-          return str;
-        }
+        string data = System.Web.HttpContext.Current.Cache[key] as string;
+        System.Web.HttpContext.Current.Cache.Remove(key);
+        return data;
       }
 
       #endregion

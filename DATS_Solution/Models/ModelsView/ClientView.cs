@@ -13,10 +13,12 @@ namespace DATS
     /// <summary>
     /// Код матча
     /// </summary>
+    [DisplayName("Имя клиента")]
     public string Name { get; set; }
     /// <summary>
     /// Код матча
     /// </summary>
+    [DisplayName("Контактные данные")]
     public string Contact { get; set; }
     /// <summary>
     /// Информация о выбранных местах
