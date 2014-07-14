@@ -89,15 +89,32 @@ namespace DATS
       //достаём проданные билеты в этом секторе на это мероприятие
       Dictionary<int, SoldPlace> soldPlaces = GetSoldPlacesDictionary(match, sector);
 
-      foreach (PlaceView pv in places)
+      List<SoldPlace> newItems = new List<SoldPlace>();
+
+      for(int i =0; i < places.Count; i++)
       {
+        PlaceView pv = places[i];
+        int hash = getPlaceHash(pv.Row, pv.Col);
+
         //проверка существования таких мест в секторе
-        if (!sectorPlaces.ContainsKey(getPlaceHash(pv.Row, pv.Col)))
+        if (!sectorPlaces.ContainsKey(hash))
           return false;
 
         //проверяем, не были ли эти билеты уже проданы
-        if (soldPlaces.ContainsKey(getPlaceHash(pv.Row, pv.Col)))
-          return false;
+        if (soldPlaces.ContainsKey(hash))
+        {
+          SoldPlace soldPlace = soldPlaces[hash];
+          if (!soldPlace.IsReservation) return false;
+
+          //снимаем бронь
+          soldPlace.IsReservation = false;
+
+          //добавляем в список купленных 
+          newItems.Add(soldPlaces[hash]);
+
+          //удаляем из списка
+          places.RemoveAt(i); i--;
+        }
       }
 
       //сохранение новых данных
@@ -111,12 +128,27 @@ namespace DATS
         sp.PlaceId = sectorPlaces[getPlaceHash(pv.Row, pv.Col)].Id;
         sp.SectorId = sector.Id;
         sp.Summ = 0;
-        SoldPlaces.Add(sp);
+        newItems.Add(sp);
       }
+
+      //обработка изменений
+      foreach (SoldPlace soldPlace in newItems)
+      {
+        if (soldPlace.Id > 0)
+        {
+          Entry<SoldPlace>(soldPlace).State = EntityState.Modified;
+        }
+        else
+        {
+          SoldPlaces.Add(soldPlace);
+        }
+      }
+
       SaveChanges();
 
       return true;
     }
+
 
     /// <summary>
     /// 
