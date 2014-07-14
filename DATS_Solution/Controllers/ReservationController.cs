@@ -19,18 +19,24 @@ namespace DATS.Controllers
         }
 
 
-        public ActionResult Create()
+        public ActionResult Create(int sid, int mid, string data)
         {
-          return PartialView(new Client());
+          ClientView client = new ClientView();
+          client.MatchId = mid;
+          client.SectorId = sid;
+          client.Data = data;
+
+          return PartialView(client);
         }
 
 
         [HttpPost]
-        public ActionResult Create(Client client)
+        public ActionResult Create(ClientView client)
         {
           if (ModelState.IsValid)
           {
-            return RedirectToAction("Index", "Home");
+            Repository.ProcessTicketsReservation(client);
+            return RedirectToAction("Edit", "Sector", new { sid = client.SectorId, mid = client.MatchId });
           }
           else
           {

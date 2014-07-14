@@ -178,6 +178,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Clients.cs" />
+    <Compile Include="Models\ModelsView\ClientView.cs" />
     <Compile Include="Models\ModelsView\PlaceView.cs" />
     <Compile Include="Models\ModelsView\SectorView.cs" />
     <Compile Include="Models\SoldPlaces.cs" />

@@ -322,11 +322,55 @@ CanvasState.prototype.sendData = function (newState) {
 }
 
 
+//Sends data to server
+CanvasState.prototype.sendDataForReservation = function (newState) {
+
+    var sectors = [];
+    var totalCount = 0;
+
+    for (var i = 0; i < this.maxRows; i++) {
+        for (var j = 0; j < this.maxCols; j++) {
+            var shape = this.shapes[i][j];
+            if (shape.selected) {
+                var itm = new Object();
+                itm.Row = shape.row;
+                itm.Col = shape.col;
+                itm.RowPos = i;
+                itm.ColPos = j;
+                itm.State = newState;
+
+                sectors.push(itm);
+
+                totalCount += 1;
+            }
+        }
+
+    }
+
+    //если ничего не выбрали, то сообщаем об этом пользователю и ничего не делаем
+    if (totalCount == 0) {
+        $('#myModal').modal({
+            remote: '/Home/MessageBox?header=' + encodeURIComponent('Внимание!') + '&message=' + encodeURIComponent('Не выбраны места для осуществления операции!')
+        })
+        return;
+    }
+
+    //кодируем места в json
+    var resultString = JSON.stringify(sectors);
+    var myState = this;
+
+    $('#myModal').modal({
+        remote: '/Reservation/Create?sid=' + params.sid + '&mid=' + params.mid + '&data=' + encodeURIComponent(resultString)
+    })
+}
+
+
 //Disables sell and return buttons
 CanvasState.prototype.disableButtons = function (boolState) {
 
     $('#btnSell').prop("disabled", boolState);
     $('#btnReturn').prop("disabled", boolState);
+    $('#btnReserve').prop("disabled", boolState);
 }
 
 // If you dont want to use <body onLoad='init()'>
@@ -363,9 +407,7 @@ function init() {
     };
 
     document.getElementById('btnReserve').onclick = function (e) {
-        //         s.setSelectionTo(false); 
-        //         s.clearSelection();
-        //         s.showInfo();
+        s.sendDataForReservation();
     };
 
     document.getElementById('clearSelection').onclick = function (e) {

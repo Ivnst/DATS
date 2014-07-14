@@ -1,4 +1,4 @@
-﻿@model DATS.Client
+﻿@model DATS.ClientView
 
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
@@ -10,6 +10,9 @@
 @using (Html.BeginForm())
 {
     @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.Data)
+    @Html.HiddenFor(model => model.MatchId)
+    @Html.HiddenFor(model => model.SectorId)
 
     <div class="modal-body">
         <fieldset>

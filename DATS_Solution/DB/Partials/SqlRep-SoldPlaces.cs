@@ -3,6 +3,7 @@ using System.Data.Entity;
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using Newtonsoft.Json;
 
 namespace DATS
 {
@@ -180,5 +181,141 @@ namespace DATS
 
       return true;
     }
+
+
+    /// <summary>
+    /// Осуществление бронирования билетов
+    /// </summary>
+    /// <param name="match"></param>
+    /// <param name="sector"></param>
+    /// <returns></returns>
+    public bool ProcessTicketsReservation(ClientView clientView)
+    {
+      if (clientView == null) throw new ArgumentNullException("clientView");
+      if (clientView.Data == null) throw new ArgumentNullException("clientView.Data");
+
+      //создаём клиента
+      Client client = new Client();
+      client.Name = clientView.Name;
+      client.IsActive = true;
+      client.Date = DateTime.UtcNow;
+      client.Contact = clientView.Contact;
+
+      //ищем сектор
+      Sector sector = this.FindSector(clientView.SectorId);
+      if (sector == null) throw new InvalidOperationException("Указанный сектор не найден!");
+
+      //ищем мероприятие
+      Match match = this.FindMatch(clientView.MatchId);
+      if (match == null) throw new InvalidOperationException("Указанное мероприятие не найдено!");
+
+      //определяем места
+      List<PlaceView> places = new List<PlaceView>();
+      try
+      {
+        places = JsonConvert.DeserializeObject<List<PlaceView>>(clientView.Data);
+      }
+      catch (System.Exception ex)
+      {
+        throw new InvalidOperationException("Переданы ошибочные данные!");
+      }
+
+      //достаём места сектора
+      Dictionary<int, Place> sectorPlaces = GetPlacesDictionary(sector);
+
+      //достаём проданные билеты в этом секторе на это мероприятие
+      Dictionary<int, SoldPlace> soldPlaces = GetSoldPlacesDictionary(match, sector);
+      
+      foreach (PlaceView pv in places)
+      {
+        //проверка существования таких мест в секторе
+        if (!sectorPlaces.ContainsKey(getPlaceHash(pv.Row, pv.Col)))
+          return false;
+
+        //проверяем, не были ли эти билеты уже проданы
+        if (soldPlaces.ContainsKey(getPlaceHash(pv.Row, pv.Col)))
+          return false;
+      }
+
+      Clients.Add(client);
+      SaveChanges();
+
+      //сохранение новых данных
+      foreach (PlaceView pv in places)
+      {
+        SoldPlace sp = new SoldPlace();
+        sp.ClientId = client.Id;
+        sp.Date = DateTime.UtcNow;
+        sp.IsReservation = true;
+        sp.MatchId = match.Id;
+        sp.PlaceId = sectorPlaces[getPlaceHash(pv.Row, pv.Col)].Id;
+        sp.SectorId = sector.Id;
+        sp.Summ = 0;
+        SoldPlaces.Add(sp);
+      }
+      SaveChanges();
+
+      return true;
+    }
+
+
+    #region <Private methods>
+
+    /// <summary>
+    /// Возвращает словарь [int, Place], где int высчитывается по формуле Row*1000 + Column. 
+    /// Необходимо для более быстрого поиска
+    /// </summary>
+    /// <param name="sector"></param>
+    /// <returns></returns>
+    private Dictionary<int, Place> GetPlacesDictionary(Sector sector)
+    {
+      List<Place> sectorPlaces = GetPlacesBySector(sector);
+      Dictionary<int, Place> result = new Dictionary<int, Place>();
+      
+      foreach (Place place in sectorPlaces)
+      {
+        result.Add(getPlaceHash(place.Row, place.Column), place);
+      }
+
+      return result;
+    }
+
+
+    /// <summary>
+    /// Возвращает словарь [int, SoldPlace], где int высчитывается по формуле Row*1000 + Column. 
+    /// Необходимо для более быстрого поиска
+    /// </summary>
+    /// <param name="match"></param>
+    /// <param name="sector"></param>
+    /// <returns></returns>
+    private Dictionary<int, SoldPlace> GetSoldPlacesDictionary(Match match, Sector sector)
+    {
+      //достаём места в секторе и проданные места
+      List<SoldPlace> soldPlaces = GetSoldPlaces(match, sector);
+      Dictionary<int, Place> placesDict =  GetPlacesBySector(sector).ToDictionary(x => x.Id);
+
+      Dictionary<int, SoldPlace> result = new Dictionary<int, SoldPlace>();
+      foreach (SoldPlace soldPlace in soldPlaces)
+      {
+        Place place = placesDict[soldPlace.PlaceId];
+        result.Add(getPlaceHash(place.Row, place.Column), soldPlace);
+      }
+
+      return result;
+    }
+
+
+    /// <summary>
+    /// Возвращает хэш места, равный row * 1000 + column. Для создания хэш словарей для быстрого поиска.
+    /// </summary>
+    /// <param name="row"></param>
+    /// <param name="column"></param>
+    /// <returns></returns>
+    private int getPlaceHash(int row, int column)
+    {
+      return row * 1000 + column;
+    }
+
+    #endregion
   }
 }
