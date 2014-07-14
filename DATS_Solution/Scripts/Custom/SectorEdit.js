@@ -234,6 +234,7 @@ CanvasState.prototype.showInfo = function () {
     document.getElementById('lblCountSold').innerHTML = totalSold;
     document.getElementById('lblCountReserved').innerHTML = totalReserved;
     document.getElementById('lblPrice').innerHTML = 0;
+    document.getElementById('lblCountSelected').innerHTML = totalSelected;
 
 }
 
