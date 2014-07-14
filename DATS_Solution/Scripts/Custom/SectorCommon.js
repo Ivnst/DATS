@@ -157,11 +157,13 @@ CanvasState.prototype.drawShape = function (row, col, shape) {
 // Draws row number on left side of the canvas
 CanvasState.prototype.drawRowNumber = function (row, val, highlight) {
     var y = row * this.itemHeight - this.offsetY;
+    var x = -this.offsetX - this.itemWidth;
+    if (x < this.itemWidth / 2) x = this.itemWidth / 2;
     var fontSize = parseInt(this.itemWidth / 5 + 11).toString();
     this.ctx.font = (highlight ? "bold " : " ") + fontSize + "pt Arial";
     this.ctx.lineWidth = 2;
     this.ctx.strokeStyle = 'black';
-    this.ctx.strokeText(val, this.itemWidth / 2, y + this.itemHeight / 2);
+    this.ctx.strokeText(val, x, y + this.itemHeight / 2);
 
     if (highlight) {
         this.ctx.fillStyle = 'DarkOrange';
@@ -169,7 +171,7 @@ CanvasState.prototype.drawRowNumber = function (row, val, highlight) {
         this.ctx.fillStyle = 'white';
     }
 
-    this.ctx.fillText(val, this.itemWidth / 2, y + this.itemHeight / 2);
+    this.ctx.fillText(val, x, y + this.itemHeight / 2);
 }
 
 
