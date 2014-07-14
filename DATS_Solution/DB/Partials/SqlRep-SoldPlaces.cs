@@ -84,38 +84,21 @@ namespace DATS
       if (places.Count == 0) return false;
 
       //достаём места сектора
-      List<Place> sectorPlaces = GetPlacesBySector(sector);
-      Dictionary<PlaceView, Place> placesDict = new Dictionary<PlaceView, Place>();
-
-      //проверка существования таких мест в секторе
-      foreach (PlaceView pv in places)
-      {
-        bool exists = false;
-        foreach (Place place in sectorPlaces)
-          if (place.Column == pv.Col && place.Row == pv.Row)
-          {
-            exists = true;
-            placesDict.Add(pv, place);
-            break;
-          }
-
-        if (!exists) return false;
-      }
+      Dictionary<int, Place> sectorPlaces = GetPlacesDictionary(sector);
 
       //достаём проданные билеты в этом секторе на это мероприятие
-      List<SoldPlace> soldPlaces = GetSoldPlaces(match, sector);
+      Dictionary<int, SoldPlace> soldPlaces = GetSoldPlacesDictionary(match, sector);
 
-      //проверяем, не были ли эти билеты уже проданы
-      foreach (SoldPlace soldplace in soldPlaces)
-        foreach (PlaceView pv in places)
-        {
-          if (soldplace.IsReservation) continue;
-          Place place = Places.FirstOrDefault<Place>(p => p.Id == soldplace.PlaceId);
-          if (place == null) return false;
+      foreach (PlaceView pv in places)
+      {
+        //проверка существования таких мест в секторе
+        if (!sectorPlaces.ContainsKey(getPlaceHash(pv.Row, pv.Col)))
+          return false;
 
-          if (place.Column == pv.Col && place.Row == pv.Row)
-            return false;
-        }
+        //проверяем, не были ли эти билеты уже проданы
+        if (soldPlaces.ContainsKey(getPlaceHash(pv.Row, pv.Col)))
+          return false;
+      }
 
       //сохранение новых данных
       foreach (PlaceView pv in places)
@@ -125,7 +108,7 @@ namespace DATS
         sp.Date = DateTime.UtcNow;
         sp.IsReservation = false;
         sp.MatchId = match.Id;
-        sp.PlaceId = placesDict[pv].Id;
+        sp.PlaceId = sectorPlaces[getPlaceHash(pv.Row, pv.Col)].Id;
         sp.SectorId = sector.Id;
         sp.Summ = 0;
         SoldPlaces.Add(sp);
@@ -149,27 +132,16 @@ namespace DATS
       if (places.Count == 0) return false;
 
       //достаём проданные билеты в этом секторе на это мероприятие
-      List<SoldPlace> soldPlaces = GetSoldPlaces(match, sector);
+      Dictionary<int, SoldPlace> soldPlaces = GetSoldPlacesDictionary(match, sector);
       List<SoldPlace> toRemove = new List<SoldPlace>();
 
       //ищем указанные билеты в проданных
       foreach (PlaceView pv in places)
       {
-        bool exists = false;
-        foreach (SoldPlace soldplace in soldPlaces)
-        {
-          Place place = Places.FirstOrDefault<Place>(p => p.Id == soldplace.PlaceId);
-          if (place == null) return false;
-             
-          if (place.Column == pv.Col && place.Row == pv.Row)
-          {
-            exists = true;
-            toRemove.Add(soldplace);
-            break;
-          }
-        }
+        if (!soldPlaces.ContainsKey(getPlaceHash(pv.Row, pv.Col)))
+          return false;
 
-        if (!exists) return false;
+        toRemove.Add(soldPlaces[getPlaceHash(pv.Row, pv.Col)]);
       }
 
       //удаление лишних проданных мест
