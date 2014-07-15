@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DATS
@@ -12,17 +13,21 @@ namespace DATS
     /// <summary>
     /// Код матча
     /// </summary>
-    [Required]
+    [DisplayName("Ид. матча")]
+    [Required(ErrorMessage = "Пожалуйста выбирите ид. матча.")]
     public int MatchId { get; set; }
     /// <summary>
     /// Код сектора на стадионе
     /// </summary>
-    [Required]
+    [DisplayName("Ид. сектора")]
+    [Required(ErrorMessage = "Пожалуйста выбирите ид. сектора.")]
     public int SectorId { get; set; }
     /// <summary>
     /// Цена
     /// </summary>
-    [Required]
+    [DisplayName("Цена")]
+    [Range(0, 1000000000, ErrorMessage = @"Поле ""Продолжительность в минутах"" должно содержать целое число большее нуля.")]
+    [Required(ErrorMessage = "Пожалуйста введите продолжительность в минутах.")]
     public decimal PriceValue { get; set; }
 
     //------------------------------------------------------------------------------

@@ -8,7 +8,7 @@
 
 <div class="btn-group" style="margin: 0 0 10px">
     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-        @((string)@ViewBag.Stadium.Name) <span class="caret"></span>
+        @ViewBag.Stadium.Name <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" role="menu">
         @foreach (var sv in ViewBag.Stadiumes)
@@ -17,8 +17,7 @@
         }
 
     </ul>
-    <button data-toggle="modal" data-target="#myModal" href="/MatchSetting/Create/@((int)@ViewBag.Stadium.Id)" 
-        class="btn btn-success" style="margin: 0 0 0 10px" title="Создание нового мероприятия">Добавить мероприятие</button>
+    <button data-toggle="modal" data-target="#myModal" href="/MatchSetting/Create/@ViewBag.Stadium.Id" class="btn btn-success" style="margin: 0 0 0 10px" title="Создание нового мероприятия">Добавить мероприятие</button>
 </div>
 
 <table class="table table-striped table-bordered table-hover">
