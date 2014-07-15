@@ -11,12 +11,12 @@ namespace DATS
   public class ClientView
   {
     /// <summary>
-    /// Код матча
+    /// Имя клиента
     /// </summary>
     [DisplayName("Имя клиента")]
     public string Name { get; set; }
     /// <summary>
-    /// Код матча
+    /// Контактные данные клиента
     /// </summary>
     [DisplayName("Контактные данные")]
     public string Contact { get; set; }

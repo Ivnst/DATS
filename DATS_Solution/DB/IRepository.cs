@@ -40,5 +40,8 @@ namespace DATS
     //Sectors
     Sector FindSector(int sid);
     Sector CopySector(Sector sector);
+
+    //Clients
+    List<ReservationView> GetReservationsList(Match match);
   }
 }

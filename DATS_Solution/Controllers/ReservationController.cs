@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Newtonsoft.Json;
+using System.Data.Entity;
 
 namespace DATS.Controllers
 {
@@ -15,8 +16,10 @@ namespace DATS.Controllers
         public ActionResult Index()
         {
           FillViewBag(CurrentStadium, CurrentMatch);
-          
-          return View();
+
+          List<ReservationView> list = Repository.GetReservationsList(CurrentMatch);
+
+          return View(list);
         }
 
 

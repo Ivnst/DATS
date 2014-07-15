@@ -180,6 +180,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Clients.cs" />
     <Compile Include="Models\ModelsView\ClientView.cs" />
+    <Compile Include="Models\ModelsView\ReservationView.cs" />
     <Compile Include="Models\ModelsView\PlaceView.cs" />
     <Compile Include="Models\ModelsView\SectorView.cs" />
     <Compile Include="Models\SoldPlaces.cs" />
@@ -372,7 +373,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>33244</DevelopmentServerPort>
+          <DevelopmentServerPort>15720</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
