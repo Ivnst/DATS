@@ -77,5 +77,39 @@ namespace DATS
 
       return this.Database.SqlQuery<ReservationView>(sql, Id).FirstOrDefault();
     }
+
+
+    /// <summary>
+    /// Продать все места в брони
+    /// </summary>
+    /// <param name="reservation"></param>
+    public void SellAllReservation(ReservationView reservation)
+    {
+      List<SoldPlace> soldPlaces = GetSoldPlacesByReservationId(reservation.Id, true);
+
+      foreach (SoldPlace sp in soldPlaces)
+      {
+        sp.IsReservation = false;
+      }
+
+      SaveChanges();
+    }
+
+
+    /// <summary>
+    /// Снять бронь со всех мест в указанной брони
+    /// </summary>
+    /// <param name="reservation"></param>
+    public void ReleaseAllReservation(ReservationView reservation)
+    {
+      List<SoldPlace> soldPlaces = GetSoldPlacesByReservationId(reservation.Id, true);
+
+      foreach (SoldPlace sp in soldPlaces)
+      {
+        Entry<SoldPlace>(sp).State = EntityState.Deleted;
+      }
+
+      SaveChanges();
+    }
   }
 }

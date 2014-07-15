@@ -1,0 +1,68 @@
+﻿@model DATS.ReservationView
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+        &times;</button>
+    <h4 class="modal-title" id="myModalLabel2">
+        Обработка брони</h4>
+</div>
+
+<div class="modal-body">
+    <fieldset>
+        @Html.HiddenFor(model => model.Id)
+
+    <table class="table table-striped table-bordered table-hover">
+
+          <tbody>
+            <tr>
+              <td>@Html.LabelFor(model => model.Id)</td>
+              <td>@Html.DisplayFor(model => model.Id)</td>
+            </tr>
+            <tr>
+              <td>@Html.LabelFor(model => model.Name)</td>
+              <td>@Html.DisplayFor(model => model.Name)</td>
+            </tr>
+            <tr>
+              <td>@Html.LabelFor(model => model.Contact)</td>
+              <td>@Html.DisplayFor(model => model.Contact)</td>
+            </tr>
+            <tr>
+              <td>@Html.LabelFor(model => model.SectorName)</td>
+              <td>@Html.DisplayFor(model => model.SectorName)</td>
+            </tr>
+            <tr>
+              <td>@Html.LabelFor(model => model.PlacesList)</td>
+              <td>@Html.DisplayFor(model => model.PlacesList)</td>
+            </tr>
+            <tr>
+              <td>@Html.LabelFor(model => model.Count)</td>
+              <td>@Html.DisplayFor(model => model.Count)</td>
+            </tr>
+            <tr>
+              <td>@Html.LabelFor(model => model.Price)</td>
+              <td>@Html.DisplayFor(model => model.Price)</td>
+            </tr>
+            <tr>
+              <td>@Html.LabelFor(model => model.Summ)</td>
+              <td>@Html.DisplayFor(model => model.Summ)</td>
+            </tr>
+            <tr>
+              <td>@Html.LabelFor(model => model.ReservationDate)</td>
+              <td>@Html.DisplayFor(model => model.ReservationDate)</td>
+            </tr>
+          </tbody>
+        </table>
+    </fieldset>
+</div>
+
+<div class="modal-footer">
+<div class="span12">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+    @using (Html.BeginForm("SellReservation", "Reservation", new { id = Model.Id }, FormMethod.Post, new { @class = "btn" }))
+    {<input type="submit" class="btn btn-success" value="Продать всё" />}
+    @using (Html.BeginForm("ReleaseReservation", "Reservation", new { id = Model.Id }, FormMethod.Post, new { @class = "btn" }))
+    {<input type="submit" class="btn btn-primary" value="Вернуть в продажу всё" />}
+</div>
+
+</div>
+

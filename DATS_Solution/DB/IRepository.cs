@@ -8,13 +8,13 @@ namespace DATS
 {
   public interface IRepository
   {
+    DbSet<SoldPlace> SoldPlaces { get; set; }
     DbSet<Stadium> Stadiums { get; set; }
     DbSet<Sector> Sectors { get; set; }
     DbSet<Client> Clients { get; set; }
     DbSet<Match> Matches { get; set; }
     DbSet<Place> Places { get; set; }
     DbSet<Price> Prices { get; set; }
-    DbSet<SoldPlace> SoldPlaces { get; set; }
 
     int SaveChanges();
          
@@ -33,6 +33,7 @@ namespace DATS
 
     //SoldPlaces
     List<SoldPlace> GetSoldPlaces(Match match, Sector sector);
+    List<SoldPlace> GetSoldPlacesByReservationId(int reservationId, bool onlyReserved);
     bool ProcessTicketsSelling(Match match, Sector sector, List<PlaceView> places);
     bool ProcessTicketsReturning(Match match, Sector sector, List<PlaceView> places);
     bool ProcessTicketsReservation(ClientView clientView, List<PlaceView> places);
@@ -43,5 +44,8 @@ namespace DATS
 
     //Clients
     List<ReservationView> GetReservationsList(Match match);
+    ReservationView GetReservationInfo(int Id);
+    void SellAllReservation(ReservationView reservation);
+    void ReleaseAllReservation(ReservationView reservation);
   }
 }

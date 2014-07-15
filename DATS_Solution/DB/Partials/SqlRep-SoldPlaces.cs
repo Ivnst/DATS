@@ -71,6 +71,34 @@ namespace DATS
 
 
     /// <summary>
+    /// Возвращает список проданных мест на указанное мероприятие в указанном секторе. 
+    /// </summary>
+    /// <param name="reservationId">Код клиента. Он же код брони</param>
+    /// <param name="onlyReserved">Если истина - возвращаются только НЕ ПРОДАННЫЕ билеты. Если ложь - то и забронированные и проданные</param>
+    /// <returns></returns>
+    public List<SoldPlace> GetSoldPlacesByReservationId(int reservationId, bool onlyReserved)
+    {
+      if (onlyReserved)
+      {
+        return (from sp in SoldPlaces
+                join p in Places on sp.PlaceId equals p.Id
+                where sp.ClientId == reservationId
+                where sp.IsReservation == true
+                select sp).ToList<SoldPlace>();
+
+      }
+      else
+      {
+        return (from sp in SoldPlaces
+                join p in Places on sp.PlaceId equals p.Id
+                where sp.ClientId == reservationId
+                select sp).ToList<SoldPlace>();
+      }
+    }
+
+    
+    
+    /// <summary>
     /// Осуществление продажи билетов
     /// </summary>
     /// <param name="match"></param>

@@ -63,5 +63,51 @@ namespace DATS.Controllers
             return View(client);
           }
         }
+
+
+
+        public ActionResult Edit(int id)
+        {
+          ReservationView reservationView = Repository.GetReservationInfo(id);
+          if (reservationView == null)
+          {
+            logger.Warn("/Reservation/Edit : Указанный код брони не найден. id = " + id.ToString());
+            return RedirectToAction("MessageBox", "Utils", new { header = "Внимание", message = "Информация по текущей брони не найдена!" });
+          }
+
+          return PartialView(reservationView);
+        }
+
+        [HttpPost]
+        public ActionResult SellReservation(ReservationView reservation)
+        {
+          if (ModelState.IsValid)
+          {
+            reservation = Repository.GetReservationInfo(reservation.Id);
+            Repository.SellAllReservation(reservation);
+            return RedirectToAction("Index");
+          }
+          else
+          {
+            return View("Edit", reservation);
+          }
+        }
+
+
+        [HttpPost]
+        public ActionResult ReleaseReservation(ReservationView reservation)
+        {
+          if (ModelState.IsValid)
+          {
+            reservation = Repository.GetReservationInfo(reservation.Id);
+            Repository.ReleaseAllReservation(reservation);
+            return RedirectToAction("Index");
+          }
+          else
+          {
+            return View("Edit", reservation);
+          }
+        }
+
     }
 }
