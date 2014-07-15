@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using DATS;
+using System.Data.Entity;
 
 namespace DATS.Controllers
 {
@@ -111,9 +112,8 @@ namespace DATS.Controllers
                                    select new PriceView()
                                    {
                                        StadiumId = sk.StadiumId,
-                                       MatchId = (from pr in Repository.Prices
-                                                  where (sk.Id == pr.SectorId) && (pr.MatchId == MID)
-                                                  select pr.MatchId).Max(),
+                                       MatchId = MID,
+                                       SectorId = sk.Id,  
                                        Name = sk.Name,
                                        PriceValue = (from pr in Repository.Prices
                                                      where (sk.Id == pr.SectorId) && (pr.MatchId == MID)
@@ -126,5 +126,85 @@ namespace DATS.Controllers
 
         }
 
+
+        [HttpPost]
+        public ActionResult Save(FormCollection formCollection)
+        {
+
+            int? SID = null, MID = null;
+            string[] valueStadiumId = null, valueMatchId = null, valueSectorId = null, valuePrice = null;
+            int TempMatchId = 0, TempSectorId = 0, LengthMatchId = 0;
+            decimal TempPriceValue = 0;
+            Price FindFirstPrice = null;
+
+            if (Request.IsAjaxRequest()) 
+            {
+          
+             
+                foreach (var key in formCollection.AllKeys)
+                {
+                    if ((string)key == "item.StadiumId")
+                    {
+                        valueStadiumId = formCollection[key].Split(new Char[] { ',' });
+                        SID = Int32.Parse(valueStadiumId[0]);
+                    }
+                    if ((string)key == "item.MatchId")
+                    {
+                        valueMatchId = formCollection[key].Split(new Char[] { ',' });
+                        MID = Int32.Parse(valueMatchId[0]);
+                        LengthMatchId = valueMatchId.Length;
+                    }
+                    if ((string)key == "item.SectorId")
+                    {
+                        valueSectorId = formCollection[key].Split(new Char[] { ',' });
+                    }
+                    if ((string)key == "item.PriceValue")
+                    {
+                        valuePrice = formCollection[key].Split(new Char[] { ',' });
+                    }
+                }
+
+            if (SID != null && MID != null) 
+            {
+                // создаём, модифицируем или удаляем данные
+                for (var i = 0; i < LengthMatchId; i++)
+                {
+                               
+                    if ((valueSectorId[i].Length > 0) && (valuePrice[i].Length > 0))
+                    {
+                        TempMatchId = (int)MID;
+                        TempSectorId = Int32.Parse(valueSectorId[i]);
+                        TempPriceValue = decimal.Parse(valuePrice[i].Replace("...", ".").Replace("..", ".").Replace(".", ","));
+                        FindFirstPrice = Repository.Prices.FirstOrDefault<Price>(z => (z.MatchId == TempMatchId) && (z.SectorId == TempSectorId));
+
+                        if (FindFirstPrice != null)
+                        {
+                            FindFirstPrice.PriceValue = TempPriceValue;
+                            ((DbContext)Repository).Entry<Price>(FindFirstPrice).State = EntityState.Modified;
+                            Repository.SaveChanges();
+                        }
+                        else
+                        {
+                            FindFirstPrice = new Price { MatchId = TempMatchId, SectorId = TempSectorId, PriceValue = TempPriceValue };
+                            ((DbContext)Repository).Entry<Price>(FindFirstPrice).State = EntityState.Added;
+                            Repository.SaveChanges();
+                        }
+                    }
+                }
+
+
+                    // перенаправление на Index после завершения
+                    TempData["message"] = "Данные успешно сохранены.";
+                    return Json("Success");
+            } else 
+            {
+        TempData["message"] = "Ошибка извлечения данных!";
+        return Json("An Error Has occoured");
+            }
+            }
+            return RedirectToAction("Index");
+            }
+           
+    
     }
 }

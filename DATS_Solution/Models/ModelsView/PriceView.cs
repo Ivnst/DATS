@@ -17,10 +17,11 @@ namespace DATS
 
         }
 
-        public PriceView(int stadiumId, int matchId, string name, decimal priceValue)
+        public PriceView(int stadiumId, int matchId, int sectorId, string name, decimal priceValue)
         {
             this.StadiumId = stadiumId;
             this.MatchId = matchId;
+            this.SectorId = sectorId;
             this.Name = name;
             this.PriceValue = priceValue;
         }
@@ -29,10 +30,9 @@ namespace DATS
         public int? StadiumId { get; set; }
         public int? MatchId { get; set; }
 
+        public int SectorId { get; set; }
+
         [DisplayName("Название сектора")]
-        [DataType(DataType.Text)]
-        [Required(ErrorMessage = "Пожалуйста введите название сектора.")]
-        [StringLength(255)]
         public string Name { get; set; }
 
         [DisplayName("Цена")]
