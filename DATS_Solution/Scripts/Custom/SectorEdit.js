@@ -371,6 +371,7 @@ CanvasState.prototype.sendDataForReservation = function (newState) {
     $.post("/Utils/CacheData", { data: resultString },
     function (data) {
         //здесь data - это ключ, полученный от метода Utils/CacheData
+        data = data.split("<!")[0];
 
         $('#myModal').modal({
             remote: '/Reservation/Create?sid=' + params.sid + '&mid=' + params.mid + '&data=' + data

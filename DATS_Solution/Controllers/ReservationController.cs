@@ -15,6 +15,7 @@ namespace DATS.Controllers
 
         public ActionResult Index()
         {
+          if (CurrentMatch == null) return RedirectToAction("Error", "Home", new { e = 2 });
           FillViewBag(CurrentStadium, CurrentMatch);
 
           List<ReservationView> list = Repository.GetReservationsList(CurrentMatch);
