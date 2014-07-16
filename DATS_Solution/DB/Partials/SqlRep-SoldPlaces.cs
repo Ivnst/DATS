@@ -221,7 +221,7 @@ namespace DATS
     /// <param name="match"></param>
     /// <param name="sector"></param>
     /// <returns></returns>
-    public bool ProcessTicketsReservation(ClientView clientView, List<PlaceView> places)
+    public int ProcessTicketsReservation(ClientView clientView, List<PlaceView> places)
     {
       if (clientView == null) throw new ArgumentNullException("clientView");
       if (clientView.Data == null) throw new ArgumentNullException("clientView.Data");
@@ -251,11 +251,15 @@ namespace DATS
       {
         //проверка существования таких мест в секторе
         if (!sectorPlaces.ContainsKey(getPlaceHash(pv.Row, pv.Col)))
-          return false;
+        {
+          throw new InvalidOperationException("Указанные места отсутствуют в секторе!");
+        }
 
         //проверяем, не были ли эти билеты уже проданы
         if (soldPlaces.ContainsKey(getPlaceHash(pv.Row, pv.Col)))
-          return false;
+        {
+          throw new InvalidOperationException("Указанные места уже проданы!");
+        }
       }
 
       Clients.Add(client);
@@ -276,7 +280,7 @@ namespace DATS
       }
       SaveChanges();
 
-      return true;
+      return client.Id;
     }
 
 

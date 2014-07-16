@@ -450,6 +450,13 @@ function init() {
     document.getElementById('btnScalePlus').onclick = function (e) { s.scale(5); };
     document.getElementById('btnScaleMinus').onclick = function (e) { if (s.itemWidth > 10) s.scale(-5); };
     document.getElementById('clearSelection').onclick = function (e) { s.reloadData(); s.clearSelection(); };
+
+    //если указан номер брони в url, то выводим его пользователю
+    if (params.cid != undefined) {
+        $('#myModal').modal({
+            remote: '/Utils/MessageBox?header=' + encodeURIComponent('Внимание!') + '&message=' + encodeURIComponent('Номер брони: ' + params.cid)
+        })
+    }
 }
 
 

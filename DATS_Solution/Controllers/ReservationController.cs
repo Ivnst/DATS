@@ -54,17 +54,16 @@ namespace DATS.Controllers
             }
 
             //обрабатываем бронирование
-            Repository.ProcessTicketsReservation(client, places);
+            int clientId = Repository.ProcessTicketsReservation(client, places);
 
             //перенаправляем снова на страницу продажи
-            return RedirectToAction("Edit", "Sector", new { sid = client.SectorId, mid = client.MatchId });
+            return RedirectToAction("Edit", "Sector", new { sid = client.SectorId, mid = client.MatchId, cid = clientId });
           }
           else
           {
             return View(client);
           }
         }
-
 
 
         public ActionResult Edit(int id)
