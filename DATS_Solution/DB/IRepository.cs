@@ -47,5 +47,8 @@ namespace DATS
     ReservationView GetReservationInfo(int Id);
     void SellAllReservation(ReservationView reservation);
     void ReleaseAllReservation(ReservationView reservation);
+
+    //Prices
+    decimal GetPrice(int sectorId, int matchId);
   }
 }

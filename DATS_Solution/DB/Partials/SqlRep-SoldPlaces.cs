@@ -155,7 +155,7 @@ namespace DATS
         sp.MatchId = match.Id;
         sp.PlaceId = sectorPlaces[getPlaceHash(pv.Row, pv.Col)].Id;
         sp.SectorId = sector.Id;
-        sp.Summ = 0;
+        sp.Summ = pv.Price;
         newItems.Add(sp);
       }
 
@@ -275,7 +275,7 @@ namespace DATS
         sp.MatchId = match.Id;
         sp.PlaceId = sectorPlaces[getPlaceHash(pv.Row, pv.Col)].Id;
         sp.SectorId = sector.Id;
-        sp.Summ = 0;
+        sp.Summ = pv.Price;
         SoldPlaces.Add(sp);
       }
       SaveChanges();

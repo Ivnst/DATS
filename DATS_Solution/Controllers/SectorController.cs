@@ -259,6 +259,8 @@ namespace DATS.Controllers
           if (match == null) throw new ArgumentNullException("match");
           if (sector == null) throw new ArgumentNullException("sector");
 
+          decimal defaultPrice = Repository.GetPrice(sector.Id, match.Id);
+
           //размерность сектора
           int maxRow = 0;
           int minRow = int.MaxValue;
@@ -293,6 +295,7 @@ namespace DATS.Controllers
           {
             PlaceView pv = new PlaceView(place);
             pv.State = (int)PlaceState.Free;
+            pv.Price = defaultPrice;
             placeMatrix[place.Row - minRow][place.Column - minCol] = pv;
           }
 
@@ -308,6 +311,7 @@ namespace DATS.Controllers
 
             Place place = placesDict[soldPlace.PlaceId];
             PlaceView pv = placeMatrix[place.Row - minRow][place.Column - minCol];
+            pv.Price = soldPlace.Summ;
             pv.State = soldPlace.IsReservation ? (int)PlaceState.Reserved : (int)PlaceState.Sold;
           }
 

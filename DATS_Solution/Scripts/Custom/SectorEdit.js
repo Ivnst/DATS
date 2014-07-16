@@ -90,17 +90,22 @@ function CanvasState(canvas, width, height) {
 
         //set selection
         var selectionCount = 0;
+        var selectionSumm = 0;
         if (myState.shapes != null)
             for (var i = 0; i < myState.maxRows; i++) {
                 for (var j = 0; j < myState.maxCols; j++) {
                     var shape = myState.shapes[i][j];
                     if (shape.state != -1)
                         shape.selected = myState.checkIntersection(j, i);
-                    if (shape.selected) selectionCount += 1;
+                    if (shape.selected) {
+                        selectionCount += 1;
+                        selectionSumm += shape.price;
+                    }
                 }
             }
 
         document.getElementById('lblCountSelected').innerHTML = selectionCount;
+        document.getElementById('lblTotalSumm').innerHTML = selectionSumm;
 
         myState.valid = false; // must redraw
         myState.RefreshButtons();
@@ -197,6 +202,7 @@ CanvasState.prototype.refresh = function (data) {
         shape.state = itm.State;
         shape.row = itm.Row;
         shape.col = itm.Col;
+        shape.price = itm.Price;
     }
 
     this.shapes = newShapes;
@@ -216,11 +222,15 @@ CanvasState.prototype.showInfo = function () {
     var totalSold = 0;
     var totalReserved = 0;
     var totalSelected = 0;
+    var totalSumm = 0;
 
     for (var i = 0; i < this.maxRows; i++) {
         for (var j = 0; j < this.maxCols; j++) {
             var shape = this.shapes[i][j];
-            if (shape.selected) totalSelected++;
+            if (shape.selected) {
+                totalSelected++;
+                totalSumm += shape.price;
+            }
             if (shape.state == -1) continue;
             totalPlaces += 1;
             if (shape.state == 0) { totalFree += 1; }
@@ -235,6 +245,7 @@ CanvasState.prototype.showInfo = function () {
     document.getElementById('lblCountReserved').innerHTML = totalReserved;
     document.getElementById('lblPrice').innerHTML = 0;
     document.getElementById('lblCountSelected').innerHTML = totalSelected;
+    document.getElementById('lblTotalSumm').innerHTML = totalSumm;
 
 }
 
@@ -268,6 +279,7 @@ CanvasState.prototype.sendData = function (newState) {
                 itm.RowPos = i;
                 itm.ColPos = j;
                 itm.State = newState;
+                itm.Price = shape.price;
 
                 sectors.push(itm);
 
@@ -277,7 +289,7 @@ CanvasState.prototype.sendData = function (newState) {
                 else tempString += ", ";
                 tempString += itm.Col;
                 totalCount += 1;
-                totalPrice += 100; //исправить на корректную цену                   TODO!
+                totalPrice += shape.price;
             }
         }
 
@@ -299,7 +311,6 @@ CanvasState.prototype.sendData = function (newState) {
     var msg = "Подтвердите " + ((newState == 1) ? "ПРОДАЖУ" : "ВОЗВРАТ") + " следующих билетов:\n\n";
     msg += ticketsString;
     msg += "\nКоличество билетов: " + totalCount;
-    msg += "\nЦена одного билета: 100 (временное значение для отладки)";
     msg += "\nОбщая стоимость: " + totalPrice;
     msg += "\n\nВыполнить операцию?";
 
@@ -346,6 +357,7 @@ CanvasState.prototype.sendDataForReservation = function (newState) {
                 itm.RowPos = i;
                 itm.ColPos = j;
                 itm.State = newState;
+                itm.Price = shape.price;
 
                 sectors.push(itm);
 
