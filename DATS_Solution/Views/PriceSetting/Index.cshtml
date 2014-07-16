@@ -103,7 +103,7 @@
                         @Html.TextBoxFor(modelItem => item.SectorId, new { @class = "hidden", @readonly = "readonly" })
                     </td>
                     <td>
-                        @Html.TextBoxFor(modelItem => item.Name, new { @class = "form-control", @readonly = "readonly" })
+                        @Html.DisplayFor(modelItem => item.Name)
                     </td>
                     <td>
                         @Html.TextBoxFor(modelItem => item.PriceValue, new { @class = "form-control iksar" })
