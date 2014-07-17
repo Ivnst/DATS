@@ -81,8 +81,6 @@ namespace DATS.Controllers
         [HttpPost]
         public ActionResult StoreSectorSoldInfo(int sid, int mid, string data)
         {
-          try
-          {
             //check sector id
             Sector sector = Repository.FindSector(sid);
             if (sector == null)
@@ -99,48 +97,52 @@ namespace DATS.Controllers
               return Content("Указанное мероприятие не существует!!");
             }
 
-            //json to List
-            List<PlaceView> places = JsonConvert.DeserializeObject<List<PlaceView>>(data);
-            if(places.Count == 0)
+          //json to List
+          List<PlaceView> places;
+          try
+          {
+            
+            places = JsonConvert.DeserializeObject<List<PlaceView>>(data);
+            if (places.Count == 0)
             {
               logger.Warn("/Sector/StoreSectorSoldInfo : Не выбраны места для осуществления операции. mid = " + mid.ToString());
               return Content("Не выбраны места для осуществления операции!");
             }
+          }
+          catch (System.Exception ex)
+          {
+            logger.Error(ex);
+            return Content("Получены некорректные данные!");
+          }
 
-            //проверка состояний переданных билетов
-            int state = places[0].State;
-            foreach (PlaceView pv in places)
+          //проверка состояний переданных билетов
+          int state = places[0].State;
+          foreach (PlaceView pv in places)
+          {
+            if (pv.State != state)
             {
-              if(pv.State != state)
-              {
-                logger.Warn("Выбраны билеты с разным статусом! Попробуйте ещё раз!");
-                return Content("Выбраны билеты с разным статусом! Попробуйте ещё раз.");
-              }
+              logger.Warn("Выбраны билеты с разным статусом! Попробуйте ещё раз!");
+              return Content("Выбраны билеты с разным статусом! Попробуйте ещё раз.");
             }
+          }
 
-            //выполнение операции
-            bool res = false;
-            if(state == (int)PlaceState.Sold)
+          //выполнение операции
+          try
+          {
+            if (state == (int)PlaceState.Sold)
             {
-              res = Repository.ProcessTicketsSelling(match, sector, places);
+              Repository.ProcessTicketsSelling(match, sector, places);
             }
 
             if (state == (int)PlaceState.Free)
             {
-              res = Repository.ProcessTicketsReturning(match, sector, places);
-            }
-
-            //проверка результата выполнения операции
-            if (!res)
-            {
-              logger.Error(data, "Операция не была выполнена!");
-              return Content("Операция не была выполнена!");
+              Repository.ProcessTicketsReturning(match, sector, places);
             }
           }
           catch (System.Exception ex)
           {
             logger.Error(data, ex);
-            return Content("Возникла ошибка при сохранении данных!");
+            return Content("При сохранении данных возникла ошибка!\n" + ex.Message);
           }
 
           return Content("Операция выполнена успешно!");
@@ -259,6 +261,8 @@ namespace DATS.Controllers
           if (match == null) throw new ArgumentNullException("match");
           if (sector == null) throw new ArgumentNullException("sector");
 
+          decimal defaultPrice = Repository.GetPrice(sector.Id, match.Id);
+
           //размерность сектора
           int maxRow = 0;
           int minRow = int.MaxValue;
@@ -293,6 +297,7 @@ namespace DATS.Controllers
           {
             PlaceView pv = new PlaceView(place);
             pv.State = (int)PlaceState.Free;
+            pv.Price = defaultPrice;
             placeMatrix[place.Row - minRow][place.Column - minCol] = pv;
           }
 
@@ -308,6 +313,7 @@ namespace DATS.Controllers
 
             Place place = placesDict[soldPlace.PlaceId];
             PlaceView pv = placeMatrix[place.Row - minRow][place.Column - minCol];
+            pv.Price = soldPlace.Summ;
             pv.State = soldPlace.IsReservation ? (int)PlaceState.Reserved : (int)PlaceState.Sold;
           }
 

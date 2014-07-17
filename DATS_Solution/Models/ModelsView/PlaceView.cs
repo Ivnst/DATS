@@ -18,6 +18,7 @@ namespace DATS
       this.Col = place.Column;
       this.RowPos = place.RowPos;
       this.ColPos = place.ColumnPos;
+      this.Price = 0;
     }
     
     public PlaceView(int row, int col, int rowPos, int colPos)
@@ -57,5 +58,10 @@ namespace DATS
     /// Состояние (для редактирования сектора - не используется. Для продажи - см. перечисление PlaceState).
     /// </summary>
     public int State { get; set; }
+
+    /// <summary>
+    /// Цена билета
+    /// </summary>
+    public decimal Price { get; set; }
   }
 }

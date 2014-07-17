@@ -195,10 +195,12 @@ namespace DATS.Controllers
 
                     // перенаправление на Index после завершения
                     TempData["message"] = "Данные успешно сохранены.";
+                    logger.Info(TempData["message"]);
                     return Json("Success");
             } else 
             {
         TempData["message"] = "Ошибка извлечения данных!";
+        logger.Info(TempData["message"]); 
         return Json("An Error Has occoured");
             }
             }

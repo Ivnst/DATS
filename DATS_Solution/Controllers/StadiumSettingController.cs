@@ -30,6 +30,7 @@ namespace DATS.Controllers
             Repository.Stadiums.Add(stadium);
             Repository.SaveChanges();
             TempData["message"] = string.Format(@"Стадион ""{0}"" успешно создан.", stadium.Name);
+            logger.Info(TempData["message"]);
             return RedirectToAction("Stadiums", "Settings");
           }
           else
@@ -60,6 +61,7 @@ namespace DATS.Controllers
             ((DbContext)Repository).Entry<Stadium>(stadium).State = EntityState.Modified;
             Repository.SaveChanges();
             TempData["message"] = string.Format(@"Стадион ""{0}"" успешно сохранен.", stadium.Name);
+            logger.Info(TempData["message"]);
             return RedirectToAction("Stadiums", "Settings");
           }
           else
@@ -86,6 +88,7 @@ namespace DATS.Controllers
           ((DbContext)Repository).Entry<Stadium>(stadium).State = EntityState.Deleted;
           Repository.SaveChanges();
           TempData["message"] = string.Format(@"Стадион был удалён.", stadium.Name);
+          logger.Info(TempData["message"]);
           return RedirectToAction("Stadiums", "Settings");
         }
 

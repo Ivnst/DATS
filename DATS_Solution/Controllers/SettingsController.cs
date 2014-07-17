@@ -13,7 +13,10 @@ namespace DATS.Controllers
 
         public ActionResult Index()
         {
-            return RedirectToAction("Stadiums");
+          //запись ip-адреса посетителя
+          logger.Info("Enter to settings:" + Request.UserHostAddress);
+          
+          return RedirectToAction("Stadiums");
         }
 
         public ActionResult Stadiums()

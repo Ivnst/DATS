@@ -58,6 +58,7 @@ namespace DATS.Controllers
                 Repository.SaveChanges();
                 int TDStadiumId = sector.StadiumId;
                 TempData["message"] = string.Format(@"Сектор ""{0}"" успешно сохранен.", sector.Name);
+                logger.Info(TempData["message"]);
                 return RedirectToAction("Sectors", "Settings", new { sid = TDStadiumId });
             }
             else
@@ -92,6 +93,7 @@ namespace DATS.Controllers
                 Repository.SaveChanges();
                 int TDStadiumId = sector.StadiumId;
                 TempData["message"] = string.Format(@"Сектор ""{0}"" успешно создан.", sector.Name);
+                logger.Info(TempData["message"]);
                 return RedirectToAction("Sectors", "Settings", new { sid = TDStadiumId });
             }
             else
@@ -117,11 +119,12 @@ namespace DATS.Controllers
         [HttpPost]
         public ActionResult Delete(Sector sector)
         {
-            int TDStadiumId = sector.StadiumId;
             ((DbContext)Repository).Entry<Sector>(sector).State = EntityState.Deleted;
             Repository.SaveChanges();
+
             TempData["message"] = string.Format(@"Сектор был удален.", sector.Name);
-            return RedirectToAction("Sectors", "Settings", new { sid = TDStadiumId });
+            logger.Info(TempData["message"]);
+            return RedirectToAction("Sectors", "Settings", new { sid = sector.StadiumId });
         }
 
 
@@ -138,10 +141,12 @@ namespace DATS.Controllers
           {
             Sector newSector = Repository.CopySector(sector);
             TempData["message"] = string.Format(@"Сектор ""{0}"" успешно скопирован в новый сектор ""{1}"".", sector.Name, newSector.Name);
+            logger.Info(TempData["message"]);
           }
           catch (System.Exception ex)
           {
             TempData["message"] = "При копировании сектора произошла ошибка! " + ex.Message;
+            logger.Error(TempData["message"].ToString(), ex);
           }
 
           return RedirectToAction("Sectors", "Settings", new { sid = sector.StadiumId });

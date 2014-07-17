@@ -71,7 +71,7 @@ namespace DATS
 
 
     /// <summary>
-    /// Возвращает список проданных мест на указанное мероприятие в указанном секторе. 
+    /// Возвращает список проданных мест, забронированных указанным клиентом
     /// </summary>
     /// <param name="reservationId">Код клиента. Он же код брони</param>
     /// <param name="onlyReserved">Если истина - возвращаются только НЕ ПРОДАННЫЕ билеты. Если ложь - то и забронированные и проданные</param>
@@ -96,6 +96,32 @@ namespace DATS
       }
     }
 
+
+    /// <summary>
+    /// Возвращает список мест, забронированных указанным клиентом
+    /// </summary>
+    /// <param name="reservationId">Код клиента. Он же код брони</param>
+    /// <param name="onlyReserved">Если истина - возвращаются только НЕ ПРОДАННЫЕ билеты. Если ложь - то и забронированные и проданные</param>
+    /// <returns></returns>
+    public List<Place> GetPlacesByReservationId(int reservationId, bool onlyReserved)
+    {
+      if (onlyReserved)
+      {
+        return (from sp in SoldPlaces
+                join p in Places on sp.PlaceId equals p.Id
+                where sp.ClientId == reservationId
+                where sp.IsReservation == true
+                select p).ToList<Place>();
+
+      }
+      else
+      {
+        return (from sp in SoldPlaces
+                join p in Places on sp.PlaceId equals p.Id
+                where sp.ClientId == reservationId
+                select p).ToList<Place>();
+      }
+    }
     
     
     /// <summary>
@@ -104,12 +130,12 @@ namespace DATS
     /// <param name="match"></param>
     /// <param name="sector"></param>
     /// <returns></returns>
-    public bool ProcessTicketsSelling(Match match, Sector sector, List<PlaceView> places)
+    public void ProcessTicketsSelling(Match match, Sector sector, List<PlaceView> places)
     {
       if (match == null) throw new ArgumentNullException("match");
       if (sector == null) throw new ArgumentNullException("sector");
       if (places == null) throw new ArgumentNullException("places");
-      if (places.Count == 0) return false;
+      if (places.Count == 0) throw new Exception("Места не выбраны!");
 
       //достаём места сектора
       Dictionary<int, Place> sectorPlaces = GetPlacesDictionary(sector);
@@ -126,13 +152,20 @@ namespace DATS
 
         //проверка существования таких мест в секторе
         if (!sectorPlaces.ContainsKey(hash))
-          return false;
+        {
+          logger.Error(string.Format("Некоторые (или все) из указанных мест не найдены в секторе! sid = {0}, mid={1}", sector.Id, match.Id));
+          throw new Exception("Некоторые (или все) из указанных мест не найдены в секторе!");
+        }
 
         //проверяем, не были ли эти билеты уже проданы
         if (soldPlaces.ContainsKey(hash))
         {
           SoldPlace soldPlace = soldPlaces[hash];
-          if (!soldPlace.IsReservation) return false;
+          if (!soldPlace.IsReservation)
+          {
+            logger.Error("Некоторые из выбранных билетов уже проданы! Обновите страницу!");
+            throw new Exception("Некоторые из выбранных билетов уже проданы! Обновите страницу!");
+          }
 
           //снимаем бронь
           soldPlace.IsReservation = false;
@@ -155,7 +188,7 @@ namespace DATS
         sp.MatchId = match.Id;
         sp.PlaceId = sectorPlaces[getPlaceHash(pv.Row, pv.Col)].Id;
         sp.SectorId = sector.Id;
-        sp.Summ = 0;
+        sp.Summ = pv.Price;
         newItems.Add(sp);
       }
 
@@ -173,8 +206,6 @@ namespace DATS
       }
 
       SaveChanges();
-
-      return true;
     }
 
 
@@ -184,12 +215,12 @@ namespace DATS
     /// <param name="match"></param>
     /// <param name="sector"></param>
     /// <returns></returns>
-    public bool ProcessTicketsReturning(Match match, Sector sector, List<PlaceView> places)
+    public void ProcessTicketsReturning(Match match, Sector sector, List<PlaceView> places)
     {
       if (match == null) throw new ArgumentNullException("match");
       if (sector == null) throw new ArgumentNullException("sector");
       if (places == null) throw new ArgumentNullException("places");
-      if (places.Count == 0) return false;
+      if (places.Count == 0) throw new Exception("Места не выбраны!");
 
       //достаём проданные билеты в этом секторе на это мероприятие
       Dictionary<int, SoldPlace> soldPlaces = GetSoldPlacesDictionary(match, sector);
@@ -199,7 +230,10 @@ namespace DATS
       foreach (PlaceView pv in places)
       {
         if (!soldPlaces.ContainsKey(getPlaceHash(pv.Row, pv.Col)))
-          return false;
+        {
+          logger.Error("Некоторые из указанных билетов не являются проданными! Обновите страницу!");
+          throw new Exception("Некоторые из указанных билетов не являются проданными! Обновите страницу!");
+        }
 
         toRemove.Add(soldPlaces[getPlaceHash(pv.Row, pv.Col)]);
       }
@@ -210,8 +244,6 @@ namespace DATS
         Entry<SoldPlace>(soldplace).State = EntityState.Deleted;
       }
       SaveChanges();
-
-      return true;
     }
 
 
@@ -221,7 +253,7 @@ namespace DATS
     /// <param name="match"></param>
     /// <param name="sector"></param>
     /// <returns></returns>
-    public bool ProcessTicketsReservation(ClientView clientView, List<PlaceView> places)
+    public int ProcessTicketsReservation(ClientView clientView, List<PlaceView> places)
     {
       if (clientView == null) throw new ArgumentNullException("clientView");
       if (clientView.Data == null) throw new ArgumentNullException("clientView.Data");
@@ -251,11 +283,15 @@ namespace DATS
       {
         //проверка существования таких мест в секторе
         if (!sectorPlaces.ContainsKey(getPlaceHash(pv.Row, pv.Col)))
-          return false;
+        {
+          throw new InvalidOperationException("Указанные места отсутствуют в секторе!");
+        }
 
         //проверяем, не были ли эти билеты уже проданы
         if (soldPlaces.ContainsKey(getPlaceHash(pv.Row, pv.Col)))
-          return false;
+        {
+          throw new InvalidOperationException("Указанные места уже проданы!");
+        }
       }
 
       Clients.Add(client);
@@ -271,12 +307,12 @@ namespace DATS
         sp.MatchId = match.Id;
         sp.PlaceId = sectorPlaces[getPlaceHash(pv.Row, pv.Col)].Id;
         sp.SectorId = sector.Id;
-        sp.Summ = 0;
+        sp.Summ = pv.Price;
         SoldPlaces.Add(sp);
       }
       SaveChanges();
 
-      return true;
+      return client.Id;
     }
 
 

@@ -13,6 +13,9 @@ namespace DATS.Controllers
 
         public ActionResult Index()
         {
+          //запись ip-адреса посетителя
+          logger.Info("Enter to homepage:" + Request.UserHostAddress);
+
           List<Stadium> stadiums = Repository.GetAllStadiums();
           if(stadiums.Count == 0)
           {

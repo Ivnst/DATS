@@ -7,6 +7,7 @@ function Shape(row, col, state, selected) {
     this.col = col || 0;
     this.state = state || 0;
     this.selected = selected || 0;
+    this.price = 0;
 }
 
 

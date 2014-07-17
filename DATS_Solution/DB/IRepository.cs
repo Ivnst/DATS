@@ -34,9 +34,10 @@ namespace DATS
     //SoldPlaces
     List<SoldPlace> GetSoldPlaces(Match match, Sector sector);
     List<SoldPlace> GetSoldPlacesByReservationId(int reservationId, bool onlyReserved);
-    bool ProcessTicketsSelling(Match match, Sector sector, List<PlaceView> places);
-    bool ProcessTicketsReturning(Match match, Sector sector, List<PlaceView> places);
-    bool ProcessTicketsReservation(ClientView clientView, List<PlaceView> places);
+    List<Place> GetPlacesByReservationId(int reservationId, bool onlyReserved);
+    void ProcessTicketsSelling(Match match, Sector sector, List<PlaceView> places);
+    void ProcessTicketsReturning(Match match, Sector sector, List<PlaceView> places);
+    int ProcessTicketsReservation(ClientView clientView, List<PlaceView> places);
 
     //Sectors
     Sector FindSector(int sid);
@@ -47,5 +48,8 @@ namespace DATS
     ReservationView GetReservationInfo(int Id);
     void SellAllReservation(ReservationView reservation);
     void ReleaseAllReservation(ReservationView reservation);
+
+    //Prices
+    decimal GetPrice(int sectorId, int matchId);
   }
 }
