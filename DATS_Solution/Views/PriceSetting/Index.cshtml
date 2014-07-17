@@ -8,17 +8,20 @@
 
 <script>
     $(document).ready(function () {
-        $(".iksar").val(function (i, v) { 
+        $(".iksar").val(function (i, v) {
             return v.replace(",", "."); });
         $('#FormForSave').submit(function (event) {
             event.preventDefault();
-            var data = $(this).serialize();
-            var url = $(this).attr('action');
-            $.post(url, data, function () {
-                window.location = "/Settings/Prices?sid=@ViewBag.Stadium.Id&&mid=@ViewBag.Match.Id";
+            var subFind = $(this);
+            if (validium()) {
+                var data = subFind.serialize();
+                var url = subFind.attr('action');
+                    $.post(url, data, function () {
+                    window.location = "/Settings/Prices?sid=@ViewBag.Stadium.Id&&mid=@ViewBag.Match.Id";
+                    });
+                }
             });
-        });
-        // start validation
+            // start validation
             $(".iksar").keydown(function (e) {
                 // Allow: backspace, delete, tab, escape, enter and .
                 if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
@@ -34,8 +37,19 @@
                     e.preventDefault();
                 }
             });
-        // end validation
+            // end validation
     });
+    function validium() {
+        var nonError = true;
+        var errMessage1 = "", errMessage2 = "";
+        $(".iksar").val(function (i, v) {
+            if ((v.length > 0) && (isFinite(v) == false)) { nonError = false; errMessage1 = "Данные не сохранены, так как одно или несколько значений содержат ошибку.\n" }
+            if ((v.length > 0) && (isFinite(v) == true) && (v > 1000000000)) { nonError = false; errMessage2 = "Данные не сохранены, так как цена ограничена значением 1000000000." }
+            return v;
+        });
+        if (nonError == false) alert(errMessage1 + errMessage2);
+        return nonError;
+    }
 </script>
 
 <div style="margin: 0 0 10px">
@@ -68,7 +82,7 @@
 @using (Html.BeginForm("Save", "PriceSetting", FormMethod.Post, new { Id = "FormForSave" }))
 {
     @Html.ValidationSummary(true)
-
+    
     <input type="submit" class="btn btn-primary" value="Сохранить" id="iksar" style="margin: 0 0 10px" />
 
 <div>
@@ -90,6 +104,7 @@
             </tr>
         </thead>
         <tbody>
+
             @foreach (var item in Model)
             {
                 <tr>
@@ -103,18 +118,20 @@
                         @Html.TextBoxFor(modelItem => item.SectorId, new { @class = "hidden", @readonly = "readonly" })
                     </td>
                     <td>
-                        @Html.TextBoxFor(modelItem => item.Name, new { @class = "form-control", @readonly = "readonly" })
+                        @Html.DisplayFor(modelItem => item.Name)
                     </td>
                     <td>
                         @Html.TextBoxFor(modelItem => item.PriceValue, new { @class = "form-control iksar" })
                     </td>
                 </tr>
             }
+
         </tbody>
 </table>
 </div>
     
 }
+
 
 
 

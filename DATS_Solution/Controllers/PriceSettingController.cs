@@ -38,12 +38,21 @@ namespace DATS.Controllers
 
                     if (mid == null)
                     {
-                        // если sid нет, выбераем первый встретившийся стадион
+                        // если mid нет, выбераем первое встретившееся мероприятие
                         var FindFirstMatch = Repository.Matches.FirstOrDefault<Match>(z => z.Id == z.Id);
 
                         if (FindFirstMatch == null)
                         {
-                            throw new ArgumentNullException("Ошибка! Отсутсвуют стадионы в справочнике стадионов.");
+                            // перехват ошибки
+                            ViewBag.Stadium = FindFirstStadium;
+                            ViewBag.Match = new Match();
+                            ViewBag.Matchess = Repository.Matches.Where<Match>(m => m.StadiumId == 0).ToList<Match>();
+                            var JoinMoq1 = (from sk in Repository.Sectors
+                                                   where sk.StadiumId == 0
+                                                   select new PriceView()
+                                                   {
+                                                   }).ToList<PriceView>();
+                            return PartialView(JoinMoq1);
                         }
                         else
                         {
@@ -72,12 +81,21 @@ namespace DATS.Controllers
 
                 if (mid == null)
                 {
-                    // если sid нет, выбераем первый встретившийся стадион
+                    // если mid нет, выбераем первое встретившееся мероприятие
                     var FindFirstMatch = Repository.Matches.FirstOrDefault<Match>(z => z.Id == z.Id && z.StadiumId == (int)sid);
 
                     if (FindFirstMatch == null)
                     {
-                        throw new ArgumentNullException("Ошибка! Отсутсвуют стадионы в справочнике стадионов.");
+                        // перехват ошибки
+                        ViewBag.Stadium = Repository.Stadiums.FirstOrDefault<Stadium>(z => z.Id == (int)sid);
+                        ViewBag.Match = new Match();
+                        ViewBag.Matchess = Repository.Matches.Where<Match>(m => m.StadiumId == 0).ToList<Match>();
+                        var JoinMoq2 = (from sk in Repository.Sectors
+                                               where sk.StadiumId == 0
+                                               select new PriceView()
+                                               {
+                                               }).ToList<PriceView>();
+                        return PartialView(JoinMoq2);
                     }
                     else
                     {
@@ -174,7 +192,7 @@ namespace DATS.Controllers
                     {
                         TempMatchId = (int)MID;
                         TempSectorId = Int32.Parse(valueSectorId[i]);
-                        TempPriceValue = decimal.Parse(valuePrice[i].Replace("...", ".").Replace("..", ".").Replace(".", ","));
+                        TempPriceValue = decimal.Parse(valuePrice[i].Replace(".", ","));
                         FindFirstPrice = Repository.Prices.FirstOrDefault<Price>(z => (z.MatchId == TempMatchId) && (z.SectorId == TempSectorId));
 
                         if (FindFirstPrice != null)
@@ -187,6 +205,18 @@ namespace DATS.Controllers
                         {
                             FindFirstPrice = new Price { MatchId = TempMatchId, SectorId = TempSectorId, PriceValue = TempPriceValue };
                             ((DbContext)Repository).Entry<Price>(FindFirstPrice).State = EntityState.Added;
+                            Repository.SaveChanges();
+                        }
+                    } else if ((valueSectorId[i].Length > 0) && (valuePrice[i].Length == 0))
+                    {
+                        TempMatchId = (int)MID;
+                        TempSectorId = Int32.Parse(valueSectorId[i]);
+                        FindFirstPrice = Repository.Prices.FirstOrDefault<Price>(z => (z.MatchId == TempMatchId) && (z.SectorId == TempSectorId));
+
+                        if (FindFirstPrice != null)
+                        {
+                            FindFirstPrice.PriceValue = 0;
+                            ((DbContext)Repository).Entry<Price>(FindFirstPrice).State = EntityState.Modified;
                             Repository.SaveChanges();
                         }
                     }
