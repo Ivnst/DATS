@@ -12,11 +12,13 @@
             return v.replace(",", "."); });
         $('#FormForSave').submit(function (event) {
             event.preventDefault();
-            var data = $(this).serialize();
-            var url = $(this).attr('action');
-            $.post(url, data, function () {
-                window.location = "/Settings/Prices?sid=@ViewBag.Stadium.Id&&mid=@ViewBag.Match.Id";
-            });
+            if (@ViewBag.Match != null) {
+                var data = $(this).serialize();
+                var url = $(this).attr('action');
+                $.post(url, data, function () {
+                    window.location = "/Settings/Prices?sid=@ViewBag.Stadium.Id&&mid=@ViewBag.Match.Id";
+                });
+            }
         });
         // start validation
             $(".iksar").keydown(function (e) {
@@ -68,7 +70,7 @@
 @using (Html.BeginForm("Save", "PriceSetting", FormMethod.Post, new { Id = "FormForSave" }))
 {
     @Html.ValidationSummary(true)
-
+    
     <input type="submit" class="btn btn-primary" value="Сохранить" id="iksar" style="margin: 0 0 10px" />
 
 <div>
@@ -90,6 +92,7 @@
             </tr>
         </thead>
         <tbody>
+
             @foreach (var item in Model)
             {
                 <tr>
@@ -110,11 +113,13 @@
                     </td>
                 </tr>
             }
+
         </tbody>
 </table>
 </div>
     
 }
+
 
 
 

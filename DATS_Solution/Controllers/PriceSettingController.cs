@@ -43,7 +43,16 @@ namespace DATS.Controllers
 
                         if (FindFirstMatch == null)
                         {
-                            throw new ArgumentNullException("Ошибка! Отсутсвуют стадионы в справочнике стадионов.");
+                            // перехват ошибки
+                            ViewBag.Stadium = FindFirstStadium;
+                            ViewBag.Match = new Match();
+                            ViewBag.Matchess = Repository.Matches.Where<Match>(m => m.StadiumId == 0).ToList<Match>();
+                            var JoinMoq1 = (from sk in Repository.Sectors
+                                                   where sk.StadiumId == 0
+                                                   select new PriceView()
+                                                   {
+                                                   }).ToList<PriceView>();
+                            return PartialView(JoinMoq1);
                         }
                         else
                         {
@@ -77,7 +86,16 @@ namespace DATS.Controllers
 
                     if (FindFirstMatch == null)
                     {
-                        throw new ArgumentNullException("Ошибка! Отсутсвуют стадионы в справочнике стадионов.");
+                        // перехват ошибки
+                        ViewBag.Stadium = Repository.Stadiums.FirstOrDefault<Stadium>(z => z.Id == (int)sid);
+                        ViewBag.Match = new Match();
+                        ViewBag.Matchess = Repository.Matches.Where<Match>(m => m.StadiumId == 0).ToList<Match>();
+                        var JoinMoq2 = (from sk in Repository.Sectors
+                                               where sk.StadiumId == 0
+                                               select new PriceView()
+                                               {
+                                               }).ToList<PriceView>();
+                        return PartialView(JoinMoq2);
                     }
                     else
                     {
