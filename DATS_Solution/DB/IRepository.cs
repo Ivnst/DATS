@@ -34,6 +34,7 @@ namespace DATS
     //SoldPlaces
     List<SoldPlace> GetSoldPlaces(Match match, Sector sector);
     List<SoldPlace> GetSoldPlacesByReservationId(int reservationId, bool onlyReserved);
+    List<Place> GetPlacesByReservationId(int reservationId, bool onlyReserved);
     void ProcessTicketsSelling(Match match, Sector sector, List<PlaceView> places);
     void ProcessTicketsReturning(Match match, Sector sector, List<PlaceView> places);
     int ProcessTicketsReservation(ClientView clientView, List<PlaceView> places);

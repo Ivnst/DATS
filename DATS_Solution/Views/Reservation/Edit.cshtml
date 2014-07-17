@@ -32,7 +32,7 @@
             </tr>
             <tr>
               <td>@Html.LabelFor(model => model.PlacesList)</td>
-              <td>@Html.DisplayFor(model => model.PlacesList)</td>
+              <td>@Html.Raw(Html.Encode(Model.PlacesList).Replace("\n", "<br />"))</td>
             </tr>
             <tr>
               <td>@Html.LabelFor(model => model.Count)</td>

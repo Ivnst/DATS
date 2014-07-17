@@ -71,7 +71,7 @@ namespace DATS
 
 
     /// <summary>
-    /// Возвращает список проданных мест на указанное мероприятие в указанном секторе. 
+    /// Возвращает список проданных мест, забронированных указанным клиентом
     /// </summary>
     /// <param name="reservationId">Код клиента. Он же код брони</param>
     /// <param name="onlyReserved">Если истина - возвращаются только НЕ ПРОДАННЫЕ билеты. Если ложь - то и забронированные и проданные</param>
@@ -96,6 +96,32 @@ namespace DATS
       }
     }
 
+
+    /// <summary>
+    /// Возвращает список мест, забронированных указанным клиентом
+    /// </summary>
+    /// <param name="reservationId">Код клиента. Он же код брони</param>
+    /// <param name="onlyReserved">Если истина - возвращаются только НЕ ПРОДАННЫЕ билеты. Если ложь - то и забронированные и проданные</param>
+    /// <returns></returns>
+    public List<Place> GetPlacesByReservationId(int reservationId, bool onlyReserved)
+    {
+      if (onlyReserved)
+      {
+        return (from sp in SoldPlaces
+                join p in Places on sp.PlaceId equals p.Id
+                where sp.ClientId == reservationId
+                where sp.IsReservation == true
+                select p).ToList<Place>();
+
+      }
+      else
+      {
+        return (from sp in SoldPlaces
+                join p in Places on sp.PlaceId equals p.Id
+                where sp.ClientId == reservationId
+                select p).ToList<Place>();
+      }
+    }
     
     
     /// <summary>
