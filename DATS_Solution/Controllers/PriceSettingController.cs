@@ -38,7 +38,7 @@ namespace DATS.Controllers
 
                     if (mid == null)
                     {
-                        // если sid нет, выбераем первый встретившийся стадион
+                        // если mid нет, выбераем первое встретившееся мероприятие
                         var FindFirstMatch = Repository.Matches.FirstOrDefault<Match>(z => z.Id == z.Id);
 
                         if (FindFirstMatch == null)
@@ -72,7 +72,7 @@ namespace DATS.Controllers
 
                 if (mid == null)
                 {
-                    // если sid нет, выбераем первый встретившийся стадион
+                    // если mid нет, выбераем первое встретившееся мероприятие
                     var FindFirstMatch = Repository.Matches.FirstOrDefault<Match>(z => z.Id == z.Id && z.StadiumId == (int)sid);
 
                     if (FindFirstMatch == null)
@@ -187,6 +187,18 @@ namespace DATS.Controllers
                         {
                             FindFirstPrice = new Price { MatchId = TempMatchId, SectorId = TempSectorId, PriceValue = TempPriceValue };
                             ((DbContext)Repository).Entry<Price>(FindFirstPrice).State = EntityState.Added;
+                            Repository.SaveChanges();
+                        }
+                    } else if ((valueSectorId[i].Length > 0) && (valuePrice[i].Length == 0))
+                    {
+                        TempMatchId = (int)MID;
+                        TempSectorId = Int32.Parse(valueSectorId[i]);
+                        FindFirstPrice = Repository.Prices.FirstOrDefault<Price>(z => (z.MatchId == TempMatchId) && (z.SectorId == TempSectorId));
+
+                        if (FindFirstPrice != null)
+                        {
+                            FindFirstPrice.PriceValue = 0;
+                            ((DbContext)Repository).Entry<Price>(FindFirstPrice).State = EntityState.Modified;
                             Repository.SaveChanges();
                         }
                     }
