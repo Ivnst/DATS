@@ -8,19 +8,20 @@
 
 <script>
     $(document).ready(function () {
-        $(".iksar").val(function (i, v) { 
+        $(".iksar").val(function (i, v) {
             return v.replace(",", "."); });
         $('#FormForSave').submit(function (event) {
             event.preventDefault();
-            if (@ViewBag.Match != null) {
-                var data = $(this).serialize();
-                var url = $(this).attr('action');
-                $.post(url, data, function () {
+            var subFind = $(this);
+            if (validium()) {
+                var data = subFind.serialize();
+                var url = subFind.attr('action');
+                    $.post(url, data, function () {
                     window.location = "/Settings/Prices?sid=@ViewBag.Stadium.Id&&mid=@ViewBag.Match.Id";
-                });
-            }
-        });
-        // start validation
+                    });
+                }
+            });
+            // start validation
             $(".iksar").keydown(function (e) {
                 // Allow: backspace, delete, tab, escape, enter and .
                 if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
@@ -36,8 +37,19 @@
                     e.preventDefault();
                 }
             });
-        // end validation
+            // end validation
     });
+    function validium() {
+        var nonError = true;
+        var errMessage1 = "", errMessage2 = "";
+        $(".iksar").val(function (i, v) {
+            if ((v.length > 0) && (isFinite(v) == false)) { nonError = false; errMessage1 = "Данные не сохранены, так как одно или несколько значений содержат ошибку.\n" }
+            if ((v.length > 0) && (isFinite(v) == true) && (v > 1000000000)) { nonError = false; errMessage2 = "Данные не сохранены, так как цена ограничена значением 1000000000." }
+            return v;
+        });
+        if (nonError == false) alert(errMessage1 + errMessage2);
+        return nonError;
+    }
 </script>
 
 <div style="margin: 0 0 10px">

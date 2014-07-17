@@ -192,7 +192,7 @@ namespace DATS.Controllers
                     {
                         TempMatchId = (int)MID;
                         TempSectorId = Int32.Parse(valueSectorId[i]);
-                        TempPriceValue = decimal.Parse(valuePrice[i].Replace("...", ".").Replace("..", ".").Replace(".", ","));
+                        TempPriceValue = decimal.Parse(valuePrice[i].Replace(".", ","));
                         FindFirstPrice = Repository.Prices.FirstOrDefault<Price>(z => (z.MatchId == TempMatchId) && (z.SectorId == TempSectorId));
 
                         if (FindFirstPrice != null)
