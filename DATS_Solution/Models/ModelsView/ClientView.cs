@@ -14,11 +14,13 @@ namespace DATS
     /// Имя клиента
     /// </summary>
     [DisplayName("Имя клиента")]
+    [Required(ErrorMessage = "Укажите, пожалуйста, имя клиента!")]
     public string Name { get; set; }
     /// <summary>
     /// Контактные данные клиента
     /// </summary>
     [DisplayName("Контактные данные")]
+    [Required(ErrorMessage = "Укажите, пожалуйста, контактные данные клиента клиента!")]
     public string Contact { get; set; }
     /// <summary>
     /// Информация о выбранных местах
