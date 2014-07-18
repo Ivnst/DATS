@@ -2,8 +2,7 @@
 @using DATS;
 
 @{
-    ViewBag.Title = "Справочник мероприятий: Список";
-    Layout = "~/Views/Shared/_SettingLayout.cshtml";
+    Layout = "~/Views/Shared/_SettingsLayout.cshtml";
 }
 
 <div class="btn-group" style="margin: 0 0 10px">
@@ -13,7 +12,7 @@
     <ul class="dropdown-menu" role="menu">
         @foreach (var sv in ViewBag.Stadiumes)
         {
-            <li><a href="/Settings/Matches?sid=@sv.Id">@sv.Name</a></li>
+            <li><a href="/MatchSetting/Index?sid=@sv.Id">@sv.Name</a></li>
         }
 
     </ul>

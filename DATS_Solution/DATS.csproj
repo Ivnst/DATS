@@ -154,7 +154,6 @@
     <Compile Include="Controllers\PriceSettingController.cs" />
     <Compile Include="Controllers\SectorController.cs" />
     <Compile Include="Controllers\SectorSettingController.cs" />
-    <Compile Include="Controllers\SettingsController.cs" />
     <Compile Include="Controllers\StadiumSettingController.cs" />
     <Compile Include="Controllers\UtilsController.cs" />
     <Compile Include="DB\IRepository.cs" />
@@ -305,8 +304,6 @@
     </Content>
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Shared\Error.cshtml" />
-    <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Shared\_SettingLayout.cshtml" />
     <Content Include="Views\MatchSetting\Index.cshtml" />
     <Content Include="Views\MatchSetting\Create.cshtml" />
@@ -315,12 +312,8 @@
     <Content Include="Scripts\jquery.validate.globalize.min.js.map" />
     <Content Include="Views\Home\Error.cshtml" />
     <Content Include="Views\Shared\_HomeLayout.cshtml" />
-    <Content Include="Views\Settings\Stadiums.cshtml" />
     <Content Include="Views\Shared\_SettingsLayout.cshtml" />
     <Content Include="Views\StadiumSetting\Index.cshtml" />
-    <Content Include="Views\Settings\Matches.cshtml" />
-    <Content Include="Views\Settings\Sectors.cshtml" />
-    <Content Include="Views\Settings\Prices.cshtml" />
     <Content Include="Views\StadiumSetting\Create.cshtml" />
     <Content Include="Views\StadiumSetting\Edit.cshtml" />
     <Content Include="Views\StadiumSetting\Delete.cshtml" />
@@ -335,6 +328,7 @@
     <Content Include="Views\Utils\MessageBox.cshtml" />
     <Content Include="Views\Reservation\Edit.cshtml" />
     <Content Include="Views\PriceSetting\Index.cshtml" />
+    <Content Include="Views\Shared\_SimpleLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

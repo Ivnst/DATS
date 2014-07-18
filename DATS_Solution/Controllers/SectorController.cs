@@ -162,7 +162,7 @@ namespace DATS.Controllers
           if (sector == null)
           {
             logger.Warn("/Sector/Configure : Не найден указанный сектор. sid = " + sid.ToString());
-            return RedirectToAction("Sectors", "Settings");
+            return RedirectToAction("Index", "SectorSetting");
           }
 
           Stadium stadium = Repository.FindStadium(sector.StadiumId);

@@ -11,9 +11,9 @@ namespace DATS.Controllers
     public class MatchSettingController : BaseController
     {
 
-        [ChildActionOnly]
         public ActionResult Index(int? sid)
         {
+          ViewBag.Tab = 3;
           ViewBag.Stadiumes = Repository.GetAllStadiums();
 
           if (sid == null)
@@ -28,13 +28,13 @@ namespace DATS.Controllers
             else
             {
               ViewBag.Stadium = FindFirstStadium;
-              return PartialView(Repository.Matches.Where(p => p.StadiumId == FindFirstStadium.Id));
+              return View(Repository.Matches.Where(p => p.StadiumId == FindFirstStadium.Id));
             }
           }
           else
           {
             ViewBag.Stadium = Repository.FindStadium((int)sid);
-            return PartialView(Repository.Matches.Where(p => p.StadiumId == (int)sid));
+            return View(Repository.Matches.Where(p => p.StadiumId == (int)sid));
           }
 
         }
@@ -62,7 +62,7 @@ namespace DATS.Controllers
                 string msg = string.Format(@"Мероприятие ""{0}"" успешно сохранено.", match.Name);
                 TempData["message"] = msg;
                 logger.Info(msg);
-                return RedirectToAction("Matches", "Settings", new { sid = match.StadiumId });
+                return RedirectToAction("Index", "MatchSetting", new { sid = match.StadiumId });
             }
             else
             {
@@ -97,7 +97,7 @@ namespace DATS.Controllers
                 string msg = string.Format(@"Мероприятие ""{0}"" успешно создано.", match.Name);
                 TempData["message"] = msg;
                 logger.Info(msg);
-                return RedirectToAction("Matches", "Settings", new { sid = match.StadiumId });
+                return RedirectToAction("Index", "MatchSetting", new { sid = match.StadiumId });
             }
             else
             {
@@ -126,7 +126,7 @@ namespace DATS.Controllers
           string msg = string.Format(@"Мероприятие было удалено.", match.Name);
           TempData["message"] = msg;
           logger.Info(msg);
-          return RedirectToAction("Matches", "Settings", new { sid = match.StadiumId });
+          return RedirectToAction("Index", "MatchSetting", new { sid = match.StadiumId });
         }
 
 

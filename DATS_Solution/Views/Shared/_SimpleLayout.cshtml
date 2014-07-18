@@ -9,6 +9,7 @@
     @RenderSection("styles", required: false)
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 </head>
@@ -26,28 +27,6 @@
 
       <ul class="nav navbar-nav">
         <li><a href="/Home/Index">Главная</a></li>
-      </ul>
-      
-      <ul class="nav navbar-nav">
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">@ViewBag.CurrentStadium.Name <b class="caret"></b></a>
-          <ul class="dropdown-menu">
-            @foreach(DATS.Stadium stadium in ViewBag.Stadiums)
-            {
-               <li class="@((@ViewBag.CurrentStadium.Id==stadium.Id)?"active":"")"><a href="/Home/Stadium?sid=@stadium.Id">@stadium.Name</a></li>  
-            }
-          </ul>
-        </li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Мероприятия <b class="caret"></b></a>
-          <ul class="dropdown-menu">
-            @foreach(DATS.Match match in ViewBag.Matches)
-            {
-               <li class="@((@ViewBag.CurrentMatch.Id==match.Id)?"active":"")"><a href="/Home/Match?mid=@match.Id">@match.Name</a></li>  
-            }
-          </ul>
-        </li>
-        <li><a href="/Reservation/Index">Забронированные билеты</a></li>
       </ul>
 
       <ul class="nav navbar-nav navbar-right">

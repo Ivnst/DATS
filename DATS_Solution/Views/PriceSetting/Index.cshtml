@@ -3,7 +3,7 @@
 
 @{
     ViewBag.Title = "Справочник цен: Список";
-    Layout = "~/Views/Shared/_SettingLayout.cshtml";
+    Layout = "~/Views/Shared/_SettingsLayout.cshtml";
 }
 
 <script>
@@ -17,7 +17,7 @@
                 var data = subFind.serialize();
                 var url = subFind.attr('action');
                     $.post(url, data, function () {
-                    window.location = "/Settings/Prices?sid=@ViewBag.Stadium.Id&&mid=@ViewBag.Match.Id";
+                    window.location = "/PriceSetting/Index?sid=@ViewBag.Stadium.Id&&mid=@ViewBag.Match.Id";
                     });
                 }
             });
@@ -60,7 +60,7 @@
         <ul class="dropdown-menu" role="menu">
             @foreach (var sv in ViewBag.Stadiumes)
             {
-                <li><a href="/Settings/Prices?sid=@sv.Id">@sv.Name</a></li>
+                <li><a href="/PriceSetting/Index?sid=@sv.Id">@sv.Name</a></li>
             }
 
         </ul>
@@ -72,7 +72,7 @@
         <ul class="dropdown-menu" role="menu">
             @foreach (var mv in ViewBag.Matchess)
             {
-                <li><a href="/Settings/Prices?sid=@ViewBag.Stadium.Id&&mid=@mv.Id">@mv.Name</a></li>
+                <li><a href="/PriceSetting/Index?sid=@ViewBag.Stadium.Id&&mid=@mv.Id">@mv.Name</a></li>
             }
 
         </ul>

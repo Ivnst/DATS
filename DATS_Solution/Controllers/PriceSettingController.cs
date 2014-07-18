@@ -12,9 +12,9 @@ namespace DATS.Controllers
     {
 
 
-        [ChildActionOnly]
         public ActionResult Index(int? sid, int? mid)
         {
+            ViewBag.Tab = 4;
             // переменные для сбора данных в ветвлениях
             int SID, MID;
             Stadium STADIUM;
@@ -52,7 +52,7 @@ namespace DATS.Controllers
                                                    select new PriceView()
                                                    {
                                                    }).ToList<PriceView>();
-                            return PartialView(JoinMoq1);
+                            return View(JoinMoq1);
                         }
                         else
                         {
@@ -95,7 +95,7 @@ namespace DATS.Controllers
                                                select new PriceView()
                                                {
                                                }).ToList<PriceView>();
-                        return PartialView(JoinMoq2);
+                        return View(JoinMoq2);
                     }
                     else
                     {
@@ -139,7 +139,7 @@ namespace DATS.Controllers
                                    }).ToList<PriceView>();
 
 
-            return PartialView(JoinSectorPrice);
+            return View(JoinSectorPrice);
 
 
         }

@@ -10,9 +10,9 @@ namespace DATS.Controllers
     public class SectorSettingController : BaseController
     {
 
-        [ChildActionOnly]
         public ActionResult Index(int? sid)
         {
+            ViewBag.Tab = 2;
             ViewBag.Stadiumes = Repository.GetAllStadiums();
 
             if (sid == null)
@@ -27,13 +27,13 @@ namespace DATS.Controllers
                 else
                 {
                     ViewBag.Stadium = FindFirstStadium;
-                    return PartialView(Repository.Sectors.Where(p => p.StadiumId == FindFirstStadium.Id));
+                    return View(Repository.Sectors.Where(p => p.StadiumId == FindFirstStadium.Id));
                 }
             }
             else
             {
                 ViewBag.Stadium = Repository.FindStadium((int)sid);
-                return PartialView(Repository.Sectors.Where(p => p.StadiumId == (int)sid));
+                return View(Repository.Sectors.Where(p => p.StadiumId == (int)sid));
             }
 
         }
@@ -60,7 +60,7 @@ namespace DATS.Controllers
                 string msg = string.Format(@"Сектор ""{0}"" успешно сохранен.", sector.Name);
                 TempData["message"] = msg;
                 logger.Info(msg);
-                return RedirectToAction("Sectors", "Settings", new { sid = TDStadiumId });
+                return RedirectToAction("Index", "SectorSetting", new { sid = TDStadiumId });
             }
             else
             {
@@ -96,7 +96,7 @@ namespace DATS.Controllers
                 string msg = string.Format(@"Сектор ""{0}"" успешно создан.", sector.Name); ;
                 TempData["message"] = msg;
                 logger.Info(msg);
-                return RedirectToAction("Sectors", "Settings", new { sid = TDStadiumId });
+                return RedirectToAction("Index", "SectorSetting", new { sid = TDStadiumId });
             }
             else
             {
@@ -127,7 +127,7 @@ namespace DATS.Controllers
             string msg = string.Format(@"Сектор был удален.", sector.Name);
             TempData["message"] = msg;
             logger.Info(msg);
-            return RedirectToAction("Sectors", "Settings", new { sid = sector.StadiumId });
+            return RedirectToAction("Index", "SectorSetting", new { sid = sector.StadiumId });
         }
 
 
@@ -137,7 +137,7 @@ namespace DATS.Controllers
           Sector sector =  Repository.FindSector(id);
           if(sector == null)
           {
-             return RedirectToAction("Sectors", "Settings");
+            return RedirectToAction("Index", "SectorSetting");
           }
 
           try
@@ -154,7 +154,7 @@ namespace DATS.Controllers
             logger.Error(msg, ex);
           }
 
-          return RedirectToAction("Sectors", "Settings", new { sid = sector.StadiumId });
+          return RedirectToAction("Index", "SectorSetting", new { sid = sector.StadiumId });
         }
     }
 }

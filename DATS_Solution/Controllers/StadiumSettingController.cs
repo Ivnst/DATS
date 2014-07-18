@@ -11,10 +11,10 @@ namespace DATS.Controllers
     {
         //
         // GET: /StadiumSetting/
-        [ChildActionOnly]
         public ActionResult Index()
         {
-            return PartialView(Repository.Stadiums);
+            ViewBag.Tab = 1;
+            return View(Repository.Stadiums);
         }
 
         public ActionResult Create()
@@ -32,7 +32,7 @@ namespace DATS.Controllers
             string msg = string.Format(@"Стадион ""{0}"" успешно создан.", stadium.Name);
             TempData["message"] = msg;
             logger.Info(msg);
-            return RedirectToAction("Stadiums", "Settings");
+            return RedirectToAction("Index", "StadiumSetting");
           }
           else
           {
@@ -64,7 +64,7 @@ namespace DATS.Controllers
             string msg = string.Format(@"Стадион ""{0}"" успешно сохранен.", stadium.Name); ;
             TempData["message"] = msg;
             logger.Info(msg);
-            return RedirectToAction("Stadiums", "Settings");
+            return RedirectToAction("Index", "StadiumSetting");
           }
           else
           {
@@ -92,7 +92,7 @@ namespace DATS.Controllers
           string msg = string.Format(@"Стадион был удалён.", stadium.Name);
           TempData["message"] = msg;
           logger.Info(msg);
-          return RedirectToAction("Stadiums", "Settings");
+          return RedirectToAction("Index", "StadiumSetting");
         }
 
     }

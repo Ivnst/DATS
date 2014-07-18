@@ -13,3 +13,7 @@ $.validator.messages.rangelength = $.validator.format("Пожалуйста, в�
 $.validator.messages.range = $.validator.format("Пожалуйста, введите значение от {0} до {1}.");
 $.validator.messages.max = $.validator.format("Пожалуйста, введите значение меньшее или равное {0}.");
 $.validator.messages.min = $.validator.format("Пожалуйста, введите значение большее или равное {0}.");
+
+$.ajaxSetup({
+    async: false
+});

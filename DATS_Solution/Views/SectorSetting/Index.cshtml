@@ -1,8 +1,7 @@
 ﻿@model IEnumerable<DATS.Sector>
 
 @{
-    ViewBag.Title = "Справочник секторов: Список";
-    Layout = "~/Views/Shared/_SettingLayout.cshtml";
+    Layout = "~/Views/Shared/_SettingsLayout.cshtml";
 }
 
 <script type="text/javascript">
@@ -22,7 +21,7 @@
     <ul class="dropdown-menu" role="menu">
         @foreach (var sv in ViewBag.Stadiumes)
         {
-            <li><a href="/Settings/Sectors?sid=@sv.Id">@sv.Name</a></li>
+            <li><a href="/SectorSetting/Index?sid=@sv.Id">@sv.Name</a></li>
         }
 
     </ul>

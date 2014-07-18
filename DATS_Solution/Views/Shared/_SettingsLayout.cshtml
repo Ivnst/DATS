@@ -9,6 +9,7 @@
     @RenderSection("styles", required: false)
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 </head>
@@ -29,13 +30,39 @@
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="/Settings/Index">Настройки</a></li>
+        <li><a href="/StadiumSetting/Index">Настройки</a></li>
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
 
-@RenderBody()
+<div class="container bs-docs-container">
+    <div class="row">
+
+        <div class="col-md-3">
+            <div class="list-group">
+                <a class="list-group-item @((ViewBag.Tab==1)?"active":"")" href="/StadiumSetting/Index"><img class="" src="~/Images/stadium.png" /> Стадионы</a>
+                <a class="list-group-item @((ViewBag.Tab==2)?"active":"")" href="/SectorSetting/Index"><img class="" src="~/Images/sector.png" /> Секторы</a>
+                <a class="list-group-item @((ViewBag.Tab==3)?"active":"")" href="/MatchSetting/Index"><img class="" src="~/Images/ball.png" /> Мероприятия</a>
+                <a class="list-group-item @((ViewBag.Tab==4)?"active":"")" href="/PriceSetting/Index"><img class="" src="~/Images/coins.png" /> Цены</a>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+          @if (TempData["message"] != null)
+          {
+            <div class="alert alert-warning alert-dismissible" role="alert" style="margin: 0 0 10px 0;">
+              <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+              @TempData["message"]
+            </div>
+          }
+            @RenderBody()
+        </div>
+
+    </div>
+</div>
+
 
 </body>
 </html>
