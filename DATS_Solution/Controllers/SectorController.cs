@@ -39,6 +39,7 @@ namespace DATS.Controllers
 
           ViewBag.CurrentSector = sector;
           ViewBag.CurrentMatch = match;
+          ViewBag.CurrentPrice = Repository.GetPrice(sector.Id, match.Id).ToString().Replace(",", ".");
 
           return View();
         }
