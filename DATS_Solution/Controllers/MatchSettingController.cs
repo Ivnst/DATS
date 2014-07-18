@@ -59,8 +59,9 @@ namespace DATS.Controllers
                 ((DbContext)Repository).Entry<Match>(match).State = EntityState.Modified;
                 Repository.SaveChanges();
 
-                TempData["message"] = string.Format(@"Мероприятие ""{0}"" успешно сохранено.", match.Name);
-                logger.Info(TempData["message"]);
+                string msg = string.Format(@"Мероприятие ""{0}"" успешно сохранено.", match.Name);
+                TempData["message"] = msg;
+                logger.Info(msg);
                 return RedirectToAction("Matches", "Settings", new { sid = match.StadiumId });
             }
             else
@@ -92,9 +93,10 @@ namespace DATS.Controllers
             {
                 ((DbContext)Repository).Entry<Match>(match).State = EntityState.Added;
                 Repository.SaveChanges();
-
-                TempData["message"] = string.Format(@"Мероприятие ""{0}"" успешно создано.", match.Name);
-                logger.Info(TempData["message"]);
+                
+                string msg = string.Format(@"Мероприятие ""{0}"" успешно создано.", match.Name);
+                TempData["message"] = msg;
+                logger.Info(msg);
                 return RedirectToAction("Matches", "Settings", new { sid = match.StadiumId });
             }
             else
@@ -121,8 +123,9 @@ namespace DATS.Controllers
           ((DbContext)Repository).Entry<Match>(match).State = EntityState.Deleted;
           Repository.SaveChanges();
 
-          TempData["message"] = string.Format(@"Мероприятие было удалено.", match.Name);
-          logger.Info(TempData["message"]);
+          string msg = string.Format(@"Мероприятие было удалено.", match.Name);
+          TempData["message"] = msg;
+          logger.Info(msg);
           return RedirectToAction("Matches", "Settings", new { sid = match.StadiumId });
         }
 

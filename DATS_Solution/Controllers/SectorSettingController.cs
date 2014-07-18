@@ -57,8 +57,9 @@ namespace DATS.Controllers
                 ((DbContext)Repository).Entry<Sector>(sector).State = EntityState.Modified;
                 Repository.SaveChanges();
                 int TDStadiumId = sector.StadiumId;
-                TempData["message"] = string.Format(@"Сектор ""{0}"" успешно сохранен.", sector.Name);
-                logger.Info(TempData["message"]);
+                string msg = string.Format(@"Сектор ""{0}"" успешно сохранен.", sector.Name);
+                TempData["message"] = msg;
+                logger.Info(msg);
                 return RedirectToAction("Sectors", "Settings", new { sid = TDStadiumId });
             }
             else
@@ -92,8 +93,9 @@ namespace DATS.Controllers
                 ((DbContext)Repository).Entry<Sector>(sector).State = EntityState.Added;
                 Repository.SaveChanges();
                 int TDStadiumId = sector.StadiumId;
-                TempData["message"] = string.Format(@"Сектор ""{0}"" успешно создан.", sector.Name);
-                logger.Info(TempData["message"]);
+                string msg = string.Format(@"Сектор ""{0}"" успешно создан.", sector.Name); ;
+                TempData["message"] = msg;
+                logger.Info(msg);
                 return RedirectToAction("Sectors", "Settings", new { sid = TDStadiumId });
             }
             else
@@ -122,8 +124,9 @@ namespace DATS.Controllers
             ((DbContext)Repository).Entry<Sector>(sector).State = EntityState.Deleted;
             Repository.SaveChanges();
 
-            TempData["message"] = string.Format(@"Сектор был удален.", sector.Name);
-            logger.Info(TempData["message"]);
+            string msg = string.Format(@"Сектор был удален.", sector.Name);
+            TempData["message"] = msg;
+            logger.Info(msg);
             return RedirectToAction("Sectors", "Settings", new { sid = sector.StadiumId });
         }
 
@@ -140,13 +143,15 @@ namespace DATS.Controllers
           try
           {
             Sector newSector = Repository.CopySector(sector);
-            TempData["message"] = string.Format(@"Сектор ""{0}"" успешно скопирован в новый сектор ""{1}"".", sector.Name, newSector.Name);
-            logger.Info(TempData["message"]);
+            string msg = string.Format(@"Сектор ""{0}"" успешно скопирован в новый сектор ""{1}"".", sector.Name, newSector.Name);
+            TempData["message"] = msg;
+            logger.Info(msg);
           }
           catch (System.Exception ex)
           {
-            TempData["message"] = "При копировании сектора произошла ошибка! " + ex.Message;
-            logger.Error(TempData["message"].ToString(), ex);
+            string msg = "При копировании сектора произошла ошибка! " + ex.Message;
+            TempData["message"] = msg;
+            logger.Error(msg, ex);
           }
 
           return RedirectToAction("Sectors", "Settings", new { sid = sector.StadiumId });
