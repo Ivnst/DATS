@@ -263,6 +263,8 @@
     <Content Include="Images\sector.png" />
     <Content Include="Images\stadium.png" />
     <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\CustomValidation\ValidationMessages.js" />
+    <Content Include="Scripts\CustomValidation\StadiumValidation.js" />
     <Content Include="Scripts\Custom\SectorCommon.js" />
     <Content Include="Scripts\Custom\SectorEdit.js" />
     <Content Include="Scripts\Custom\SectorConfigure.js" />
@@ -377,7 +379,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>23197</DevelopmentServerPort>
+          <DevelopmentServerPort>43539</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

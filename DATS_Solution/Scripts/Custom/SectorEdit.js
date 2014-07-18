@@ -243,7 +243,7 @@ CanvasState.prototype.showInfo = function () {
     document.getElementById('lblCountFree').innerHTML = totalFree;
     document.getElementById('lblCountSold').innerHTML = totalSold;
     document.getElementById('lblCountReserved').innerHTML = totalReserved;
-    document.getElementById('lblPrice').innerHTML = 0;
+    document.getElementById('lblPrice').innerHTML = currPrice;
     document.getElementById('lblCountSelected').innerHTML = totalSelected;
     document.getElementById('lblTotalSumm').innerHTML = totalSumm;
 
@@ -311,6 +311,7 @@ CanvasState.prototype.sendData = function (newState) {
     var msg = "Подтвердите " + ((newState == 1) ? "ПРОДАЖУ" : "ВОЗВРАТ") + " следующих билетов:\n\n";
     msg += ticketsString;
     msg += "\nКоличество билетов: " + totalCount;
+    msg += "\nЦена билетов: " + (totalPrice / totalCount);
     msg += "\nОбщая стоимость: " + totalPrice;
     msg += "\n\nВыполнить операцию?";
 

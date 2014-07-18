@@ -39,6 +39,8 @@ namespace DATS.Controllers
         [HttpPost]
         public ActionResult Create(ClientView client)
         {
+          if (client.Contact == null) client.Contact = "";
+
           if (ModelState.IsValid)
           {
             //определяем места (в client.Data хранится ключ, по которому из кэша достаём json-данные, переданные туда заранее с помощью javscript)
