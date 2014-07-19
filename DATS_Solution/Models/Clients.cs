@@ -16,12 +16,13 @@ namespace DATS
     /// </summary>
     [Required(ErrorMessage = "Пожалуйста, укажите имя клиента!")]
     [DisplayName("Имя клиента")]
+    [StringLength(255)]
     public string Name { get; set; }
     /// <summary>
     /// Код матча
     /// </summary>
-    [Required(ErrorMessage = "Пожалуйста, укажите контактные данные клиента!")]
     [DisplayName("Контактные данные")]
+    [StringLength(255)]
     public string Contact { get; set; }
     /// <summary>
     /// Дата создания клиента

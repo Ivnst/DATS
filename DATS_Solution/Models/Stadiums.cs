@@ -28,6 +28,7 @@ namespace DATS
     /// Адрес стадиона
     /// </summary>
     [DisplayName("Адрес стадиона")]
+    [StringLength(255)]
     public string Address { get; set; }
     /// <summary>
     /// Путь к изображению со схемой

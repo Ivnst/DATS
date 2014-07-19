@@ -12,6 +12,7 @@ namespace DATS
     DbSet<Stadium> Stadiums { get; set; }
     DbSet<Sector> Sectors { get; set; }
     DbSet<Client> Clients { get; set; }
+    DbSet<Config> Configs { get; set; }
     DbSet<Match> Matches { get; set; }
     DbSet<Place> Places { get; set; }
     DbSet<Price> Prices { get; set; }

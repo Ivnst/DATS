@@ -157,6 +157,7 @@
     <Compile Include="Controllers\StadiumSettingController.cs" />
     <Compile Include="Controllers\UtilsController.cs" />
     <Compile Include="DB\IRepository.cs" />
+    <Compile Include="DB\Partials\SqlRep-Configs.cs" />
     <Compile Include="DB\Partials\SqlRep-SoldPlaces.cs" />
     <Compile Include="DB\Partials\SqlRep-Prices.cs" />
     <Compile Include="DB\Partials\SqlRep-Places.cs" />
@@ -179,6 +180,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Clients.cs" />
+    <Compile Include="Models\Configs.cs" />
     <Compile Include="Models\ModelsView\ClientView.cs" />
     <Compile Include="Models\ModelsView\ReservationView.cs" />
     <Compile Include="Models\ModelsView\PlaceView.cs" />
