@@ -186,6 +186,7 @@
     <Compile Include="Models\Clients.cs" />
     <Compile Include="Models\Configs.cs" />
     <Compile Include="Models\ModelsView\ClientView.cs" />
+    <Compile Include="Models\ModelsView\ConfigView.cs" />
     <Compile Include="Models\ModelsView\ReservationView.cs" />
     <Compile Include="Models\ModelsView\PlaceView.cs" />
     <Compile Include="Models\ModelsView\PriceView.cs" />
