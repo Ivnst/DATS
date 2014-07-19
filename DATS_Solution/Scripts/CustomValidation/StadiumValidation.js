@@ -11,6 +11,7 @@
         success: function (element) {
             element.addClass('valid')            
             .closest('.editor-field').removeClass('has-error').addClass('has-success');;
-        }
+        },
+        onfocusout: false
 
     });
