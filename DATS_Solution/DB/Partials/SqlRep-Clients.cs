@@ -1,6 +1,7 @@
 ﻿using System.Data.Entity;
 using System.Linq;
 using System.Collections.Generic;
+using System;
 
 namespace DATS
 {
@@ -56,6 +57,33 @@ namespace DATS
                     group by c.Id, c.Name, c.Contact, sp.SectorId, s.Name, sp.Summ,c.Date";
 
       return this.Database.SqlQuery<ReservationView>(sql, match.Id).ToList();
+    }
+
+
+    /// <summary>
+    /// Возвращает список бронирований, удовлетворяющих заданной строке поиска
+    /// </summary>
+    /// <param name="match"></param>
+    /// <returns></returns>
+    public List<ReservationView> GetReservationsList(string searchString)
+    {
+      int clientId;
+      bool isNumeric = Int32.TryParse(searchString, out clientId);
+
+      string sql = @"SELECT c.Id, c.Name, c.Contact, sp.SectorId, s.Name as SectorName, 
+                  COUNT(sp.Id) as [Count], sp.Summ as Price, (COUNT(sp.Id) * sp.Summ) as Summ, c.Date as ReservationDate
+                    FROM [SoldPlaces] as sp
+                    inner join [Clients] as c on c.Id = sp.ClientId
+                    inner join [Sectors] as s on s.Id = sp.SectorId
+                    inner join [Matches] as m on m.Id = sp.MatchId
+                    where sp.IsReservation = 1
+                      and ( " + ((isNumeric) ? "c.Id = @p0 or " : "")
+                          + @"c.Name like '%' + @p0 + '%' 
+                          or c.Contact like '%' + @p0 + '%' )
+                      and m.BeginsAt > @p1
+                    group by c.Id, c.Name, c.Contact, sp.SectorId, s.Name, sp.Summ,c.Date";
+
+      return this.Database.SqlQuery<ReservationView>(sql, searchString, DateTime.UtcNow).ToList();
     }
 
 

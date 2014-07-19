@@ -46,6 +46,7 @@ namespace DATS
 
     //Clients
     List<ReservationView> GetReservationsList(Match match);
+    List<ReservationView> GetReservationsList(string searchString);
     ReservationView GetReservationInfo(int Id);
     void SellAllReservation(ReservationView reservation);
     void ReleaseAllReservation(ReservationView reservation);

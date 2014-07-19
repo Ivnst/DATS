@@ -14,6 +14,23 @@
       </ul>
     </div>
 
+
+      @using (Html.BeginForm("Search", "Reservation"))
+      {
+        <div class="row">
+          <div class="col-md-5">
+            <div class="input-group">
+              <input type="text" class="form-control" name="s" value="@ViewBag.SearchString">
+              <span class="input-group-btn">
+                <button class="btn btn-primary" type="submit">
+                  Поиск</button>
+              </span>
+            </div>
+          </div>
+        </div>
+      }
+    <br />
+
     <div class="row">
       <div class="col-md-12">
         <table class="table table-striped table-bordered table-hover">

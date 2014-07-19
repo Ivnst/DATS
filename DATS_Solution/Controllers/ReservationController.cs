@@ -25,6 +25,24 @@ namespace DATS.Controllers
         }
 
 
+        /// <summary>
+        /// Поиск по брони
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public ActionResult Search(string s)
+        {
+          if (CurrentMatch == null) return RedirectToAction("Error", "Home", new { e = 2 });
+          if (string.IsNullOrEmpty(s)) return RedirectToAction("Index");
+          
+          FillViewBag(CurrentStadium, CurrentMatch);
+          List<ReservationView> list = Repository.GetReservationsList(s);
+          ViewBag.SearchString = s;
+
+          return View("Index", list);
+        }
+
+
         public ActionResult Create(int sid, int mid, string data)
         {
           ClientView client = new ClientView();
