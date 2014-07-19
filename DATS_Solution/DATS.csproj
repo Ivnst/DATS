@@ -269,6 +269,7 @@
     <Content Include="Images\sector.png" />
     <Content Include="Images\stadium.png" />
     <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\CustomValidation\ClientValidation.js" />
     <Content Include="Scripts\CustomValidation\MatchValidation.js" />
     <Content Include="Scripts\CustomValidation\SectorValidation.js" />
     <Content Include="Scripts\CustomValidation\ValidationMessages.js" />

@@ -20,7 +20,6 @@ namespace DATS
     /// Контактные данные клиента
     /// </summary>
     [DisplayName("Контактные данные")]
-    [Required(ErrorMessage = "Укажите, пожалуйста, контактные данные клиента клиента!")]
     public string Contact { get; set; }
     /// <summary>
     /// Информация о выбранных местах

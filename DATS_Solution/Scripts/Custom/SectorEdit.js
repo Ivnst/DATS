@@ -467,7 +467,7 @@ function init() {
     //если указан номер брони в url, то выводим его пользователю
     if (params.cid != undefined) {
         $('#myModal').modal({
-            remote: '/Utils/MessageBox?header=' + encodeURIComponent('Внимание!') + '&message=' + encodeURIComponent('Номер брони: ' + params.cid)
+            remote: '/Utils/MessageBox?header=' + encodeURIComponent('Внимание!') + '&message=' + encodeURIComponent('Сообщите клиенту номер брони: ' + params.cid + ' !')
         })
     }
 }
