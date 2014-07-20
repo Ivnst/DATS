@@ -266,6 +266,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Images\ball.png" />
     <Content Include="Images\coins.png" />
+    <Content Include="Images\configs.png" />
     <Content Include="Images\favicon.ico" />
     <Content Include="Images\sector.png" />
     <Content Include="Images\stadium.png" />
