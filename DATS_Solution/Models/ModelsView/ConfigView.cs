@@ -18,6 +18,7 @@ namespace DATS
     /// <summary>
     /// Время, за которое до начала мероприятия все забронированные места попадают в продажу (в минутах)
     /// </summary>
+    [DisplayName("Период времени до мероприятия, за который возвращать забронированные билеты в свободную продажу")]
     public int RemoveReservationPeriod { get; set; }
 
     #region <Static fields>
