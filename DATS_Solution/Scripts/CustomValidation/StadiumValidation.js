@@ -2,6 +2,7 @@
     $('#myModal form').validate({  // initialize plugin
         rules: {
             Name: { required: true, maxlength: 255 },
+            Address: { maxlength: 255 }
         },
 
         highlight: function (element) {
