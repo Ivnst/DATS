@@ -25,7 +25,7 @@ namespace DATS.Controllers
             if (sid == null)
             {
                 // если sid нет, выбераем первый встретившийся стадион
-                var FindFirstStadium = Repository.Stadiums.FirstOrDefault<Stadium>(z => z.Id == z.Id);
+                var FindFirstStadium = Repository.Stadiums.FirstOrDefault<Stadium>();
 
                 if (FindFirstStadium == null)
                 {
@@ -39,7 +39,7 @@ namespace DATS.Controllers
                     if (mid == null)
                     {
                         // если mid нет, выбераем первое встретившееся мероприятие
-                        var FindFirstMatch = Repository.Matches.FirstOrDefault<Match>(z => z.Id == z.Id);
+                        var FindFirstMatch = Repository.Matches.FirstOrDefault<Match>();
 
                         if (FindFirstMatch == null)
                         {

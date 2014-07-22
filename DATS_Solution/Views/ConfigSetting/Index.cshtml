@@ -61,15 +61,14 @@
         }
 
     </ul>
+    <button class="btn btn-primary" id="iksar" style="margin: 0 0 0 10px">Сохранить</button>
 </div>
 
 
 @using (Html.BeginForm("Save", "ConfigSetting", FormMethod.Post, new { Id = "FormForSave" }))
 {
     @Html.ValidationSummary(true)
-
-    <button class="btn btn-primary" id="iksar" style="margin: 0 0 10px" >Сохранить</button>
-
+        
 <table class="table table-striped table-bordered table-hover">
     <thead>
     <tr>

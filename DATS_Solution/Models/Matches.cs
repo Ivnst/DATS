@@ -13,6 +13,12 @@ namespace DATS
   [Table("Matches")]
   public class Match : ItemWithId
   {
+    // время по умолчанию, чтобы легче было вводить
+      public Match()
+      {
+          BeginsAt = DateTime.Now.Date;
+      }
+
     /// <summary>
     /// Код стадиона
     /// </summary>

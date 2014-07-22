@@ -11,6 +11,12 @@ namespace DATS
   /// </summary>
   public class ConfigView
   {
+      // значение параметра по умолчанию
+      public ConfigView()
+      {
+          RemoveReservationPeriod = 30;
+      }
+
     /// <summary>
     /// Имя стадиона
     /// </summary>
