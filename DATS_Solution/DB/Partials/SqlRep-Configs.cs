@@ -31,13 +31,17 @@ namespace DATS
       result.StadiumId = stadium.Id;
 
       //ищем необходимые параметры
+      int Tag = 0;
       foreach (Config config in configsList)
       {
+          Tag = 1;
         if (config.Name == ConfigView.RemoveReservationPeriod_ConfigName)
           result.RemoveReservationPeriod = Convert.ToInt32(config.Val);
 
         //если добавится новый параметр - добавить сюда
       }
+
+      if (Tag == 0) result.RemoveReservationPeriod = 30;
 
       return result;
     }

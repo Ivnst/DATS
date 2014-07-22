@@ -46,31 +46,12 @@ namespace DATS.Controllers
 
             ViewBag.Stadium = STADIUM;
 
-            var rrperiodCount = Repository.Configs.Where(cf => cf.StadiumId == SID && cf.Name == "rrperiod").Count();
+            ConfigView confView = Repository.GetConfigView(STADIUM);
 
-            if (rrperiodCount == 0)
-            {
-                Config config = new Config()
-                {
-                    StadiumId = SID,
-                    Name = "rrperiod",
-                    Val = "30"
-                };
-                Repository.Configs.Add(config);
-                Repository.SaveChanges();
-            }
+            List<ConfigView> listConfig = new List<ConfigView>();
+            listConfig.Add(confView);
 
-
-            var confView = (from cf in Repository.Configs.AsEnumerable()
-                                   where cf.StadiumId == SID && cf.Name == "rrperiod"
-                                   select new ConfigView()
-                                   {
-                                       StadiumId = (int)SID,
-                                       RemoveReservationPeriod = int.Parse(cf.Val)
-                                   }).ToList<ConfigView>();
-
-
-            return View(confView);
+            return View(listConfig);
 
         }
 
@@ -78,59 +59,40 @@ namespace DATS.Controllers
         [HttpPost]
         public ActionResult Save(FormCollection formCollection)
         {
-
             int? SID = null;
-            string[] valueStadiumId = null, valueTime = null;
-            int LengthCount = 0;
-            Config FindFirstTime = null;
-
+            int RRPeriod;
+            string valueStadiumId = null, valueTime = null;
+ 
             if (Request.IsAjaxRequest())
             {
-
 
                 foreach (var key in formCollection.AllKeys)
                 {
                     if ((string)key == "item.StadiumId")
                     {
-                        valueStadiumId = formCollection[key].Split(new Char[] { ',' });
-                        SID = Int32.Parse(valueStadiumId[0]);
-                        LengthCount = valueStadiumId.Length;
+                        valueStadiumId = formCollection[key];
+                        SID = Int32.Parse(valueStadiumId);
                     }
                     if ((string)key == "item.RemoveReservationPeriod")
                     {
-                        valueTime = formCollection[key].Split(new Char[] { ',' });
+                        valueTime = formCollection[key];
                     }
                 }
 
                 if (SID != null)
                 {
                     // создаём, модифицируем или удаляем данные
-                    for (var i = 0; i < LengthCount; i++)
-                    {
 
-                        if (valueTime[i].Length > 0)
+
+                        if (valueTime.Length > 0)
                         {
-                             FindFirstTime = Repository.Configs.FirstOrDefault<Config>(z => (z.StadiumId == SID) && (z.Name == "rrperiod"));
-
-                            if (FindFirstTime != null)
-                            {
-                                FindFirstTime.Val = valueTime[i];
-                                ((DbContext)Repository).Entry<Config>(FindFirstTime).State = EntityState.Modified;
-                                Repository.SaveChanges();
-                            }
+                            RRPeriod = Convert.ToInt32(valueTime);
+                            Repository.SetConfigView(new ConfigView { StadiumId = (int)SID, RemoveReservationPeriod = RRPeriod });
                          }
-                        else if (valueTime[i].Length == 0)
+                        else if (valueTime.Length == 0)
                         {
-                            FindFirstTime = Repository.Configs.FirstOrDefault<Config>(z => (z.StadiumId == SID) && (z.Name == "rrperiod"));
-
-                            if (FindFirstTime != null)
-                            {
-                                FindFirstTime.Val = "0";
-                                ((DbContext)Repository).Entry<Config>(FindFirstTime).State = EntityState.Modified;
-                                Repository.SaveChanges();
-                            }
+                            Repository.SetConfigView(new ConfigView { StadiumId = (int)SID, RemoveReservationPeriod = 0 });
                         }
-                    }
 
 
                     // перенаправление на Index после завершения
