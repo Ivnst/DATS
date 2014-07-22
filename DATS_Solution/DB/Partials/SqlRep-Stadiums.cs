@@ -21,7 +21,7 @@ namespace DATS
     /// <returns></returns>
     public List<Stadium> GetAllStadiums()
     {
-      return Stadiums.ToList<Stadium>();
+      return Stadiums.OrderBy(s => s.Name).ToList<Stadium>();
     }
 
 
