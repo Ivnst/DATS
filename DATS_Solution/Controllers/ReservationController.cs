@@ -14,32 +14,23 @@ namespace DATS.Controllers
         //
         // GET: /Reservation/
 
-        public ActionResult Index()
+        public ActionResult Index(string s)
         {
           if (CurrentMatch == null) return RedirectToAction("Error", "Home", new { e = 2 });
           FillViewBag(CurrentStadium, CurrentMatch);
 
-          List<ReservationView> list = Repository.GetReservationsList(CurrentMatch);
+          List<ReservationView> list = new List<ReservationView>();
+          if (s == null)
+          {
+            list = Repository.GetReservationsList(CurrentMatch);
+          }
+          else
+          {
+            list = Repository.GetReservationsList(s);
+            ViewBag.SearchString = s;
+          }
 
           return View(list);
-        }
-
-
-        /// <summary>
-        /// Поиск по брони
-        /// </summary>
-        /// <param name="s"></param>
-        /// <returns></returns>
-        public ActionResult Search(string s)
-        {
-          if (CurrentMatch == null) return RedirectToAction("Error", "Home", new { e = 2 });
-          if (string.IsNullOrEmpty(s)) return RedirectToAction("Index");
-          
-          FillViewBag(CurrentStadium, CurrentMatch);
-          List<ReservationView> list = Repository.GetReservationsList(s);
-          ViewBag.SearchString = s;
-
-          return View("Index", list);
         }
 
 
