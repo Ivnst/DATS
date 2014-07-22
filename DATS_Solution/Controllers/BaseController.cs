@@ -138,7 +138,6 @@ namespace DATS.Controllers
         ViewBag.CurrentStadium = currentStadium;
         ViewBag.CurrentMatch = currentMatch;
         ViewBag.Matches = Repository.GetMatchesByStadium(currentStadium);
-        ViewBag.SectorsInfo = Repository.GetSectorsStatistics(currentMatch);
       }
 
 

@@ -30,6 +30,7 @@ namespace DATS.Controllers
           if (currentMatch == null) return RedirectToAction("Error", new { e = 2 });
 
           FillViewBag(currentStadium, currentMatch);
+          ViewBag.SectorsInfo = Repository.GetSectorsStatistics(currentMatch);
           return View();
         }
 

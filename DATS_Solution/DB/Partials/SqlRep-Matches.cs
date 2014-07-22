@@ -35,7 +35,7 @@ namespace DATS
     /// <returns></returns>
     public List<Match> GetMatchesByStadium(Stadium stadium)
     {
-      return Matches.Where<Match>(m => m.StadiumId == stadium.Id && DbFunctions.AddMinutes(m.BeginsAt, m.Duration) > DateTime.Now).ToList<Match>();
+      return Matches.Where<Match>(m => m.StadiumId == stadium.Id && DbFunctions.AddMinutes(m.BeginsAt, m.Duration) > DateTime.Now).OrderBy(m => m.BeginsAt).ToList<Match>();
     }
 
     /// <summary>
