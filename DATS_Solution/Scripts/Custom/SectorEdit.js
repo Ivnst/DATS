@@ -460,8 +460,8 @@ function init() {
     document.getElementById('btnSell').onclick = function (e) { s.sendData(1); };
     document.getElementById('btnReturn').onclick = function (e) { s.sendData(0); };
     document.getElementById('btnReserve').onclick = function (e) { s.sendDataForReservation(); };
-    document.getElementById('btnScalePlus').onclick = function (e) { s.scale(5); };
-    document.getElementById('btnScaleMinus').onclick = function (e) { if (s.itemWidth > 10) s.scale(-5); };
+    document.getElementById('btnScalePlus').onclick = function (e) { if (s.itemWidth < 100) s.scale(5); };
+    document.getElementById('btnScaleMinus').onclick = function (e) { if (s.itemWidth > 15) s.scale(-5); };
     document.getElementById('clearSelection').onclick = function (e) { s.reloadData(); s.clearSelection(); };
 }
 

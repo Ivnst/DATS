@@ -286,11 +286,12 @@ function init() {
     };
 
     document.getElementById('btnScalePlus').onclick = function (e) {
+        if (s.itemWidth < 100)
             s.scale(5);
     };
 
     document.getElementById('btnScaleMinus').onclick = function (e) {
-        if (s.itemWidth > 10)
+        if (s.itemWidth > 15)
             s.scale(-5);
     };
 
