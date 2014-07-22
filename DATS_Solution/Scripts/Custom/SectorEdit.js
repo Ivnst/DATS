@@ -464,12 +464,25 @@ function init() {
     document.getElementById('btnScaleMinus').onclick = function (e) { if (s.itemWidth > 10) s.scale(-5); };
     document.getElementById('clearSelection').onclick = function (e) { s.reloadData(); s.clearSelection(); };
 
-    //если указан номер брони в url, то выводим его пользователю
-    if (params.cid != undefined) {
-        $('#myModal').modal({
-            remote: '/Utils/MessageBox?header=' + encodeURIComponent('Внимание!') + '&message=' + encodeURIComponent('Сообщите клиенту номер брони: ' + params.cid + ' !')
+
+    //если указан ключ записи в кэше, то выводим сообщение, которое оно содержит
+    if (params.m != undefined) {
+        $.post("/Utils/GetCachedData", { key: params.m },
+        function (data) {
+            if (data == null || data == undefined) return;
+
+            //здесь data - это значение, полученное из кэша
+            data = data.split("<!")[0];
+
+            var response = jQuery.parseJSON(data);
+
+            $('#myModal').modal({
+                remote: '/Utils/MessageBox?header=' + encodeURIComponent(response.header) + '&message=' + encodeURIComponent(response.message)
+            })
+
         })
     }
+
 }
 
 

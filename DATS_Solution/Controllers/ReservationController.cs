@@ -68,8 +68,13 @@ namespace DATS.Controllers
             //обрабатываем бронирование
             int clientId = Repository.ProcessTicketsReservation(client, places);
 
+            //Создаём сообщение, отображающее код брони пользователю
+            var message = new { header = "Внимание!", message = string.Format("Сообщите клиенту номер брони: {0} !", clientId) };
+            string messageJson = JsonConvert.SerializeObject(message);
+            string messageKey = StoreDataInCache(messageJson);
+
             //перенаправляем снова на страницу продажи
-            return RedirectToAction("Edit", "Sector", new { sid = client.SectorId, mid = client.MatchId, cid = clientId });
+            return RedirectToAction("Edit", "Sector", new { sid = client.SectorId, mid = client.MatchId, m = messageKey });
           }
           else
           {
@@ -91,6 +96,7 @@ namespace DATS.Controllers
 
           return PartialView(reservationView);
         }
+
 
         [HttpPost]
         public ActionResult SellReservation(ReservationView reservation)
