@@ -148,6 +148,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\ConfigSettingController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MatchSettingController.cs" />
     <Compile Include="Controllers\ReservationController.cs" />
@@ -266,6 +267,7 @@
     <Content Include="Images\ball.png" />
     <Content Include="Images\coins.png" />
     <Content Include="Images\error.png" />
+    <Content Include="Images\configs.png" />
     <Content Include="Images\favicon.ico" />
     <Content Include="Images\info.png" />
     <Content Include="Images\sector.png" />
@@ -332,6 +334,7 @@
     <Content Include="Views\PriceSetting\Index.cshtml" />
     <Content Include="Views\Shared\_SimpleLayout.cshtml" />
     <None Include="Scripts\jquery-2.1.1.min.map" />
+    <Content Include="Views\ConfigSetting\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -65,7 +65,7 @@
 
         </ul>
     </div>
-    <div class="btn-group" style="margin: 0 0 0 10px">
+    <div class="btn-group" style="margin: 0 0 0 5px">
         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             @ViewBag.Match.Name <span class="caret"></span>
         </button>
@@ -76,6 +76,7 @@
             }
 
         </ul>
+        <button class="btn btn-primary" id="iksar" style="margin: 0 0 0 10px">Сохранить</button>
     </div>
 </div>
 
@@ -83,8 +84,6 @@
 {
     @Html.ValidationSummary(true)
     
-    <button class="btn btn-primary" id="iksar" style="margin: 0 0 10px" >Сохранить</button>
-
 <div>
     <table class="table table-striped table-bordered table-hover">
         <thead>

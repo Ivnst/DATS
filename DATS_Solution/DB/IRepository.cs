@@ -53,5 +53,9 @@ namespace DATS
 
     //Prices
     decimal GetPrice(int sectorId, int matchId);
+
+    //Configs
+    ConfigView GetConfigView(Stadium stadium);
+    void SetConfigView(ConfigView configView);
   }
 }

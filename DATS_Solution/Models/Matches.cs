@@ -13,6 +13,12 @@ namespace DATS
   [Table("Matches")]
   public class Match : ItemWithId
   {
+    // время по умолчанию, чтобы легче было вводить
+      public Match()
+      {
+          BeginsAt = DateTime.Now.Date;
+      }
+
     /// <summary>
     /// Код стадиона
     /// </summary>
@@ -33,9 +39,9 @@ namespace DATS
     /// Дата и время начала
     /// </summary>
     [DisplayName("Дата и время начала")]
-    [DataType(DataType.DateTime), DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm:ss}", ApplyFormatInEditMode = true)]
+    [DataType(DataType.DateTime), DisplayFormat(DataFormatString = "{0:dd.MM.yyyy HH:mm}", ApplyFormatInEditMode = true)]
     [Range(typeof(DateTime), "01.01.2000", "31.12.2099")]
-    [Required(ErrorMessage = "Пожалуйста введите дату и время начала (dd.MM.yyyy HH:mm:ss).")]
+    [Required(ErrorMessage = "Пожалуйста введите дату и время начала (dd.MM.yyyy HH:mm).")]
     public DateTime BeginsAt { get; set; }
 
     /// <summary>
