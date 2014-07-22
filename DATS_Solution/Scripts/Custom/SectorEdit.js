@@ -463,26 +463,6 @@ function init() {
     document.getElementById('btnScalePlus').onclick = function (e) { s.scale(5); };
     document.getElementById('btnScaleMinus').onclick = function (e) { if (s.itemWidth > 10) s.scale(-5); };
     document.getElementById('clearSelection').onclick = function (e) { s.reloadData(); s.clearSelection(); };
-
-
-    //если указан ключ записи в кэше, то выводим сообщение, которое оно содержит
-    if (params.m != undefined) {
-        $.post("/Utils/GetCachedData", { key: params.m },
-        function (data) {
-            if (data == null || data == undefined) return;
-
-            //здесь data - это значение, полученное из кэша
-            data = data.split("<!")[0];
-
-            var response = jQuery.parseJSON(data);
-
-            $('#myModal').modal({
-                remote: '/Utils/MessageBox?header=' + encodeURIComponent(response.header) + '&message=' + encodeURIComponent(response.message)
-            })
-
-        })
-    }
-
 }
 
 

@@ -69,12 +69,10 @@ namespace DATS.Controllers
             int clientId = Repository.ProcessTicketsReservation(client, places);
 
             //Создаём сообщение, отображающее код брони пользователю
-            var message = new { header = "Внимание!", message = string.Format("Сообщите клиенту номер брони: {0} !", clientId) };
-            string messageJson = JsonConvert.SerializeObject(message);
-            string messageKey = StoreDataInCache(messageJson);
+            string messageKey = PrepareMessageBox(string.Format("Сообщите клиенту номер брони: {0} !", clientId), "Внимание!");
 
             //перенаправляем снова на страницу продажи
-            return RedirectToAction("Edit", "Sector", new { sid = client.SectorId, mid = client.MatchId, m = messageKey });
+            return RedirectToAction("Edit", "Sector", new { sid = client.SectorId, mid = client.MatchId, notify = messageKey });
           }
           else
           {

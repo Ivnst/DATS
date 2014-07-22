@@ -14,12 +14,20 @@ namespace DATS.Controllers
         /// <summary>
         /// Всплывающее окно с заданным содержимым и заголовком
         /// </summary>
-        /// <param name="message"></param>
+        /// <param name="message">Текст сообщения</param>
+        /// <param name="header">Заголовок сообщения</param>
+        /// <param name="error">Индикатор ошибки. True - иконка с ошибкой, False или отсутствие аргумента - иконка с информацией</param>
         /// <returns></returns>
-        public ActionResult MessageBox(string message, string header)
+        public ActionResult MessageBox(string message, string header, bool? error)
         {
           ViewBag.Message = message;
           ViewBag.Header = header;
+
+          if (error.HasValue)
+            ViewBag.Error = error;
+          else
+            ViewBag.Error = false;
+
           return PartialView();
         }
 

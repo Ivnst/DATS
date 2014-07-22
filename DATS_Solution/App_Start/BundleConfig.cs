@@ -26,6 +26,10 @@ namespace DATS
       bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
                   "~/Scripts/modernizr-*"));
 
+      bundles.Add(new ScriptBundle("~/bundles/myNotification").Include(
+                  "~/Scripts/Custom/Notification.js"));
+
+
       bundles.Add(new StyleBundle("~/Content/css")
         .Include("~/Content/site.css")
         .Include("~/Content/bootstrap*"));
