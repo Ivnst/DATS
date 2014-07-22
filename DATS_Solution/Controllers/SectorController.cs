@@ -251,11 +251,33 @@ namespace DATS.Controllers
           logger.Debug(string.Format("Обновление расположение мест в секторе '{0}' ({1})", sector.Name, sector.Id));
           return Json(new { message = "Данные успешно сохранены!", header = "Готово!", error = false });
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Confirm(string dataKey)
+        {
+          return View();
+        }
+
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult Confirm(SellingView model)
+        {
+          return View();
+        }
+
         #endregion
 
         #region <Methods>
+
         /// <summary>
-        /// 
+        /// Возвращает информацию о проданных местах в указанном секторе на указанное мероприятие
         /// </summary>
         /// <param name="match"></param>
         /// <param name="sector"></param>
@@ -311,7 +333,7 @@ namespace DATS.Controllers
           {
             if (!placesDict.ContainsKey(soldPlace.PlaceId))
             {
-              logger.Warn("GetSoldPlacesInfo : Продано место, отсуствющее в секторе!");
+              logger.Warn("GetSoldPlacesInfo : Продано место, отсуствующее в секторе!");
               continue;
             }
 
@@ -332,6 +354,7 @@ namespace DATS.Controllers
 
           return result;
         }
+
         #endregion
     }
 }
