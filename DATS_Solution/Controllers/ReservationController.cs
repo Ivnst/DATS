@@ -62,7 +62,8 @@ namespace DATS.Controllers
             catch (System.Exception ex)
             {
               logger.Error("Переданы ошибочные данные!", ex);
-              throw new InvalidOperationException("Переданы ошибочные данные!");
+              string msgKey = PrepareMessageBox("Переданы ошибочные данные!", "Внимание!", true);
+              return RedirectToAction("Edit", "Sector", new { sid = client.SectorId, mid = client.MatchId, notify = msgKey });
             }
 
             //обрабатываем бронирование
@@ -87,7 +88,9 @@ namespace DATS.Controllers
           if (reservationView == null)
           {
             logger.Warn("/Reservation/Edit : Указанный код брони не найден. id = " + id.ToString());
-            return RedirectToAction("MessageBox", "Utils", new { header = "Внимание", message = "Информация по текущей брони не найдена!" });
+
+            string msgKey = PrepareMessageBox("Информация по текущей брони не найдена!", "Внимание!", true);
+            return RedirectToAction("Index", "Reservation", new { notify = msgKey });
           }
 
           reservationView.PlacesList = GetPlacesStringForReservation(reservationView.Id);
@@ -103,7 +106,9 @@ namespace DATS.Controllers
           {
             reservation = Repository.GetReservationInfo(reservation.Id);
             Repository.SellAllReservation(reservation);
-            return RedirectToAction("Index");
+
+            string messageKey = PrepareMessageBox("Забронированные билеты успешно проданы!", "Готово!", false);
+            return RedirectToAction("Index", "Reservation", new { notify = messageKey });
           }
           else
           {
@@ -119,7 +124,9 @@ namespace DATS.Controllers
           {
             reservation = Repository.GetReservationInfo(reservation.Id);
             Repository.ReleaseAllReservation(reservation);
-            return RedirectToAction("Index");
+            
+            string messageKey = PrepareMessageBox("Забронированные билеты успешно возвращены в свободную продажу!", "Готово!", false);
+            return RedirectToAction("Index", "Reservation", new { notify = messageKey });
           }
           else
           {

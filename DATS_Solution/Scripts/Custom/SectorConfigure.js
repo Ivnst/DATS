@@ -239,8 +239,8 @@ CanvasState.prototype.sendData = function () {
 
     $.post("/Sector/StoreSectorInfo", { sid: params.sid, data: resultString },
     function (data) {
-        data = data.split("<!")[0];//Обрезаем то, что добавляем сервер somee.com
-        alert(data);
+        //data = data.split("<!")[0]; //Обрезаем то, что добавляем сервер somee.com
+        ShowMessageBox(data.message, data.header, data.error);
     })
 }
 
