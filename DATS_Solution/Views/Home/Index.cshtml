@@ -34,7 +34,7 @@
           @foreach (DATS.SectorView sv in ViewBag.SectorsInfo)
           {
             <tr onclick="window.document.location='/Sector/Edit?sid=@sv.SectorId&mid=@ViewBag.CurrentMatch.Id'" style="cursor:pointer" >
-              <td class="text-center">@sv.Name</td>
+              <td class="text-center"><a href="~/Sector/Edit?sid=@sv.SectorId&mid=@ViewBag.CurrentMatch.Id">@sv.Name</a></td>
               <td class="text-center"><span class="@((sv.TotalPlaces != 0) ? "badge alert-warning" : "")">@sv.TotalPlaces</span></td>
               <td class="text-center"><span class="@((sv.SoldPlaces != 0) ? "badge alert-danger" : "")">@sv.SoldPlaces</span></td>
               <td class="text-center"><span class="@((sv.ReservedPlaces != 0) ? "badge alert-info" : "")">@sv.ReservedPlaces</span></td>

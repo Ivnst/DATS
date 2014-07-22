@@ -5,6 +5,7 @@ using System.Web;
 using System.Linq;
 using System.Collections.Concurrent;
 using System.Collections;
+using Newtonsoft.Json;
 
 namespace DATS.Controllers
 {
@@ -137,7 +138,6 @@ namespace DATS.Controllers
         ViewBag.CurrentStadium = currentStadium;
         ViewBag.CurrentMatch = currentMatch;
         ViewBag.Matches = Repository.GetMatchesByStadium(currentStadium);
-        ViewBag.SectorsInfo = Repository.GetSectorsStatistics(currentMatch);
       }
 
 
@@ -172,6 +172,24 @@ namespace DATS.Controllers
         string data = System.Web.HttpContext.Current.Cache[key] as string;
         System.Web.HttpContext.Current.Cache.Remove(key);
         return data;
+      }
+
+
+      /// <summary>
+      /// Подготавливает данные для вывода окна с указанным сообщением и заголовком.
+      /// Использование: передать возвращённый данным методом ключ на страницу с помощью параметра notify
+      /// Пример: Home/Index?notify=234234234234234
+      /// </summary>
+      /// <param name="_message"></param>
+      /// <param name="_header"></param>
+      /// <param name="_error"></param>
+      /// <returns></returns>
+      protected string PrepareMessageBox(string _message, string _header, bool _error = false)
+      {
+        //Создаём сообщение, отображающее код брони пользователю
+        var messageObject = new { header = _header, message = _message, error = _error };
+        string messageJson = JsonConvert.SerializeObject(messageObject);
+        return StoreDataInCache(messageJson);
       }
 
       #endregion

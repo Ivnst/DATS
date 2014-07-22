@@ -8,7 +8,14 @@
 
 
 <div class="modal-body">
-<h3 class="text-center">@ViewBag.Message</h3>
+    <div class="row">
+        <div class="col-md-2">
+            <img class="img-responsive" src="~/Images/@(ViewBag.Error?"error":"info").png" />
+        </div>
+        <div class="col-md-10">
+            <h3 class="text-left">@ViewBag.Message</h3>
+        </div>
+    </div>
 </div>
 
 <div class="modal-footer">

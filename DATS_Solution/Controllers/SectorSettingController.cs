@@ -137,7 +137,8 @@ namespace DATS.Controllers
           Sector sector =  Repository.FindSector(id);
           if(sector == null)
           {
-            return RedirectToAction("Index", "SectorSetting");
+            string msgKey = PrepareMessageBox("Не найден указанный сектор!", "Внимание!", true);
+            return RedirectToAction("Index", "SectorSetting", new { notify = msgKey });
           }
 
           try
@@ -146,15 +147,18 @@ namespace DATS.Controllers
             string msg = string.Format(@"Сектор ""{0}"" успешно скопирован в новый сектор ""{1}"".", sector.Name, newSector.Name);
             TempData["message"] = msg;
             logger.Info(msg);
+            
+            string messageKey = PrepareMessageBox(string.Format("Создана копия сектора с названием '{0}'!", newSector.Name), "Внимание!", false);
+            return RedirectToAction("Index", "SectorSetting", new { sid = sector.StadiumId, notify = messageKey });
           }
           catch (System.Exception ex)
           {
-            string msg = "При копировании сектора произошла ошибка! " + ex.Message;
-            TempData["message"] = msg;
+            string msg = "При копировании сектора произошла ошибка!\n " + ex.Message;
             logger.Error(msg, ex);
+            string messageKey = PrepareMessageBox(msg, "Внимание!", true);
+            return RedirectToAction("Index", "SectorSetting", new { sid = sector.StadiumId, notify = messageKey });
           }
 
-          return RedirectToAction("Index", "SectorSetting", new { sid = sector.StadiumId });
         }
     }
 }

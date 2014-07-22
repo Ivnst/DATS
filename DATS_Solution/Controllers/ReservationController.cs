@@ -14,32 +14,23 @@ namespace DATS.Controllers
         //
         // GET: /Reservation/
 
-        public ActionResult Index()
+        public ActionResult Index(string s)
         {
           if (CurrentMatch == null) return RedirectToAction("Error", "Home", new { e = 2 });
           FillViewBag(CurrentStadium, CurrentMatch);
 
-          List<ReservationView> list = Repository.GetReservationsList(CurrentMatch);
+          List<ReservationView> list = new List<ReservationView>();
+          if (s == null)
+          {
+            list = Repository.GetReservationsList(CurrentMatch);
+          }
+          else
+          {
+            list = Repository.GetReservationsList(s);
+            ViewBag.SearchString = s;
+          }
 
           return View(list);
-        }
-
-
-        /// <summary>
-        /// Поиск по брони
-        /// </summary>
-        /// <param name="s"></param>
-        /// <returns></returns>
-        public ActionResult Search(string s)
-        {
-          if (CurrentMatch == null) return RedirectToAction("Error", "Home", new { e = 2 });
-          if (string.IsNullOrEmpty(s)) return RedirectToAction("Index");
-          
-          FillViewBag(CurrentStadium, CurrentMatch);
-          List<ReservationView> list = Repository.GetReservationsList(s);
-          ViewBag.SearchString = s;
-
-          return View("Index", list);
         }
 
 
@@ -71,14 +62,18 @@ namespace DATS.Controllers
             catch (System.Exception ex)
             {
               logger.Error("Переданы ошибочные данные!", ex);
-              throw new InvalidOperationException("Переданы ошибочные данные!");
+              string msgKey = PrepareMessageBox("Переданы ошибочные данные!", "Внимание!", true);
+              return RedirectToAction("Edit", "Sector", new { sid = client.SectorId, mid = client.MatchId, notify = msgKey });
             }
 
             //обрабатываем бронирование
             int clientId = Repository.ProcessTicketsReservation(client, places);
 
+            //Создаём сообщение, отображающее код брони пользователю
+            string messageKey = PrepareMessageBox(string.Format("Сообщите клиенту номер брони: {0} !", clientId), "Внимание!");
+
             //перенаправляем снова на страницу продажи
-            return RedirectToAction("Edit", "Sector", new { sid = client.SectorId, mid = client.MatchId, cid = clientId });
+            return RedirectToAction("Edit", "Sector", new { sid = client.SectorId, mid = client.MatchId, notify = messageKey });
           }
           else
           {
@@ -93,13 +88,16 @@ namespace DATS.Controllers
           if (reservationView == null)
           {
             logger.Warn("/Reservation/Edit : Указанный код брони не найден. id = " + id.ToString());
-            return RedirectToAction("MessageBox", "Utils", new { header = "Внимание", message = "Информация по текущей брони не найдена!" });
+
+            string msgKey = PrepareMessageBox("Информация по текущей брони не найдена!", "Внимание!", true);
+            return RedirectToAction("Index", "Reservation", new { notify = msgKey });
           }
 
           reservationView.PlacesList = GetPlacesStringForReservation(reservationView.Id);
 
           return PartialView(reservationView);
         }
+
 
         [HttpPost]
         public ActionResult SellReservation(ReservationView reservation)
@@ -108,7 +106,9 @@ namespace DATS.Controllers
           {
             reservation = Repository.GetReservationInfo(reservation.Id);
             Repository.SellAllReservation(reservation);
-            return RedirectToAction("Index");
+
+            string messageKey = PrepareMessageBox("Забронированные билеты успешно проданы!", "Готово!", false);
+            return RedirectToAction("Index", "Reservation", new { notify = messageKey });
           }
           else
           {
@@ -124,7 +124,9 @@ namespace DATS.Controllers
           {
             reservation = Repository.GetReservationInfo(reservation.Id);
             Repository.ReleaseAllReservation(reservation);
-            return RedirectToAction("Index");
+            
+            string messageKey = PrepareMessageBox("Забронированные билеты успешно возвращены в свободную продажу!", "Готово!", false);
+            return RedirectToAction("Index", "Reservation", new { notify = messageKey });
           }
           else
           {

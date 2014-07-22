@@ -11,6 +11,7 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/myNotification")
     @RenderSection("scripts", required: false)
 </head>
 <body>
@@ -59,6 +60,14 @@
 </nav>
 
 @RenderBody()
+
+<!-- Modal for notifications-->
+<div class="modal" id="myModalNotification" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="margin-top: 15%;">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

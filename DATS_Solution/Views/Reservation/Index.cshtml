@@ -15,12 +15,12 @@
     </div>
 
 
-      @using (Html.BeginForm("Search", "Reservation"))
+      @using (Html.BeginForm("Index", "Reservation"))
       {
         <div class="row">
           <div class="col-md-5">
             <div class="input-group">
-              <input type="text" class="form-control" name="s" value="@ViewBag.SearchString">
+              <input type="text" class="form-control" name="s" value="@ViewBag.SearchString" maxlength="255" title="Введите номер брони, имя или контактные данные клиента">
               <span class="input-group-btn">
                 <button class="btn btn-primary" type="submit">
                   Поиск</button>

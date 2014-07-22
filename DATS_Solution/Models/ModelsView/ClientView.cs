@@ -19,7 +19,7 @@ namespace DATS
     /// <summary>
     /// Контактные данные клиента
     /// </summary>
-    [DisplayName("Контактные данные")]
+    [DisplayName("Контактные данные (например, номер телефона)")]
     public string Contact { get; set; }
     /// <summary>
     /// Информация о выбранных местах

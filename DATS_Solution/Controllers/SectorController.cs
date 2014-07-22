@@ -25,14 +25,16 @@ namespace DATS.Controllers
           if (sector == null)
           {
             logger.Warn("/Sector/Edit : Не найден указанный сектор. sid = " + sid.ToString());
-            return RedirectToAction("Index", "Home");
+            string msgKey = PrepareMessageBox("Не найден указанный сектор!", "Внимание!", true);
+            return RedirectToAction("Index", "Home", new { notify = msgKey });
           }
 
           Match match = Repository.Matches.FirstOrDefault<Match>(m => m.Id == mid);
           if (match == null)
           {
             logger.Warn("/Sector/Edit : Не найдено указанное мероприятие. mid = " + mid.ToString());
-            return RedirectToAction("Index", "Home");
+            string msgKey = PrepareMessageBox("Не найдено указанное мероприятие!", "Внимание!", true);
+            return RedirectToAction("Index", "Home", new { notify = msgKey });
           }
 
           FillViewBag(CurrentStadium, CurrentMatch);
@@ -162,7 +164,8 @@ namespace DATS.Controllers
           if (sector == null)
           {
             logger.Warn("/Sector/Configure : Не найден указанный сектор. sid = " + sid.ToString());
-            return RedirectToAction("Index", "SectorSetting");
+            string msgKey = PrepareMessageBox("Не найден указанный сектор!", "Внимание!", true);
+            return RedirectToAction("Index", "SectorSetting", new { notify = msgKey });
           }
 
           Stadium stadium = Repository.FindStadium(sector.StadiumId);
@@ -216,7 +219,7 @@ namespace DATS.Controllers
           if (sector == null)
           {
             logger.Warn("/Sector/SectorInfo : Не найден указанный сектор. sid = " + sid.ToString());
-            return Content("Текущий редактируемый сектор не существует!");
+            return Json(new { message = "Текущий редактируемый сектор не существует!", header = "Внимание!", error = true });
           }
 
 
@@ -229,7 +232,7 @@ namespace DATS.Controllers
           catch (System.Exception ex)
           {
             logger.Error(data, ex);
-            return Content("Получены некорректные данные! Ошибка десериализации!");
+            return Json(new { message = "Получены некорректные данные! Ошибка десериализации!", header = "Внимание!", error = true });
           }
 
 
@@ -241,12 +244,12 @@ namespace DATS.Controllers
           catch (System.Exception ex)
           {
             logger.Error(data, ex);
-            return Content("Возникла ошибка при сохранении данных!\n" + ex.Message);
+            return Json(new { message = "Возникла ошибка при сохранении данных!\n" + ex.Message, header = "Внимание!", error = true });
           }
 
           //успешное завершение
           logger.Debug(string.Format("Обновление расположение мест в секторе '{0}' ({1})", sector.Name, sector.Id));
-          return Content("Данные успешно сохранены");
+          return Json(new { message = "Данные успешно сохранены!", header = "Готово!", error = false });
         }
         #endregion
 
