@@ -58,6 +58,7 @@ function CanvasState(canvas, width, height) {
         }
         myState.valid = false;
         myState.showInfo();
+        myState.scale();
 
     })
 
@@ -281,23 +282,11 @@ function init() {
         s.showInfo();
     };
 
-    document.getElementById('clearSelection').onclick = function (e) {
-        s.clearSelection();
-    };
-
-    document.getElementById('btnScalePlus').onclick = function (e) {
-        if (s.itemWidth < 100)
-            s.scale(5);
-    };
-
-    document.getElementById('btnScaleMinus').onclick = function (e) {
-        if (s.itemWidth > 15)
-            s.scale(-5);
-    };
-
-    document.getElementById('btnSave').onclick = function (e) {
-        s.sendData();
-    };
+    document.getElementById('clearSelection').onclick = function (e) { s.clearSelection(); };
+    document.getElementById('btnScalePlus').onclick = function (e) { if (s.itemWidth < 100) s.scale(5); };
+    document.getElementById('btnScaleMinus').onclick = function (e) { if (s.itemWidth > 15) s.scale(-5); };
+    document.getElementById('btnScaleFit').onclick = function (e) { s.scale(); };
+    document.getElementById('btnSave').onclick = function (e) { s.sendData(); };
 }
 
 
