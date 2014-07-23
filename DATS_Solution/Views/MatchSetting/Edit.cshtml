@@ -11,58 +11,8 @@
 
 <script src="~/Scripts/CustomValidation/MatchValidation.js" type="text/javascript"></script>
 
-<script>
-    $(document).ready(function () {
-        $('#iksar').click(function (event) {
-            event.preventDefault();
-            var subFind = $("#FormForEdit");
-            if (validium()) {
-                subFind.submit();
-            }
-        });
-    });
-    function validium() {
-        var nonError = true;
-        var errMessage1 = "", errMessage2 = "";
-        $("#begining").val(function (i, v) {
-            var fullStr = v;
-            var dateTmp = fullStr.substring(0, fullStr.indexOf(" "));
-            var timeTmp = fullStr.substring(fullStr.indexOf(" ") + 1);
 
-            var dayStr = dateTmp.substring(0, dateTmp.indexOf("."));
-            dateTmp = dateTmp.substring(dateTmp.indexOf(".") + 1);
-            var monthStr = dateTmp.substring(0, dateTmp.indexOf("."));
-            dateTmp = dateTmp.substring(dateTmp.indexOf(".") + 1);
-            var yearStr = dateTmp;
-
-            var hourStr = timeTmp.substring(0, timeTmp.indexOf(":"));
-            timeTmp = timeTmp.substring(timeTmp.indexOf(":") + 1);
-            var minuteStr = timeTmp;
-
-            var msNoZone = Date.parse(yearStr + '-' + monthStr + '-' + dayStr + 'T' + hourStr + ':' + minuteStr + ':00.000');
-
-            if (!isFinite(msNoZone)) {
-                nonError = false;
-                errMessage1 = "- введен неверный формат, используйте dd.MM.yyyy HH:mm\n";
-            } else {
-                if ((msNoZone >= 946684800000) && (msNoZone <= 4102358400000)) {
-                    // Ok
-                } else {
-                    nonError = false;
-                    errMessage2 = "- дата должна быть в диапазоне от 01.01.2000 и до 31.12.2099.";
-                }
-            }
-
-            return v;
-        });
-        if (nonError == false) alert("Ошибка в поле \"Дата и время начала\":\n" + errMessage1 + errMessage2);
-        return nonError;
-    }
-</script>
-
-
-
-@using (Html.BeginForm("Edit", "MatchSetting", FormMethod.Post, new { Id = "FormForEdit" }))
+@using (Html.BeginForm())
 {
     @Html.ValidationSummary(true)
 
@@ -103,7 +53,7 @@
 
          <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-          <button type="button" class="btn btn-primary" id="iksar">Сохранить</button>
+          <input type="submit" class="btn btn-primary" value="Сохранить" />
         </div>
     
 }
