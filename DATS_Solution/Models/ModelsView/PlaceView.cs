@@ -63,5 +63,19 @@ namespace DATS
     /// Цена билета
     /// </summary>
     public decimal Price { get; set; }
+
+    #region <Methods>
+
+    public Place ToPlace()
+    {
+      Place result = new Place();
+      result.Column = this.Col;
+      result.ColumnPos = this.ColPos;
+      result.Row = this.Row;
+      result.RowPos = this.RowPos;
+      return result;
+    }
+
+    #endregion
   }
 }

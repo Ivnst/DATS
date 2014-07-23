@@ -212,6 +212,7 @@ CanvasState.prototype.refresh = function (data) {
     this.valid = false;
     this.showInfo();
     this.RefreshButtons();
+    this.scale();
 }
 
 
@@ -262,60 +263,51 @@ CanvasState.prototype.getShapeColor = function (shape) {
 //Sends data to server
 CanvasState.prototype.sendData = function (newState) {
 
-    var sectors = [];
-    var ticketsString = "";
-    var tempString = "";
-    var totalCount = 0;
-    var totalPrice = 0;
-
-    for (var i = 0; i < this.maxRows; i++) {
-        tempString = "";
-        for (var j = 0; j < this.maxCols; j++) {
-            var shape = this.shapes[i][j];
-            if (shape.selected) {
-                var itm = new Object();
-                itm.Row = shape.row;
-                itm.Col = shape.col;
-                itm.RowPos = i;
-                itm.ColPos = j;
-                itm.State = newState;
-                itm.Price = shape.price;
-
-                sectors.push(itm);
-
-                //составляем список мест в строке
-                if (tempString == "")
-                    tempString = "Ряд " + itm.Row + ": ";
-                else tempString += ", ";
-                tempString += itm.Col;
-                totalCount += 1;
-                totalPrice += shape.price;
-            }
-        }
-
-        if (tempString != "") {
-            ticketsString += tempString + "\n";
-        }
-
-    }
+    var sectors = this.getSelectedItemsList();
 
     //если ничего не выбрали, то сообщаем об этом пользователю и ничего не делаем
-    if (totalCount == 0) {
+    if (sectors.length == 0) {
         $('#myModal').modal({
             remote: '/Utils/MessageBox?header=' + encodeURIComponent('Внимание!') + '&message=' + encodeURIComponent('Не выбраны места для осуществления операции!')
         })
         return;
     }
 
-    //составляем сообщения пользователю для подстверждения операции
-    var msg = "Подтвердите " + ((newState == 1) ? "ПРОДАЖУ" : "ВОЗВРАТ") + " следующих билетов:\n\n";
-    msg += ticketsString;
-    msg += "\nКоличество билетов: " + totalCount;
-    msg += "\nЦена билетов: " + (totalPrice / totalCount);
-    msg += "\nОбщая стоимость: " + totalPrice;
-    msg += "\n\nВыполнить операцию?";
+    //присваиваем новый статус (он будет отображать действие, которое мы хотим выполнить)
+    for (var i = 0; i < sectors.length; i++) {
+        sectors[i].State = newState;
+    }
 
-    if (!confirm(msg)) {
+    //кодируем места в json
+    var resultString = JSON.stringify(sectors);
+    var myState = this;
+
+    //this.RefreshButtons();
+
+    $.post("/Utils/CacheData", { data: resultString },
+    function (data) {
+        //здесь data - это ключ, полученный от метода Utils/CacheData
+        data = data.split("<!")[0];
+
+        $('#myModal').modal({
+            remote: '/Sector/Confirm?sid=' + params.sid + '&mid=' + params.mid + '&dataKey=' + data
+        })
+
+    })
+}
+
+
+//Sends data to server
+CanvasState.prototype.sendDataForReservation = function () {
+
+    var sectors = this.getSelectedItemsList();
+
+    //если ничего не выбрали, то сообщаем об этом пользователю и ничего не делаем
+    if (sectors.length == 0) {
+        ShowMessageBox('Не выбраны места для осуществления операции!', 'Внимание!', true);
+//         $('#myModal').modal({
+//             remote: '/Utils/MessageBox?header=' + encodeURIComponent('Внимание!') + '&message=' + encodeURIComponent('Не выбраны места для осуществления операции!')
+//         })
         return;
     }
 
@@ -323,29 +315,25 @@ CanvasState.prototype.sendData = function (newState) {
     var resultString = JSON.stringify(sectors);
     var myState = this;
 
-    this.RefreshButtons();
-
-    $.post("/Sector/StoreSectorSoldInfo", { sid: params.sid, mid: params.mid, data: resultString },
+    $.post("/Utils/CacheData", { data: resultString },
     function (data) {
-
-        myState.reloadData();
-        myState.clearSelection();
-        myState.RefreshButtons();
-
+        //здесь data - это ключ, полученный от метода Utils/CacheData
         data = data.split("<!")[0];
 
+        
         $('#myModal').modal({
-            remote: '/Utils/MessageBox?header=Результат&message=' + encodeURIComponent(data)
+            remote: '/Reservation/Create?sid=' + params.sid + '&mid=' + params.mid + '&data=' + data
         })
+
     })
+
 }
 
 
-//Sends data to server
-CanvasState.prototype.sendDataForReservation = function (newState) {
+//Returns selected items
+CanvasState.prototype.getSelectedItemsList = function (newState) {
 
     var sectors = [];
-    var totalCount = 0;
 
     //collect selected shapes
     for (var i = 0; i < this.maxRows; i++) {
@@ -357,43 +345,15 @@ CanvasState.prototype.sendDataForReservation = function (newState) {
                 itm.Col = shape.col;
                 itm.RowPos = i;
                 itm.ColPos = j;
-                itm.State = newState;
+                itm.State = shape.state;
                 itm.Price = shape.price;
 
                 sectors.push(itm);
-
-                totalCount += 1;
             }
         }
-
     }
-
-    //если ничего не выбрали, то сообщаем об этом пользователю и ничего не делаем
-    if (totalCount == 0) {
-        $('#myModal').modal({
-            remote: '/Utils/MessageBox?header=' + encodeURIComponent('Внимание!') + '&message=' + encodeURIComponent('Не выбраны места для осуществления операции!')
-        })
-        return;
-    }
-
-    //кодируем места в json
-    var resultString = JSON.stringify(sectors);
-    var myState = this;
-
-
-    $.post("/Utils/CacheData", { data: resultString },
-    function (data) {
-        //здесь data - это ключ, полученный от метода Utils/CacheData
-        data = data.split("<!")[0];
-
-        $('#myModal').modal({
-            remote: '/Reservation/Create?sid=' + params.sid + '&mid=' + params.mid + '&data=' + data
-        })
-
-    })
-
+    return sectors;
 }
-
 
 //Disables sell and return buttons
 CanvasState.prototype.RefreshButtons = function () {
@@ -460,9 +420,11 @@ function init() {
     document.getElementById('btnSell').onclick = function (e) { s.sendData(1); };
     document.getElementById('btnReturn').onclick = function (e) { s.sendData(0); };
     document.getElementById('btnReserve').onclick = function (e) { s.sendDataForReservation(); };
+    document.getElementById('btnScaleFit').onclick = function (e) { s.scale(); };
     document.getElementById('btnScalePlus').onclick = function (e) { if (s.itemWidth < 100) s.scale(5); };
     document.getElementById('btnScaleMinus').onclick = function (e) { if (s.itemWidth > 15) s.scale(-5); };
     document.getElementById('clearSelection').onclick = function (e) { s.reloadData(); s.clearSelection(); };
+    
 }
 
 

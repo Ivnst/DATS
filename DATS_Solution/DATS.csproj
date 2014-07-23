@@ -188,6 +188,7 @@
     <Compile Include="Models\Configs.cs" />
     <Compile Include="Models\ModelsView\ClientView.cs" />
     <Compile Include="Models\ModelsView\ConfigView.cs" />
+    <Compile Include="Models\ModelsView\SellingView.cs" />
     <Compile Include="Models\ModelsView\ReservationView.cs" />
     <Compile Include="Models\ModelsView\PlaceView.cs" />
     <Compile Include="Models\ModelsView\PriceView.cs" />
@@ -335,6 +336,7 @@
     <Content Include="Views\Shared\_SimpleLayout.cshtml" />
     <None Include="Scripts\jquery-2.1.1.min.map" />
     <Content Include="Views\ConfigSetting\Index.cshtml" />
+    <Content Include="Views\Sector\Confirm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

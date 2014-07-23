@@ -30,7 +30,7 @@ namespace DATS
     /// Наименование стадиона
     /// </summary>
     [DisplayName("Стадион")]
-    public int StadiumName { get; set; }
+    public string StadiumName { get; set; }
 
     /// <summary>
     /// Код мероприятия

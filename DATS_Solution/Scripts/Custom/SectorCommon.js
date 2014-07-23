@@ -64,6 +64,21 @@ CanvasState.prototype.adjustPosition = function (mx, my) {
 
 //change item size on specified value
 CanvasState.prototype.scale = function (val) {
+
+    if (val == undefined) {
+        var xd = this.canvas.width / (this.maxCols + 2);
+        var yd = this.canvas.height / (this.maxRows + 2);
+        xd = xd - xd % 5;
+        yd = yd - yd % 5;
+        if (xd > yd) { xd = yd; } else { yd = xd; }
+        this.itemWidth = xd;
+        this.itemHeight = xd;
+        this.adjustPosition(0, 0);
+        this.valid = false;
+        return;
+    }
+
+
     this.itemWidth = this.itemWidth + val;
     this.itemHeight = this.itemHeight + val;
     this.adjustPosition(0, 0);

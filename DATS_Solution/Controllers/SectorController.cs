@@ -94,7 +94,7 @@ namespace DATS.Controllers
 
             //check match id
             Match match = Repository.FindMatch(mid);
-            if (sector == null)
+            if (match == null)
             {
               logger.Warn("/Sector/StoreSectorSoldInfo : Не найдено указанное мероприятие. mid = " + mid.ToString());
               return Content("Указанное мероприятие не существует!!");
@@ -150,6 +150,150 @@ namespace DATS.Controllers
 
           return Content("Операция выполнена успешно!");
         }
+
+        /// <summary>
+        /// Подтверждение выполнения операции (продажа, возврат)
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Confirm(int sid, int mid, string dataKey)
+        {
+          SellingView sv = new SellingView();
+
+          //достаём кешированные данные
+          sv.Data = GetDataFromCache(dataKey);
+          if (string.IsNullOrEmpty(sv.Data))
+          {
+            throw new ArgumentException("dataKey");
+          }
+
+          //парсим выбранные места
+          List<PlaceView> places = JsonConvert.DeserializeObject<List<PlaceView>>(sv.Data);
+          if (places.Count == 0)
+          {
+            logger.Warn("/Sector/StoreSectorSoldInfo : Не выбраны места для осуществления операции. mid = " + mid.ToString());
+            throw new InvalidOperationException("Не выбраны места для осуществления операции");
+          }
+
+          //считаем общую сумму
+          decimal totalSumm = 0;
+          int state = places[0].State;
+          List<Place> placesList = new List<Place>();
+          foreach (PlaceView pv in places)
+          {
+            totalSumm += pv.Price;
+            if (state != pv.State)
+            {
+              throw new InvalidOperationException("Попытка осуществления операции с билетами с разными статусами");
+            }
+            placesList.Add(pv.ToPlace());
+          }
+
+          //достаём сектор
+          Sector sector = Repository.FindSector(sid);
+          if (sector == null) throw new ArgumentException("sid");
+
+          //достаём мероприятие
+          Match match = Repository.FindMatch(mid);
+          if (match == null) throw new ArgumentException("mid");
+
+          Stadium stadium  = Repository.FindStadium(sector.StadiumId);
+
+          sv.SectorId = sector.Id;
+          sv.SectorName = sector.Name;
+          sv.MatchId = match.Id;
+          sv.MatchName = match.Name;
+          sv.StadiumName = stadium.Name;
+          sv.Count = places.Count;
+          sv.Price = places[0].Price;
+          sv.Summ = totalSumm;
+          sv.PlacesList = Repository.GetPlacesString(placesList);
+
+          ViewBag.State = state;
+          return View(sv);
+        }
+
+
+        /// <summary>
+        /// подтверждение выполнения операции
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult Confirm(SellingView model)
+        {
+          //check sector id
+          Sector sector = Repository.FindSector(model.SectorId);
+          if (sector == null)
+          {
+            logger.Warn("/Sector/StoreSectorSoldInfo : Не найден указанный сектор. sid = " + model.SectorId.ToString());
+            string msgKey = PrepareMessageBox("Указанный сектор не существует!", "Внимание!", true);
+            return RedirectToAction("Edit", "Sector", new { sid = model.SectorId, mid = model.MatchId, notify = msgKey });
+          }
+
+          //check match id
+          Match match = Repository.FindMatch(model.MatchId);
+          if (match == null)
+          {
+            logger.Warn("/Sector/StoreSectorSoldInfo : Не найдено указанное мероприятие. mid = " + model.MatchId.ToString());
+            string msgKey = PrepareMessageBox("Указанное мероприятие не существует!", "Внимание!", true);
+            return RedirectToAction("Edit", "Sector", new { sid = model.SectorId, mid = model.MatchId, notify = msgKey });
+          }
+
+          //json to List
+          List<PlaceView> places;
+          try
+          {
+
+            places = JsonConvert.DeserializeObject<List<PlaceView>>(model.Data);
+            if (places.Count == 0)
+            {
+              logger.Warn("/Sector/StoreSectorSoldInfo : Не выбраны места для осуществления операции. mid = " + model.MatchId.ToString());
+              string msgKey = PrepareMessageBox("Не выбраны места для осуществления операции!", "Внимание!", true);
+              return RedirectToAction("Edit", "Sector", new { sid = model.SectorId, mid = model.MatchId, notify = msgKey });
+            }
+          }
+          catch (System.Exception ex)
+          {
+            logger.Error(ex);
+            string msgKey = PrepareMessageBox("Получены некорректные данные!", "Внимание!", true);
+            return RedirectToAction("Edit", "Sector", new { sid = model.SectorId, mid = model.MatchId, notify = msgKey });
+          }
+
+          //проверка состояний переданных билетов
+          int state = places[0].State;
+          foreach (PlaceView pv in places)
+          {
+            if (pv.State != state)
+            {
+              logger.Warn("Выбраны билеты с разным статусом! Попробуйте ещё раз!");
+              string msgKey = PrepareMessageBox("Выбраны билеты с разным статусом! Попробуйте ещё раз!", "Внимание!", true);
+              return RedirectToAction("Edit", "Sector", new { sid = model.SectorId, mid = model.MatchId, notify = msgKey });
+            }
+          }
+
+          //выполнение операции
+          try
+          {
+            if (state == (int)PlaceState.Sold)
+            {
+              Repository.ProcessTicketsSelling(match, sector, places);
+            }
+
+            if (state == (int)PlaceState.Free)
+            {
+              Repository.ProcessTicketsReturning(match, sector, places);
+            }
+          }
+          catch (System.Exception ex)
+          {
+            logger.Error(model.Data, ex);
+            string msgKey = PrepareMessageBox("При сохранении данных возникла ошибка!\n" + ex.Message, "Внимание!", true);
+            return RedirectToAction("Edit", "Sector", new { sid = model.SectorId, mid = model.MatchId, notify = msgKey });
+          }
+
+          string messageKey = PrepareMessageBox("Операция выполнена успешно!", "Внимание!", false);
+          return RedirectToAction("Edit", "Sector", new { sid = model.SectorId, mid = model.MatchId, notify = messageKey });
+        }
+
         #endregion
 
         #region <Configuring sector>
@@ -251,11 +395,13 @@ namespace DATS.Controllers
           logger.Debug(string.Format("Обновление расположение мест в секторе '{0}' ({1})", sector.Name, sector.Id));
           return Json(new { message = "Данные успешно сохранены!", header = "Готово!", error = false });
         }
+
         #endregion
 
         #region <Methods>
+
         /// <summary>
-        /// 
+        /// Возвращает информацию о проданных местах в указанном секторе на указанное мероприятие
         /// </summary>
         /// <param name="match"></param>
         /// <param name="sector"></param>
@@ -311,7 +457,7 @@ namespace DATS.Controllers
           {
             if (!placesDict.ContainsKey(soldPlace.PlaceId))
             {
-              logger.Warn("GetSoldPlacesInfo : Продано место, отсуствющее в секторе!");
+              logger.Warn("GetSoldPlacesInfo : Продано место, отсуствующее в секторе!");
               continue;
             }
 
@@ -332,6 +478,7 @@ namespace DATS.Controllers
 
           return result;
         }
+
         #endregion
     }
 }
