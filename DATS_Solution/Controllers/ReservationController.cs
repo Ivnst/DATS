@@ -93,7 +93,8 @@ namespace DATS.Controllers
             return RedirectToAction("Index", "Reservation", new { notify = msgKey });
           }
 
-          reservationView.PlacesList = GetPlacesStringForReservation(reservationView.Id);
+          List<Place> placesList = Repository.GetPlacesByReservationId(reservationView.Id, true);
+          reservationView.PlacesList = Repository.GetPlacesString(placesList);
 
           return PartialView(reservationView);
         }
@@ -133,51 +134,5 @@ namespace DATS.Controllers
             return View("Edit", reservation);
           }
         }
-
-
-        #region <Private Methods>
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="reservationId"></param>
-        /// <returns></returns>
-        private string GetPlacesStringForReservation(int reservationId)
-        {
-          //находим все забронированные места по указаному коду брони
-          List<Place> places = Repository.GetPlacesByReservationId(reservationId, true);
-
-          List<int> rows = new List<int>();
-          Dictionary<int, List<int>> placesInRow = new Dictionary<int, List<int>>();
-          foreach (Place place in places)
-          {
-            if (!rows.Contains(place.Row))
-              rows.Add(place.Row);
-            if (!placesInRow.ContainsKey(place.Row))
-              placesInRow.Add(place.Row, new List<int>());
-            placesInRow[place.Row].Add(place.Column);
-          }
-          rows.Sort();
-
-          //составляем строку
-          StringBuilder result = new StringBuilder();
-          foreach (int row in rows)
-          {
-            if (result.Length != 0)
-              result.Append("\n");
-
-            result.Append(string.Format("Ряд {0}: ", row));
-            List<int> placesList = placesInRow[row];
-            placesList.Sort();
-            foreach (int col in placesList)
-            {
-              result.Append(col.ToString());
-              result.Append(" ");
-            }
-          }
-
-          return result.ToString();
-        }
-        #endregion
-
     }
 }

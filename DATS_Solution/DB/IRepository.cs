@@ -31,6 +31,7 @@ namespace DATS
     //Places
     List<Place> GetPlacesBySector(Sector sector);
     void SavePlacesBySector(Sector sector, List<PlaceView> places);
+    string GetPlacesString(List<Place> places);
 
     //SoldPlaces
     List<SoldPlace> GetSoldPlaces(Match match, Sector sector);

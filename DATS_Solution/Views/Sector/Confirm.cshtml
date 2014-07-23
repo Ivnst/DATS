@@ -4,14 +4,16 @@
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
         &times;</button>
     <h4 class="modal-title" id="myModalLabel2">
-        Подтвердите операцию</h4>
+        Подтвердите @((ViewBag.State == 1)?"ПРОДАЖУ":"ВОЗВРАТ") билетов</h4>
 </div>
 
-@using (Html.BeginForm("Confirm", "Sector", FormMethod.Post))
+@using (Html.BeginForm())
 {
 <div class="modal-body">
     <fieldset>
         @Html.HiddenFor(model => model.Data)
+        @Html.HiddenFor(model => model.SectorId)
+        @Html.HiddenFor(model => model.MatchId)
 
     <table class="table table-striped table-bordered table-hover">
 
@@ -30,10 +32,6 @@
             </tr>
             <tr>
               <td>@Html.LabelFor(model => model.PlacesList)</td>
-              <td>@Html.DisplayFor(model => model.PlacesList)</td>
-            </tr>
-            <tr>
-              <td>@Html.LabelFor(model => model.PlacesList)</td>
               <td>@Html.Raw(Html.Encode(Model.PlacesList).Replace("\n", "<br />"))</td>
             </tr>
             <tr>
@@ -48,6 +46,10 @@
               <td>@Html.LabelFor(model => model.Summ)</td>
               <td>@Html.DisplayFor(model => model.Summ)</td>
             </tr>
+            <tr>
+              <td><label>Операция</label></td>
+              <td>@((ViewBag.State == 1) ? "Продажа" : "Возврат")</td>
+            </tr>
           </tbody>
         </table>
     </fieldset>
@@ -55,7 +57,7 @@
 
 <div class="modal-footer">
 <div class="list-inline">
-    <li><input type="submit" class="btn btn-primary" value="Вернуть в продажу" /></li>
+    <li><input type="submit" class="btn btn-@((ViewBag.State == 1)?"success":"danger")" value="Выполнить операцию" /></li>
     <li><button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button></li>
 </div>
 

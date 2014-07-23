@@ -2,6 +2,7 @@
 using System.Data.Entity;
 using System.Collections.Generic;
 using System;
+using System.Text;
 
 namespace DATS
 {
@@ -139,6 +140,48 @@ namespace DATS
     public bool CanEditSector(Sector sector)
     {
       return (GetCountOfSoldPlacesInSector(sector) == 0);
+    }
+
+
+    /// <summary>
+    /// Возвращает список мест в текстовом представлении.
+    /// Например: Ряд5: 4 5 6 7 8
+    /// </summary>
+    /// <param name="reservationId"></param>
+    /// <returns></returns>
+    public string GetPlacesString(List<Place> places)
+    {
+      //находим все забронированные места по указаному коду брони
+      List<int> rows = new List<int>();
+      Dictionary<int, List<int>> placesInRow = new Dictionary<int, List<int>>();
+      foreach (Place place in places)
+      {
+        if (!rows.Contains(place.Row))
+          rows.Add(place.Row);
+        if (!placesInRow.ContainsKey(place.Row))
+          placesInRow.Add(place.Row, new List<int>());
+        placesInRow[place.Row].Add(place.Column);
+      }
+      rows.Sort();
+
+      //составляем строку
+      StringBuilder result = new StringBuilder();
+      foreach (int row in rows)
+      {
+        if (result.Length != 0)
+          result.Append("\n");
+
+        result.Append(string.Format("Ряд {0}: ", row));
+        List<int> placesList = placesInRow[row];
+        placesList.Sort();
+        foreach (int col in placesList)
+        {
+          result.Append(col.ToString());
+          result.Append(" ");
+        }
+      }
+
+      return result.ToString();
     }
   }
 }
