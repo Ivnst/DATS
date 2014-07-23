@@ -6,6 +6,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using System.Threading;
 
 namespace DATS
 {
@@ -14,6 +15,8 @@ namespace DATS
 
   public class MvcApplication : System.Web.HttpApplication
   {
+    Thread reservationTimeoutThread;
+
     protected void Application_Start()
     {
       AreaRegistration.RegisterAllAreas();
@@ -22,6 +25,24 @@ namespace DATS
       FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
       RouteConfig.RegisterRoutes(RouteTable.Routes);
       BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+      //запуск отдельного потока, который постоянно будет проверять бронь на истечение "срока годности"
+      reservationTimeoutThread = new Thread(new ThreadStart(ReturnReservationFunc));
+      reservationTimeoutThread.IsBackground = true;
+      reservationTimeoutThread.Start();
+    }
+
+    /// <summary>
+    /// Вызов в бесконечном цикле проверки на истечения срока брони с учётом настроек стадионов и мероприятий.
+    /// </summary>
+    private void ReturnReservationFunc()
+    {
+      for (; ; )
+      {
+        IRepository repository = DependencyResolver.Current.GetService<IRepository>();
+        repository.RemoveReservationsByTimeout();
+        Thread.Sleep(TimeSpan.FromMinutes(1));
+      }
     }
   }
 }

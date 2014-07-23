@@ -40,6 +40,7 @@ namespace DATS
     void ProcessTicketsSelling(Match match, Sector sector, List<PlaceView> places);
     void ProcessTicketsReturning(Match match, Sector sector, List<PlaceView> places);
     int ProcessTicketsReservation(ClientView clientView, List<PlaceView> places);
+    void RemoveReservationsByTimeout();
 
     //Sectors
     Sector FindSector(int sid);

@@ -316,6 +316,62 @@ namespace DATS
     }
 
 
+    /// <summary>
+    /// Возвращение всех забронированных билетов в свободную продажу по всем стадионам
+    /// </summary>
+    public void RemoveReservationsByTimeout()
+    {
+      try
+      {
+        //достаём все стадионы
+        List<Stadium> stadiums = this.GetAllStadiums();
+
+        //цикл по всем стадионам
+        foreach (Stadium stadium in stadiums)
+        {
+          //достаём настройки по стадиону
+          ConfigView configs = GetConfigView(stadium);
+
+          //а также все мероприятия стадиона
+          List<Match> matches = GetMatchesByStadium(stadium);
+
+          //цикл по мероприятиям стадиона
+          foreach (Match match in matches)
+          {
+            DateTime currentTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "FLE Standard Time");
+
+            //если мероприятие уже закончилось - пропускаем
+            if (match.BeginsAt < currentTime) continue;
+
+            //определяем период времени до начала матча
+            TimeSpan ts = TimeSpan.FromTicks(match.BeginsAt.Ticks - currentTime.Ticks);
+
+            if (ts.TotalMinutes < configs.RemoveReservationPeriod)
+            {
+              //достаём информацию о брони по текущему мероприятию
+              List<ReservationView> reservations = GetReservationsList(match);
+
+              //цикл по клиентам, сделавших бронь
+              foreach (ReservationView rv in reservations)
+              {
+                ReleaseAllReservation(rv);
+              }
+            }
+
+          }
+
+        }
+      }
+      catch (System.Exception ex)
+      {
+        logger.Error("Ошибка при автоматическом возвращении брони в свободную продажу!", ex);
+      }
+
+    }
+
+
+
+
     #region <Private methods>
 
     /// <summary>
