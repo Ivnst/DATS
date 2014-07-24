@@ -41,6 +41,7 @@ namespace DATS
     void ProcessTicketsReturning(Match match, Sector sector, List<PlaceView> places);
     int ProcessTicketsReservation(ClientView clientView, List<PlaceView> places);
     void RemoveReservationsByTimeout();
+    int GetCountOfSoldPlacesInSector(Sector sector);
 
     //Sectors
     Sector FindSector(int sid);

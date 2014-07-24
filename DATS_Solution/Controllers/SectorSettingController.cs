@@ -129,6 +129,13 @@ namespace DATS.Controllers
         [HttpPost]
         public ActionResult Delete(Sector sector)
         {
+            if(Repository.GetCountOfSoldPlacesInSector(sector) != 0)
+            {
+              string msgKey = PrepareMessageBox("По этому сектору проводились продажи! Удаление запрещено!", "Внимание!", true);
+              return RedirectToAction("Index", "SectorSetting", new { notify = msgKey });
+            }
+
+
             ((DbContext)Repository).Entry<Sector>(sector).State = EntityState.Deleted;
             Repository.SaveChanges();
 
