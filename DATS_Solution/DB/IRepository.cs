@@ -18,6 +18,8 @@ namespace DATS
     DbSet<Price> Prices { get; set; }
 
     int SaveChanges();
+    void SaveEntry<T>(T entry) where T : class;
+    void DeleteEntry<T>(T entry) where T : class;
          
     //Stadiums
     List<Stadium> GetAllStadiums();

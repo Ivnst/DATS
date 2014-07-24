@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using Newtonsoft.Json;
+using System.Transactions;
 
 namespace DATS
 {
@@ -137,75 +138,81 @@ namespace DATS
       if (places == null) throw new ArgumentNullException("places");
       if (places.Count == 0) throw new Exception("Места не выбраны!");
 
-      //достаём места сектора
-      Dictionary<int, Place> sectorPlaces = GetPlacesDictionary(sector);
-
-      //достаём проданные билеты в этом секторе на это мероприятие
-      Dictionary<int, SoldPlace> soldPlaces = GetSoldPlacesDictionary(match, sector);
-
-      List<SoldPlace> newItems = new List<SoldPlace>();
-
-      for(int i =0; i < places.Count; i++)
+      using (TransactionScope scope = new TransactionScope())
       {
-        PlaceView pv = places[i];
-        int hash = getPlaceHash(pv.Row, pv.Col);
 
-        //проверка существования таких мест в секторе
-        if (!sectorPlaces.ContainsKey(hash))
-        {
-          logger.Error(string.Format("Некоторые (или все) из указанных мест не найдены в секторе! sid = {0}, mid={1}", sector.Id, match.Id));
-          throw new Exception("Некоторые (или все) из указанных мест не найдены в секторе!");
-        }
+        //достаём места сектора
+        Dictionary<int, Place> sectorPlaces = GetPlacesDictionary(sector);
 
-        //проверяем, не были ли эти билеты уже проданы
-        if (soldPlaces.ContainsKey(hash))
+        //достаём проданные билеты в этом секторе на это мероприятие
+        Dictionary<int, SoldPlace> soldPlaces = GetSoldPlacesDictionary(match, sector);
+
+        List<SoldPlace> newItems = new List<SoldPlace>();
+
+        for (int i = 0; i < places.Count; i++)
         {
-          SoldPlace soldPlace = soldPlaces[hash];
-          if (!soldPlace.IsReservation)
+          PlaceView pv = places[i];
+          int hash = getPlaceHash(pv.Row, pv.Col);
+
+          //проверка существования таких мест в секторе
+          if (!sectorPlaces.ContainsKey(hash))
           {
-            logger.Error("Некоторые из выбранных билетов уже проданы! Обновите страницу!");
-            throw new Exception("Некоторые из выбранных билетов уже проданы! Обновите страницу!");
+            logger.Error(string.Format("Некоторые (или все) из указанных мест не найдены в секторе! sid = {0}, mid={1}", sector.Id, match.Id));
+            throw new Exception("Некоторые (или все) из указанных мест не найдены в секторе!");
           }
 
-          //снимаем бронь
-          soldPlace.IsReservation = false;
+          //проверяем, не были ли эти билеты уже проданы
+          if (soldPlaces.ContainsKey(hash))
+          {
+            SoldPlace soldPlace = soldPlaces[hash];
+            if (!soldPlace.IsReservation)
+            {
+              logger.Error("Некоторые из выбранных билетов уже проданы! Обновите страницу!");
+              throw new Exception("Некоторые из выбранных билетов уже проданы! Обновите страницу!");
+            }
 
-          //добавляем в список купленных 
-          newItems.Add(soldPlaces[hash]);
+            //снимаем бронь
+            soldPlace.IsReservation = false;
 
-          //удаляем из списка
-          places.RemoveAt(i); i--;
+            //добавляем в список купленных 
+            newItems.Add(soldPlaces[hash]);
+
+            //удаляем из списка
+            places.RemoveAt(i); i--;
+          }
         }
-      }
 
-      //сохранение новых данных
-      foreach (PlaceView pv in places)
-      {
-        SoldPlace sp = new SoldPlace();
-        sp.ClientId = null;
-        sp.Date = DateTime.UtcNow;
-        sp.IsReservation = false;
-        sp.MatchId = match.Id;
-        sp.PlaceId = sectorPlaces[getPlaceHash(pv.Row, pv.Col)].Id;
-        sp.SectorId = sector.Id;
-        sp.Summ = pv.Price;
-        newItems.Add(sp);
-      }
-
-      //обработка изменений
-      foreach (SoldPlace soldPlace in newItems)
-      {
-        if (soldPlace.Id > 0)
+        //сохранение новых данных
+        foreach (PlaceView pv in places)
         {
-          Entry<SoldPlace>(soldPlace).State = EntityState.Modified;
+          SoldPlace sp = new SoldPlace();
+          sp.ClientId = null;
+          sp.Date = DateTime.UtcNow;
+          sp.IsReservation = false;
+          sp.MatchId = match.Id;
+          sp.PlaceId = sectorPlaces[getPlaceHash(pv.Row, pv.Col)].Id;
+          sp.SectorId = sector.Id;
+          sp.Summ = pv.Price;
+          newItems.Add(sp);
         }
-        else
-        {
-          SoldPlaces.Add(soldPlace);
-        }
-      }
 
-      SaveChanges();
+        //обработка изменений
+        foreach (SoldPlace soldPlace in newItems)
+        {
+          if (soldPlace.Id > 0)
+          {
+            Entry<SoldPlace>(soldPlace).State = EntityState.Modified;
+          }
+          else
+          {
+            SoldPlaces.Add(soldPlace);
+          }
+        }
+
+        SaveChanges();
+
+        scope.Complete();
+      }
     }
 
 
@@ -222,28 +229,34 @@ namespace DATS
       if (places == null) throw new ArgumentNullException("places");
       if (places.Count == 0) throw new Exception("Места не выбраны!");
 
-      //достаём проданные билеты в этом секторе на это мероприятие
-      Dictionary<int, SoldPlace> soldPlaces = GetSoldPlacesDictionary(match, sector);
-      List<SoldPlace> toRemove = new List<SoldPlace>();
-
-      //ищем указанные билеты в проданных
-      foreach (PlaceView pv in places)
+      using (TransactionScope scope = new TransactionScope())
       {
-        if (!soldPlaces.ContainsKey(getPlaceHash(pv.Row, pv.Col)))
+
+        //достаём проданные билеты в этом секторе на это мероприятие
+        Dictionary<int, SoldPlace> soldPlaces = GetSoldPlacesDictionary(match, sector);
+        List<SoldPlace> toRemove = new List<SoldPlace>();
+
+        //ищем указанные билеты в проданных
+        foreach (PlaceView pv in places)
         {
-          logger.Error("Некоторые из указанных билетов не являются проданными! Обновите страницу!");
-          throw new Exception("Некоторые из указанных билетов не являются проданными! Обновите страницу!");
+          if (!soldPlaces.ContainsKey(getPlaceHash(pv.Row, pv.Col)))
+          {
+            logger.Error("Некоторые из указанных билетов не являются проданными! Обновите страницу!");
+            throw new Exception("Некоторые из указанных билетов не являются проданными! Обновите страницу!");
+          }
+
+          toRemove.Add(soldPlaces[getPlaceHash(pv.Row, pv.Col)]);
         }
 
-        toRemove.Add(soldPlaces[getPlaceHash(pv.Row, pv.Col)]);
-      }
+        //удаление лишних проданных мест
+        foreach (SoldPlace soldplace in toRemove)
+        {
+          Entry<SoldPlace>(soldplace).State = EntityState.Deleted;
+        }
+        SaveChanges();
 
-      //удаление лишних проданных мест
-      foreach (SoldPlace soldplace in toRemove)
-      {
-        Entry<SoldPlace>(soldplace).State = EntityState.Deleted;
+        scope.Complete();
       }
-      SaveChanges();
     }
 
 
@@ -258,74 +271,78 @@ namespace DATS
       if (clientView == null) throw new ArgumentNullException("clientView");
       if (clientView.Data == null) throw new ArgumentNullException("clientView.Data");
 
-      //создаём клиента
-      Client client = new Client();
-      client.Name = clientView.Name;
-      client.IsActive = true;
-      client.Date = DateTime.UtcNow;
-      client.Contact = clientView.Contact;
-
-      //ищем сектор
-      Sector sector = this.FindSector(clientView.SectorId);
-      if (sector == null) throw new InvalidOperationException("Указанный сектор не найден!");
-
-      //ищем мероприятие
-      Match match = this.FindMatch(clientView.MatchId);
-      if (match == null) throw new InvalidOperationException("Указанное мероприятие не найдено!");
-
-      //ищем стадион
-      Stadium stadium = this.FindStadium(sector.StadiumId);
-      if (stadium == null) throw new InvalidOperationException("Указанный стадион не найден!");
-
-      //достаём настройки стадиона
-      ConfigView config = GetConfigView(stadium);
-
-      //проверяем, можно ли бронировать
-      if(Utils.GetNow() > match.BeginsAt.AddMinutes(-config.RemoveReservationPeriod))
+      using (TransactionScope scope = new TransactionScope())
       {
-        throw new Exception(string.Format("Бронирование запрещено настройками (за {0} минут до начала матча)", config.RemoveReservationPeriod));
-      }
+        //создаём клиента
+        Client client = new Client();
+        client.Name = clientView.Name;
+        client.IsActive = true;
+        client.Date = DateTime.UtcNow;
+        client.Contact = clientView.Contact;
 
-      //достаём места сектора
-      Dictionary<int, Place> sectorPlaces = GetPlacesDictionary(sector);
+        //ищем сектор
+        Sector sector = this.FindSector(clientView.SectorId);
+        if (sector == null) throw new InvalidOperationException("Указанный сектор не найден!");
 
-      //достаём проданные билеты в этом секторе на это мероприятие
-      Dictionary<int, SoldPlace> soldPlaces = GetSoldPlacesDictionary(match, sector);
-      
-      foreach (PlaceView pv in places)
-      {
-        //проверка существования таких мест в секторе
-        if (!sectorPlaces.ContainsKey(getPlaceHash(pv.Row, pv.Col)))
+        //ищем мероприятие
+        Match match = this.FindMatch(clientView.MatchId);
+        if (match == null) throw new InvalidOperationException("Указанное мероприятие не найдено!");
+
+        //ищем стадион
+        Stadium stadium = this.FindStadium(sector.StadiumId);
+        if (stadium == null) throw new InvalidOperationException("Указанный стадион не найден!");
+
+        //достаём настройки стадиона
+        ConfigView config = GetConfigView(stadium);
+
+        //проверяем, можно ли бронировать
+        if (Utils.GetNow() > match.BeginsAt.AddMinutes(-config.RemoveReservationPeriod))
         {
-          throw new InvalidOperationException("Указанные места отсутствуют в секторе!");
+          throw new Exception(string.Format("Бронирование запрещено настройками (за {0} минут до начала матча)", config.RemoveReservationPeriod));
         }
 
-        //проверяем, не были ли эти билеты уже проданы
-        if (soldPlaces.ContainsKey(getPlaceHash(pv.Row, pv.Col)))
+        //достаём места сектора
+        Dictionary<int, Place> sectorPlaces = GetPlacesDictionary(sector);
+
+        //достаём проданные билеты в этом секторе на это мероприятие
+        Dictionary<int, SoldPlace> soldPlaces = GetSoldPlacesDictionary(match, sector);
+
+        foreach (PlaceView pv in places)
         {
-          throw new InvalidOperationException("Указанные места уже проданы!");
+          //проверка существования таких мест в секторе
+          if (!sectorPlaces.ContainsKey(getPlaceHash(pv.Row, pv.Col)))
+          {
+            throw new InvalidOperationException("Указанные места отсутствуют в секторе!");
+          }
+
+          //проверяем, не были ли эти билеты уже проданы
+          if (soldPlaces.ContainsKey(getPlaceHash(pv.Row, pv.Col)))
+          {
+            throw new InvalidOperationException("Указанные места уже проданы!");
+          }
         }
+
+        Clients.Add(client);
+        SaveChanges();
+
+        //сохранение новых данных
+        foreach (PlaceView pv in places)
+        {
+          SoldPlace sp = new SoldPlace();
+          sp.ClientId = client.Id;
+          sp.Date = DateTime.UtcNow;
+          sp.IsReservation = true;
+          sp.MatchId = match.Id;
+          sp.PlaceId = sectorPlaces[getPlaceHash(pv.Row, pv.Col)].Id;
+          sp.SectorId = sector.Id;
+          sp.Summ = pv.Price;
+          SoldPlaces.Add(sp);
+        }
+        SaveChanges();
+
+        scope.Complete();
+        return client.Id;
       }
-
-      Clients.Add(client);
-      SaveChanges();
-
-      //сохранение новых данных
-      foreach (PlaceView pv in places)
-      {
-        SoldPlace sp = new SoldPlace();
-        sp.ClientId = client.Id;
-        sp.Date = DateTime.UtcNow;
-        sp.IsReservation = true;
-        sp.MatchId = match.Id;
-        sp.PlaceId = sectorPlaces[getPlaceHash(pv.Row, pv.Col)].Id;
-        sp.SectorId = sector.Id;
-        sp.Summ = pv.Price;
-        SoldPlaces.Add(sp);
-      }
-      SaveChanges();
-
-      return client.Id;
     }
 
 
