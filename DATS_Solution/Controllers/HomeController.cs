@@ -102,5 +102,20 @@ namespace DATS.Controllers
         {
           return View();
         }
+
+
+        /// <summary>
+        /// Проверка времени на сервере
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Time()
+        {
+          DateTime utc = DateTime.UtcNow;
+          DateTime custom = new DateTime(utc.Year, utc.Month, utc.Day, utc.Hour, utc.Minute, utc.Second);
+
+          string result = string.Format("DateTime.Now: {0}, DateTime.UtcNow: {1}, TimeZoneTime: {2}, TimeZoneTime from UTC: {3}, CustomUtc: {4}",
+            DateTime.Now, DateTime.UtcNow, Utils.GetNow(), Utils.GetNow(DateTime.UtcNow), Utils.GetNow(custom));
+          return Content(result);
+        }
     }
 }

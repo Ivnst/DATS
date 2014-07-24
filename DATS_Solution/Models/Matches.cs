@@ -16,7 +16,7 @@ namespace DATS
     // время по умолчанию, чтобы легче было вводить
       public Match()
       {
-          BeginsAt = DateTime.Now.Date;
+          BeginsAt = Utils.GetNow().Date;
       }
 
     /// <summary>

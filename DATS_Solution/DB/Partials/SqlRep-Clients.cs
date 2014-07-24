@@ -56,7 +56,15 @@ namespace DATS
                       and sp.MatchId = @p0
                     group by c.Id, c.Name, c.Contact, sp.SectorId, s.Name, sp.Summ,c.Date";
 
-      return this.Database.SqlQuery<ReservationView>(sql, match.Id).ToList();
+      List<ReservationView> result = this.Database.SqlQuery<ReservationView>(sql, match.Id).ToList();
+
+      //сдвигаем дату на текущий часовой пояс
+      foreach (ReservationView rv in result)
+      {
+        rv.ReservationDate = Utils.AdjustDate(rv.ReservationDate);
+      }
+
+      return result;
     }
 
 
@@ -83,7 +91,16 @@ namespace DATS
                       and m.BeginsAt > @p1
                     group by c.Id, c.Name, c.Contact, sp.SectorId, s.Name, sp.Summ,c.Date";
 
-      return this.Database.SqlQuery<ReservationView>(sql, searchString, DateTime.UtcNow).ToList();
+      DateTime now = Utils.GetNow();
+      List<ReservationView> result = this.Database.SqlQuery<ReservationView>(sql, searchString, now).ToList();
+
+      //сдвигаем дату на текущий часовой пояс
+      foreach (ReservationView rv in result)
+      {
+        rv.ReservationDate = Utils.AdjustDate(rv.ReservationDate);
+      }
+
+      return result;
     }
 
 
@@ -103,7 +120,10 @@ namespace DATS
                       and c.Id = @p0
                     group by c.Id, c.Name, c.Contact, sp.SectorId, s.Name, sp.Summ,c.Date";
 
-      return this.Database.SqlQuery<ReservationView>(sql, Id).FirstOrDefault();
+      ReservationView result = this.Database.SqlQuery<ReservationView>(sql, Id).FirstOrDefault();
+      result.ReservationDate = Utils.AdjustDate(result.ReservationDate);
+
+      return result;
     }
 
 

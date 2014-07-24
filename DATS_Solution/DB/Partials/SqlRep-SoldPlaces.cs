@@ -338,7 +338,7 @@ namespace DATS
           //цикл по мероприятиям стадиона
           foreach (Match match in matches)
           {
-            DateTime currentTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "FLE Standard Time");
+            DateTime currentTime = Utils.GetNow();
 
             //если мероприятие уже закончилось - пропускаем
             if (match.BeginsAt < currentTime) continue;
