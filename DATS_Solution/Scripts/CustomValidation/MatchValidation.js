@@ -3,7 +3,7 @@
     function (value, element) {
          return validium();
     },
-    "Формат должен быть dd.MM.yyyy HH:mm в диапазоне от 01.01.2000 до 31.12.2099."
+    "Формат должен быть dd.MM.yyyy HH:mm в диапазоне от текущего времени до 31.12.2099."
 );
 
 $('#myModal form').validate({  // initialize plugin
@@ -48,7 +48,7 @@ function validium() {
         if (!isFinite(msNoZone)) {
             nonError = false;
         } else {
-            if ((msNoZone >= 946684800000) && (msNoZone <= 4102358400000)) {
+            if ((msNoZone >= new Date()) && (msNoZone <= 4102358400000)) {
                 // Ok
             } else {
                 nonError = false;
