@@ -1,7 +1,7 @@
 ﻿$.validator.addMethod(
     "vdate",
     function (value, element) {
-         return validium();
+        return validium();
     },
     "Формат должен быть dd.MM.yyyy HH:mm в диапазоне от 01.01.2000 до 31.12.2099."
 );
@@ -48,7 +48,7 @@ function validium() {
         if (!isFinite(msNoZone)) {
             nonError = false;
         } else {
-            if ((msNoZone >= 946684800000) && (msNoZone <= 4102358400000)) {
+            if ((msNoZone >= 946677600000) && (msNoZone <= 4102358400000)) {
                 // Ok
             } else {
                 nonError = false;

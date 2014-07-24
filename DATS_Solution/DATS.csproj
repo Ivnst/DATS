@@ -276,7 +276,8 @@
     <Content Include="Images\stadium.png" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\CustomValidation\ClientValidation.js" />
-    <Content Include="Scripts\CustomValidation\MatchValidation.js" />
+    <Content Include="Scripts\CustomValidation\MatchCreateValidation.js" />
+    <Content Include="Scripts\CustomValidation\MatchEditValidation.js" />
     <Content Include="Scripts\CustomValidation\SectorValidation.js" />
     <Content Include="Scripts\CustomValidation\ValidationMessages.js" />
     <Content Include="Scripts\CustomValidation\StadiumValidation.js" />
