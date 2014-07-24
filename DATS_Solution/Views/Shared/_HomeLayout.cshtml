@@ -53,7 +53,9 @@
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
+          <li id="Clock"></li>
         <li><a href="/StadiumSetting/Index">Настройки</a></li>
+          
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
@@ -68,6 +70,37 @@
         </div>
     </div>
 </div>
+    <div class="label" id="Clock">
+       
+    </div>
+    <script>
+        // Определение функции для отображения текущего времени
+        $().ready(function () { displayTime(); setInterval(function () { displayTime(); }, 30000); })
+       function displayTime()
+        {
+            var element = document.getElementById("Clock"); // Найти элемент с id="Clock"
+            var now = new Date(); // Получить текущее время
+            var month = now.getMonth() + 1;
+            var day = now.getDate();
+            var year = now.getFullYear();
+            var hours = now.getHours().toLocaleString();
+            var minutes = now.getMinutes().toLocaleString();
+
+            element.innerHTML = month + '.' + day + '.' + year +"      "+ hours +":"+ minutes; // Отобразить его//сделать перенос времени на след строку !!!
+        }        
+    </script>
+    <style>
+        /* Таблица стилей CSS для часов */
+        #Clock { /* Стили применяются к элементу с id="Clock" */
+            font: bold 15pt sans; /* Использовать большой полужирный шрифт */
+            background: #ddf; /* Светлый, голубовато-серый фон */
+            padding: 10px; /* Отступы вокруг */
+            border: solid grey 2px; /* И сплошная черная рамка */
+            border-radius: 10px; /* Закругленные углы (если поддерживаются) */
+        }
+    </style>
+
+
 
 </body>
 </html>
