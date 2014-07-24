@@ -273,6 +273,19 @@ namespace DATS
       Match match = this.FindMatch(clientView.MatchId);
       if (match == null) throw new InvalidOperationException("Указанное мероприятие не найдено!");
 
+      //ищем стадион
+      Stadium stadium = this.FindStadium(sector.StadiumId);
+      if (stadium == null) throw new InvalidOperationException("Указанный стадион не найден!");
+
+      //достаём настройки стадиона
+      ConfigView config = GetConfigView(stadium);
+
+      //проверяем, можно ли бронировать
+      if(Utils.GetNow() > match.BeginsAt.AddMinutes(-config.RemoveReservationPeriod))
+      {
+        throw new Exception(string.Format("Бронирование запрещено настройками (за {0} минут до начала матча)", config.RemoveReservationPeriod));
+      }
+
       //достаём места сектора
       Dictionary<int, Place> sectorPlaces = GetPlacesDictionary(sector);
 

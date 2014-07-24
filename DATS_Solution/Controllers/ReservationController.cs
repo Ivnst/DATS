@@ -50,22 +50,25 @@ namespace DATS.Controllers
         {
           if (client.Contact == null) client.Contact = "";
 
-          if (ModelState.IsValid)
-          {
-            //определяем места (в client.Data хранится ключ, по которому из кэша достаём json-данные, переданные туда заранее с помощью javscript)
-            List<PlaceView> places = new List<PlaceView>();
-            try
-            {
-              string jsonData = GetDataFromCache(client.Data);
-              places = JsonConvert.DeserializeObject<List<PlaceView>>(jsonData);
-            }
-            catch (System.Exception ex)
-            {
-              logger.Error("Переданы ошибочные данные!", ex);
-              string msgKey = PrepareMessageBox("Переданы ошибочные данные!", "Внимание!", true);
-              return RedirectToAction("Edit", "Sector", new { sid = client.SectorId, mid = client.MatchId, notify = msgKey });
-            }
+          if (!ModelState.IsValid)
+            return View(client);
 
+          //определяем места (в client.Data хранится ключ, по которому из кэша достаём json-данные, переданные туда заранее с помощью javscript)
+          List<PlaceView> places = new List<PlaceView>();
+          try
+          {
+            string jsonData = GetDataFromCache(client.Data);
+            places = JsonConvert.DeserializeObject<List<PlaceView>>(jsonData);
+          }
+          catch (System.Exception ex)
+          {
+            logger.Error("Переданы ошибочные данные!", ex);
+            string msgKey = PrepareMessageBox("Переданы ошибочные данные!", "Внимание!", true);
+            return RedirectToAction("Edit", "Sector", new { sid = client.SectorId, mid = client.MatchId, notify = msgKey });
+          }
+
+          try
+          {
             //обрабатываем бронирование
             int clientId = Repository.ProcessTicketsReservation(client, places);
 
@@ -75,9 +78,11 @@ namespace DATS.Controllers
             //перенаправляем снова на страницу продажи
             return RedirectToAction("Edit", "Sector", new { sid = client.SectorId, mid = client.MatchId, notify = messageKey });
           }
-          else
+          catch (System.Exception ex)
           {
-            return View(client);
+            logger.Error("Ошибка при бронировнии!", ex);
+            string msgKey = PrepareMessageBox("При бронировании возникла ошибка!\n" + ex.Message, "Внимание!", true);
+            return RedirectToAction("Edit", "Sector", new { sid = client.SectorId, mid = client.MatchId, notify = msgKey });
           }
         }
 
