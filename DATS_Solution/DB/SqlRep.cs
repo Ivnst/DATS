@@ -22,6 +22,28 @@ namespace DATS
     {
       return base.SaveChanges();
     }
-       
+      
+    /// <summary>
+    /// Сохранение изменений в элементе базы данных
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="entry"></param>
+    public void SaveEntry<T>(T entry) where T: class
+    {
+      this.Entry<T>(entry).State = EntityState.Modified;
+      SaveChanges();
+    }
+
+
+    /// <summary>
+    /// Удаление элемента из базы данных
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="entry"></param>
+    public void DeleteEntry<T>(T entry) where T : class
+    {
+      this.Entry<T>(entry).State = EntityState.Deleted;
+      SaveChanges();
+    }
   }
 }

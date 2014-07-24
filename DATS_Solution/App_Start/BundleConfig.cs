@@ -29,6 +29,13 @@ namespace DATS
       bundles.Add(new ScriptBundle("~/bundles/myNotification").Include(
                   "~/Scripts/Custom/Notification.js"));
 
+      bundles.Add(new ScriptBundle("~/bundles/jsEdit").Include(
+                  "~/Scripts/Custom/SectorEdit.js",
+                  "~/Scripts/Custom/SectorCommon.js"));
+
+      bundles.Add(new ScriptBundle("~/bundles/jsConfigure").Include(
+                  "~/Scripts/Custom/SectorConfigure.js",
+                  "~/Scripts/Custom/SectorCommon.js"));
 
       bundles.Add(new StyleBundle("~/Content/css")
         .Include("~/Content/site.css")

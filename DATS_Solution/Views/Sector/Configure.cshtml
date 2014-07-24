@@ -3,8 +3,7 @@
     Layout = "~/Views/Shared/_SimpleLayout.cshtml";
 }
 
-<script src="~/Scripts/Custom/SectorConfigure.js?v=1" type="text/javascript"></script>
-<script src="~/Scripts/Custom/SectorCommon.js?v=4"    type="text/javascript"></script>
+@Scripts.Render("~/bundles/jsConfigure")
 
 <script>
  $().ready(function () {

@@ -33,6 +33,14 @@ namespace DATS.Controllers
             else
             {
                 ViewBag.Stadium = Repository.FindStadium((int)sid);
+                if (ViewBag.Stadium == null)
+                {
+                  logger.Warn("/SectorSetting/Index : Не найден указанный стадион. sid = " + sid.ToString());
+                  string msgKey = PrepareMessageBox("Не найден указанный стадион!", "Внимание!", true);
+                  return RedirectToAction("Index", "SectorSetting", new { notify = msgKey });
+                }
+
+
                 return View(Repository.Sectors.Where(p => p.StadiumId == (int)sid));
             }
 
@@ -121,6 +129,13 @@ namespace DATS.Controllers
         [HttpPost]
         public ActionResult Delete(Sector sector)
         {
+            if(Repository.GetCountOfSoldPlacesInSector(sector) != 0)
+            {
+              string msgKey = PrepareMessageBox("По этому сектору проводились продажи! Удаление запрещено!", "Внимание!", true);
+              return RedirectToAction("Index", "SectorSetting", new { notify = msgKey });
+            }
+
+
             ((DbContext)Repository).Entry<Sector>(sector).State = EntityState.Deleted;
             Repository.SaveChanges();
 

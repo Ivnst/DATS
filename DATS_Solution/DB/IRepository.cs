@@ -18,6 +18,8 @@ namespace DATS
     DbSet<Price> Prices { get; set; }
 
     int SaveChanges();
+    void SaveEntry<T>(T entry) where T : class;
+    void DeleteEntry<T>(T entry) where T : class;
          
     //Stadiums
     List<Stadium> GetAllStadiums();
@@ -41,6 +43,7 @@ namespace DATS
     void ProcessTicketsReturning(Match match, Sector sector, List<PlaceView> places);
     int ProcessTicketsReservation(ClientView clientView, List<PlaceView> places);
     void RemoveReservationsByTimeout();
+    int GetCountOfSoldPlacesInSector(Sector sector);
 
     //Sectors
     Sector FindSector(int sid);

@@ -18,7 +18,6 @@ namespace DATS.Controllers
             ViewBag.Stadiumes = Repository.GetAllStadiums();
 
             // переменные для сбора данных в ветвлениях
-            int? SID;
             Stadium STADIUM;
 
             if (sid == null)
@@ -33,13 +32,17 @@ namespace DATS.Controllers
                 else
                 {
                     STADIUM = FindFirstStadium;
-                    SID = FindFirstStadium.Id;
                 }
             }
             else
             {
                 STADIUM = Repository.FindStadium((int)sid);
-                SID = sid;
+                if(STADIUM == null)
+                {
+                    logger.Warn("/ConfigSetting/Index : Не найден указанный стадион. sid = " + sid.ToString());
+                    string msgKey = PrepareMessageBox("Не найден указанный стадион!", "Внимание!", true);
+                    return RedirectToAction("Index", "ConfigSetting", new { notify = msgKey });
+                }
             }
 
             // Применяем собраные значения переменных SID (как фильтры) и STADIUM (как выбор в фильтре)
