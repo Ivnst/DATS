@@ -34,6 +34,13 @@ namespace DATS.Controllers
           else
           {
             ViewBag.Stadium = Repository.FindStadium((int)sid);
+            if (ViewBag.Stadium == null)
+            {
+              logger.Warn("/MatchSetting/Index : Не найден указанный стадион. sid = " + sid.ToString());
+              string msgKey = PrepareMessageBox("Не найден указанный стадион!", "Внимание!", true);
+              return RedirectToAction("Index", "MatchSetting", new { notify = msgKey });
+            }
+
             return View(Repository.Matches.Where(p => p.StadiumId == (int)sid));
           }
 
