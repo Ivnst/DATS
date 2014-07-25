@@ -72,36 +72,62 @@
     </div>
 </div>
 
-    
-    <script>
-        // Определение функции для отображения текущего времени
-        $().ready(function () { displayTime(); setInterval(function () { displayTime(); }, 30000); })
-       function displayTime()
-        {
-            var element = document.getElementById("Clock"); // Найти элемент с id="Clock"
-            var now = new Date(); // Получить текущее время
-            var month = now.getMonth() + 1;
-            var day = now.getDate();
-            var year = now.getFullYear();
-            var hours = now.getHours().toLocaleString();
-            var minutes = now.getMinutes().toLocaleString();
+<script>
+    // Определение функции для отображения текущего времени
+    $().ready(function () { displayTime(); setInterval(function () { displayTime(); }, 30000); })
+   function displayTime()
+    {
+        var element = document.getElementById("Clock"); // Найти элемент с id="Clock"
+        var now = new Date(); // Получить текущее время
+        var month = now.getMonth() + 1;
+        var day = now.getDate();
+        var year = now.getFullYear();
+        var hours = now.getHours().toLocaleString();
+        var minutes = now.getMinutes().toLocaleString();
 
-            element.innerHTML = day + '.' +month + '.' + year + "      " + hours + ":" + minutes; // Отобразить его//сделать перенос времени на след строку !!!
-        }        
-    </script>
-    <style>
-        /* Таблица стилей CSS для часов */
-        #Clock { /* Стили применяются к элементу с id="Clock" */
-            color: black;
-            font: bold 15pt sans; /* Использовать большой полужирный шрифт */
-            background: #ddf; /* Светлый, голубовато-серый фон */
-            padding: 10px; /* Отступы вокруг */
-            border: solid grey 2px; /* И сплошная черная рамка */
-            border-radius: 10px; /* Закругленные углы (если поддерживаются) */
-        }
-    </style>
+        element.innerHTML = day + '.' +month + '.' + year + "      " + hours + ":" + minutes; // Отобразить его//сделать перенос времени на след строку !!!
+    }        
+</script>
 
+<style>
+    /* Таблица стилей CSS для часов */
+    #Clock { /* Стили применяются к элементу с id="Clock" */
+        color: black;
+        font: bold 15pt sans; /* Использовать большой полужирный шрифт */
+        background: #ddf; /* Светлый, голубовато-серый фон */
+        padding: 10px; /* Отступы вокруг */
+        border: solid grey 2px; /* И сплошная черная рамка */
+        border-radius: 10px; /* Закругленные углы (если поддерживаются) */
+    }
+</style>
 
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function (d, w, c) {
+        (w[c] = w[c] || []).push(function () {
+            try {
+                w.yaCounter25679033 = new Ya.Metrika({ id: 25679033,
+                    clickmap: true,
+                    accurateTrackBounce: true,
+                    trackHash: true
+                });
+            } catch (e) { }
+        });
+
+        var n = d.getElementsByTagName("script")[0],
+        s = d.createElement("script"),
+        f = function () { n.parentNode.insertBefore(s, n); };
+        s.type = "text/javascript";
+        s.async = true;
+        s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+
+        if (w.opera == "[object Opera]") {
+            d.addEventListener("DOMContentLoaded", f, false);
+        } else { f(); }
+    })(document, window, "yandex_metrika_callbacks");
+</script>
+<noscript><div><img src="//mc.yandex.ru/watch/25679033" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
 
 </body>
 </html>
