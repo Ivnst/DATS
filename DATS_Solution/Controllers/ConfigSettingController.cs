@@ -66,6 +66,9 @@ namespace DATS.Controllers
             int RRPeriod;
             string valueStadiumId = null, valueTime = null;
  
+            try
+            { 
+
             if (Request.IsAjaxRequest())
             {
 
@@ -110,6 +113,15 @@ namespace DATS.Controllers
                     return Json("An Error Has occoured");
                 }
             }
+
+            }
+            catch (System.Exception ex)
+            {
+                logger.Error("/ConfigSetting/Delete : Ошибка", ex);
+                string msgKey = PrepareMessageBox("При сохранении параметров возникла ошибка!", "Внимание!", true);
+                return RedirectToAction("Index", "ConfigSetting", new { notify = msgKey });
+            }
+
             return RedirectToAction("Index");
         }
 

@@ -155,6 +155,9 @@ namespace DATS.Controllers
             decimal TempPriceValue = 0;
             Price FindFirstPrice = null;
 
+            try
+            { 
+
             if (Request.IsAjaxRequest()) 
             {
           
@@ -234,9 +237,20 @@ namespace DATS.Controllers
         return Json("An Error Has occoured");
             }
             }
+
+            }
+            catch (System.Exception ex)
+            {
+                logger.Error("/PriceSetting/Delete : Ошибка", ex);
+                string msgKey = PrepareMessageBox("При сохранении цен возникла ошибка!", "Внимание!", true);
+                return RedirectToAction("Index", "PriceSetting", new { notify = msgKey });
+            }
+
             return RedirectToAction("Index");
             }
            
     
+
+
     }
 }
