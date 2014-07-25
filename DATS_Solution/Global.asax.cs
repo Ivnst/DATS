@@ -30,6 +30,9 @@ namespace DATS
       reservationTimeoutThread = new Thread(new ThreadStart(ReturnReservationFunc));
       reservationTimeoutThread.IsBackground = true;
       reservationTimeoutThread.Start();
+
+      //настройка часового пояса логгера
+      NLog.Time.TimeSource.Current = new CustomTimeZoneTimeSource() { Zone = "FLE Standard Time" };
     }
 
     /// <summary>
