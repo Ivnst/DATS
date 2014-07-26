@@ -46,12 +46,20 @@ namespace DATS.Controllers
 
         }
 
-        
 
+        #region <Edit>
+        
         public ActionResult Edit(int id)
         {
 
             Match match = Repository.FindMatch(id);
+
+            if (match == null)
+            {
+                logger.Warn("/MatchSetting/Edit : Указанное мероприятие не найдено. id = " + id.ToString());
+                string msgKey = PrepareMessageBox("Указанное мероприятие не найдено!", "Внимание!", true);
+                return RedirectToAction("Index", "MatchSetting", new { notify = msgKey });
+            }
 
             ViewBag.Stadium = Repository.FindStadium(match.StadiumId);
 
@@ -63,13 +71,22 @@ namespace DATS.Controllers
         {
             if (ModelState.IsValid)
             {
-                ((DbContext)Repository).Entry<Match>(match).State = EntityState.Modified;
-                Repository.SaveChanges();
+                try
+                {
+                    ((DbContext)Repository).Entry<Match>(match).State = EntityState.Modified;
+                    Repository.SaveChanges();
 
-                string msg = string.Format(@"Мероприятие ""{0}"" успешно сохранено.", match.Name);
-                TempData["message"] = msg;
-                logger.Info(msg);
-                return RedirectToAction("Index", "MatchSetting", new { sid = match.StadiumId });
+                    string msg = string.Format(@"Мероприятие ""{0}"" успешно сохранено.", match.Name);
+                    TempData["message"] = msg;
+                    logger.Info(msg);
+                    return RedirectToAction("Index", "MatchSetting", new { sid = match.StadiumId });
+                }
+                catch (System.Exception ex)
+                {
+                    logger.Error("/MatchSetting/Edit : Ошибка", ex);
+                    string msgKey = PrepareMessageBox("При сохранении мероприятия возникла ошибка!", "Внимание!", true);
+                    return RedirectToAction("Index", "MatchSetting", new { notify = msgKey, sid = match.StadiumId });
+                }
             }
             else
             {
@@ -80,12 +97,25 @@ namespace DATS.Controllers
 
             }
         }
+        
+        #endregion
 
+        #region <Create>
+        
 
         [HttpGet]
         public ActionResult Create(int id)
         {
-            ViewBag.Stadium = Repository.FindStadium(id);
+            Stadium stadium = Repository.FindStadium(id);
+
+            if (stadium == null)
+            {
+                logger.Warn("/SectorSetting/Edit : Указанный стадион не найден. id = " + id.ToString());
+                string msgKey = PrepareMessageBox("Указанный стадион не найден!", "Внимание!", true);
+                return RedirectToAction("Index", "SectorSetting", new { notify = msgKey });
+            }
+
+            ViewBag.Stadium = stadium;
 
             Match match = new Match();
             match.StadiumId = id;
@@ -98,13 +128,22 @@ namespace DATS.Controllers
         {
             if (ModelState.IsValid)
             {
-                ((DbContext)Repository).Entry<Match>(match).State = EntityState.Added;
-                Repository.SaveChanges();
-                
-                string msg = string.Format(@"Мероприятие ""{0}"" успешно создано.", match.Name);
-                TempData["message"] = msg;
-                logger.Info(msg);
-                return RedirectToAction("Index", "MatchSetting", new { sid = match.StadiumId });
+                try
+                {
+                    ((DbContext)Repository).Entry<Match>(match).State = EntityState.Added;
+                    Repository.SaveChanges();
+
+                    string msg = string.Format(@"Мероприятие ""{0}"" успешно создано.", match.Name);
+                    TempData["message"] = msg;
+                    logger.Info(msg);
+                    return RedirectToAction("Index", "MatchSetting", new { sid = match.StadiumId });
+                }
+                catch (System.Exception ex)
+                {
+                    logger.Error("/MatchSetting/Create : Ошибка", ex);
+                    string msgKey = PrepareMessageBox("При создании мероприятия возникла ошибка!", "Внимание!", true);
+                    return RedirectToAction("Index", "MatchSetting", new { notify = msgKey, sid = match.StadiumId });
+                }
             }
             else
             {
@@ -115,9 +154,21 @@ namespace DATS.Controllers
         }
 
 
+        #endregion
+
+        #region <Delete>
+        
+
         public ActionResult Delete(int id)
         {
             Match match = Repository.FindMatch(id);
+
+            if (match == null)
+            {
+                logger.Warn("/MatchSetting/Delete : Указанное мероприятие не найдено. id = " + id.ToString());
+                string msgKey = PrepareMessageBox("Указанное мероприятие не найдено!", "Внимание!", true);
+                return RedirectToAction("Index", "MatchSetting", new { notify = msgKey });
+            }
 
             return PartialView(match);
         }
@@ -127,14 +178,26 @@ namespace DATS.Controllers
         [HttpPost]
         public ActionResult Delete(Match match)
         {
-          ((DbContext)Repository).Entry<Match>(match).State = EntityState.Deleted;
-          Repository.SaveChanges();
+            try
+            {
+                ((DbContext)Repository).Entry<Match>(match).State = EntityState.Deleted;
+                Repository.SaveChanges();
 
-          string msg = string.Format(@"Мероприятие было удалено.", match.Name);
-          TempData["message"] = msg;
-          logger.Info(msg);
-          return RedirectToAction("Index", "MatchSetting", new { sid = match.StadiumId });
+                string msg = string.Format(@"Мероприятие было удалено.", match.Name);
+                TempData["message"] = msg;
+                logger.Info(msg);
+                return RedirectToAction("Index", "MatchSetting", new { sid = match.StadiumId });
+            }
+            catch (System.Exception ex)
+            {
+                logger.Error("/MatchSetting/Delete : Ошибка", ex);
+                string msgKey = PrepareMessageBox("При удалении мероприятия возникла ошибка!", "Внимание!", true);
+                return RedirectToAction("Index", "MatchSetting", new { notify = msgKey, sid = match.StadiumId });
+            }
         }
+
+
+        #endregion
 
 
     }

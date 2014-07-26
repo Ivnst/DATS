@@ -46,11 +46,19 @@ namespace DATS.Controllers
 
         }
 
+        #region <Edit>
 
         public ActionResult Edit(int id)
         {
 
             Sector sector = Repository.FindSector(id);
+
+            if (sector == null)
+            {
+                logger.Warn("/SectorSetting/Edit : Указанный сектор не найден. id = " + id.ToString());
+                string msgKey = PrepareMessageBox("Указанный сектор не найден!", "Внимание!", true);
+                return RedirectToAction("Index", "SectorSetting", new { notify = msgKey });
+            }
 
             ViewBag.Stadium = Repository.FindStadium(sector.StadiumId);
 
@@ -62,13 +70,22 @@ namespace DATS.Controllers
         {
             if (ModelState.IsValid)
             {
-                ((DbContext)Repository).Entry<Sector>(sector).State = EntityState.Modified;
-                Repository.SaveChanges();
-                int TDStadiumId = sector.StadiumId;
-                string msg = string.Format(@"Сектор ""{0}"" успешно сохранен.", sector.Name);
-                TempData["message"] = msg;
-                logger.Info(msg);
-                return RedirectToAction("Index", "SectorSetting", new { sid = TDStadiumId });
+                try
+                {
+                    ((DbContext)Repository).Entry<Sector>(sector).State = EntityState.Modified;
+                    Repository.SaveChanges();
+                    int TDStadiumId = sector.StadiumId;
+                    string msg = string.Format(@"Сектор ""{0}"" успешно сохранен.", sector.Name);
+                    TempData["message"] = msg;
+                    logger.Info(msg);
+                    return RedirectToAction("Index", "SectorSetting", new { sid = TDStadiumId });
+                }
+                catch (System.Exception ex)
+                {
+                    logger.Error("/SectorSetting/Edit : Ошибка", ex);
+                    string msgKey = PrepareMessageBox("При сохранении сектора возникла ошибка!", "Внимание!", true);
+                    return RedirectToAction("Index", "SectorSetting", new { notify = msgKey, sid = sector.StadiumId });
+                }
             }
             else
             {
@@ -79,13 +96,25 @@ namespace DATS.Controllers
 
             }
         }
+        
+        #endregion
 
+        #region <Create>
 
         [HttpGet]
         public ActionResult Create(int id)
         {
 
-            ViewBag.Stadium = Repository.FindStadium(id);
+            Stadium stadium = Repository.FindStadium(id);
+
+            if (stadium == null)
+            {
+                logger.Warn("/SectorSetting/Edit : Указанный стадион не найден. id = " + id.ToString());
+                string msgKey = PrepareMessageBox("Указанный стадион не найден!", "Внимание!", true);
+                return RedirectToAction("Index", "SectorSetting", new { notify = msgKey });
+            }
+
+            ViewBag.Stadium = stadium;
 
             Sector sector = new Sector();
             sector.StadiumId = id;
@@ -98,13 +127,22 @@ namespace DATS.Controllers
         {
             if (ModelState.IsValid)
             {
-                ((DbContext)Repository).Entry<Sector>(sector).State = EntityState.Added;
-                Repository.SaveChanges();
-                int TDStadiumId = sector.StadiumId;
-                string msg = string.Format(@"Сектор ""{0}"" успешно создан.", sector.Name); ;
-                TempData["message"] = msg;
-                logger.Info(msg);
-                return RedirectToAction("Index", "SectorSetting", new { sid = TDStadiumId });
+                try
+                {
+                    ((DbContext)Repository).Entry<Sector>(sector).State = EntityState.Added;
+                    Repository.SaveChanges();
+                    int TDStadiumId = sector.StadiumId;
+                    string msg = string.Format(@"Сектор ""{0}"" успешно создан.", sector.Name); ;
+                    TempData["message"] = msg;
+                    logger.Info(msg);
+                    return RedirectToAction("Index", "SectorSetting", new { sid = TDStadiumId });
+                }
+                catch (System.Exception ex)
+                {
+                    logger.Error("/SectorSetting/Create : Ошибка", ex);
+                    string msgKey = PrepareMessageBox("При создании сектора возникла ошибка!", "Внимание!", true);
+                    return RedirectToAction("Index", "SectorSetting", new { notify = msgKey, sid = sector.StadiumId });
+                }
             }
             else
             {
@@ -116,10 +154,21 @@ namespace DATS.Controllers
             }
         }
 
+        #endregion
+
+        #region <Delete>
+
 
         public ActionResult Delete(int id)
         {
             Sector sector = Repository.FindSector(id);
+
+            if (sector == null)
+            {
+                logger.Warn("/SectorSetting/Delete : Указанный сектор не найден. id = " + id.ToString());
+                string msgKey = PrepareMessageBox("Указанный сектор не найден!", "Внимание!", true);
+                return RedirectToAction("Index", "SectorSetting", new { notify = msgKey });
+            }
 
             return PartialView(sector);
         }
@@ -135,16 +184,28 @@ namespace DATS.Controllers
               return RedirectToAction("Index", "SectorSetting", new { notify = msgKey });
             }
 
+            try
+            {
+                ((DbContext)Repository).Entry<Sector>(sector).State = EntityState.Deleted;
+                Repository.SaveChanges();
 
-            ((DbContext)Repository).Entry<Sector>(sector).State = EntityState.Deleted;
-            Repository.SaveChanges();
-
-            string msg = string.Format(@"Сектор был удален.", sector.Name);
-            TempData["message"] = msg;
-            logger.Info(msg);
-            return RedirectToAction("Index", "SectorSetting", new { sid = sector.StadiumId });
+                string msg = string.Format(@"Сектор был удален.", sector.Name);
+                TempData["message"] = msg;
+                logger.Info(msg);
+                return RedirectToAction("Index", "SectorSetting", new { sid = sector.StadiumId });
+            }
+            catch (System.Exception ex)
+            {
+                logger.Error("/SectorSetting/Delete : Ошибка", ex);
+                string msgKey = PrepareMessageBox("При удалении сектора возникла ошибка!", "Внимание!", true);
+                return RedirectToAction("Index", "SectorSetting", new { notify = msgKey, sid = sector.StadiumId });
+            }
         }
 
+
+        #endregion
+
+        #region <Copy>
 
         [HttpPost]
         public ActionResult Copy(int id)
@@ -175,5 +236,8 @@ namespace DATS.Controllers
           }
 
         }
+
+        #endregion
+
     }
 }
