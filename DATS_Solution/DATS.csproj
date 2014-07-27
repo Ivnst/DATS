@@ -289,8 +289,12 @@
     <Content Include="Scripts\CustomValidation\SectorValidation.js" />
     <Content Include="Scripts\CustomValidation\ValidationMessages.js" />
     <Content Include="Scripts\CustomValidation\StadiumValidation.js" />
+    <Content Include="Scripts\Custom\ConfigAjaxSave.js" />
+    <Content Include="Scripts\Custom\DatepickerForCreateMatch.js" />
     <Content Include="Scripts\Custom\Notification.js" />
+    <Content Include="Scripts\Custom\PriceAjaxSave.js" />
     <Content Include="Scripts\Custom\SectorCommon.js" />
+    <Content Include="Scripts\Custom\SectorCopy.js" />
     <Content Include="Scripts\Custom\SectorEdit.js" />
     <Content Include="Scripts\Custom\SectorConfigure.js" />
     <Content Include="Scripts\jquery-2.1.1-vsdoc.js" />

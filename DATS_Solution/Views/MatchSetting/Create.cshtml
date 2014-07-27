@@ -10,18 +10,7 @@
 </div>
 
 <script src="~/Scripts/CustomValidation/MatchCreateValidation.js" type="text/javascript"></script>
-
-<link rel="stylesheet" type="text/css" href="~/Content/themes/base/jquery.ui.all.css" />
-<script src="~/Scripts/jquery-2.1.1.min.js"></script>
-<script src="~/Scripts/jquery-ui-1.10.4.min.js"></script>
-
-<script>
-    $(function () {
-        $.datepicker.setDefaults($.datepicker.regional['ru']);
-        $("#begining").datepicker();
-        $('#begining').datepicker('option', 'dateFormat', 'dd.mm.yy 00:00');
-    });
-</script>
+<script src="~/Scripts/Custom/DatepickerForCreateMatch.js"></script>
 
 @using (Html.BeginForm())
 {
