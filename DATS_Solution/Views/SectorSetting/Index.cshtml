@@ -5,15 +5,7 @@
     ViewBag.Title = "Справочник секторов";
 }
 
-<script type="text/javascript">
-
-    function copyBtn(id) {
-        $.post("/SectorSetting/Copy", { id: id },
-        function (data) {
-            location.reload();
-        })
-    }
-</script>
+<script src="~/Scripts/Custom/SectorCopy.js"></script>
 
 <div class="btn-group" style="margin: 0 0 10px">
     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
