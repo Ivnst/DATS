@@ -7,9 +7,29 @@
         Редактирование стадиона</h4>
 </div>
 
+<!-- Hide file input -->
+<link rel="stylesheet" type="text/css" href="~/Content/fileInput.css" />
+
 <script src="~/Scripts/CustomValidation/StadiumValidation.js"  type="text/javascript"></script>
 
-@using (Html.BeginForm()) {
+<!-- Showing selected filename -->
+<script type="text/javascript">
+  $('input[name="StadiumImage"]').change(function () {
+    var name = $(this).val();
+    var ext = name.substr(name.lastIndexOf('.') + 1);
+    if (ext != 'jpg' && ext != 'png' && ext != 'jpeg') {
+      $(this).val(null);
+      $('#fileName').text("Некорректный формат файла!");
+    }
+    else {
+      $('#fileName').text(name);
+    }
+  });
+
+</script>
+
+@using (Html.BeginForm("Edit", "StadiumSetting", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+{
     @Html.ValidationSummary(true)
 
 <div class="modal-body">
@@ -28,6 +48,19 @@
         <div class="editor-field">
             @Html.TextBoxFor(model => model.Address, new { @class = "form-control", @autocomplete = "off" })
             @Html.ValidationMessageFor(model => model.Address)
+        </div>
+        <div class="editor-label">
+            <label>Изображение</label>
+        </div>
+        <div class="editor-field">
+            <ul class="list-inline">
+            <li><span class="btn btn-info fileinput-button">
+                <i class="glyphicon glyphicon-plus"></i>
+                <span>Обновить изображение</span>
+                <input type="file" name="StadiumImage" />
+            </span></li>
+            <li><div id="fileName"></div></li>
+            </ul>
         </div>
 
         @Html.HiddenFor(model => model.Id)

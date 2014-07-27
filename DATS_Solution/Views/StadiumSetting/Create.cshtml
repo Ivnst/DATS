@@ -7,9 +7,28 @@
         Создание стадиона</h4>
 </div>
 
+<!-- Hide file input -->
+<link rel="stylesheet" type="text/css" href="~/Content/fileInput.css" />
+
 <script src="~/Scripts/CustomValidation/StadiumValidation.js"  type="text/javascript"></script>
 
-@using (Html.BeginForm())
+<!-- Showing selected filename -->
+<script type="text/javascript">
+  $('input[name="StadiumImage"]').change(function () {
+    var name = $(this).val();
+    var ext = name.substr(name.lastIndexOf('.') + 1);
+    if (ext != 'jpg' && ext != 'png' && ext != 'jpeg') {
+      $(this).val(null);
+      $('#fileName').text("Некорректный формат файла!");
+    }
+    else {
+      $('#fileName').text(name);
+    }
+  });
+
+</script>
+
+@using (Html.BeginForm("Create", "StadiumSetting", FormMethod.Post, new { @enctype="multipart/form-data" }))
 {
     @Html.ValidationSummary(true)
 
@@ -28,6 +47,19 @@
             <div class="editor-field">
                 @Html.TextBoxFor(model => model.Address, new { @class = "form-control", @autocomplete = "off" })
                 @Html.ValidationMessageFor(model => model.Address)
+            </div>
+            <div class="editor-label">
+                <label>Изображение</label>
+            </div>
+            <div class="editor-label">
+                <ul class="list-inline">
+                <li><span class="btn btn-info fileinput-button">
+                    <i class="glyphicon glyphicon-plus"></i>
+                    <span>Загрузить изображение</span>
+                    <input type="file" name="StadiumImage" />
+                </span></li>
+                <li><div id="fileName"></div></li>
+                </ul>
             </div>
         </fieldset>
     </div>
