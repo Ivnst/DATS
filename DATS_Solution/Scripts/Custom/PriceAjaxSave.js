@@ -36,7 +36,7 @@ function validium() {
     var errMessage1 = "", errMessage2 = "";
     $(".iksar").val(function (i, v) {
         if ((v.length > 0) && (isFinite(v) == false)) { nonError = false; errMessage1 = "Данные не сохранены, так как одно или несколько значений содержат ошибку.\n" }
-        if ((v.length > 0) && (isFinite(v) == true) && (v > 1000000000)) { nonError = false; errMessage2 = "Данные не сохранены, так как цена ограничена значением 1000000000." }
+        if ((v.length > 0) && (isFinite(v) == true) && ((v < 0) || (v > 1000000000))) { nonError = false; errMessage2 = "Данные не сохранены, так как цена ограничена диапазоном от 0 до 1000000000." }
         return v;
     });
     if (nonError == false) alert(errMessage1 + errMessage2);
