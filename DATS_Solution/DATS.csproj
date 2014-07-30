@@ -212,6 +212,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\fileInput.css" />
     <Content Include="Content\Setting.css" />
+    <Content Include="Content\DateAndTime.css" />
     <Content Include="Content\themes\base\images\animated-overlay.gif" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
@@ -283,6 +284,7 @@
     <Content Include="Images\configs.png" />
     <Content Include="Images\favicon.ico" />
     <Content Include="Images\info.png" />
+    <Content Include="Images\Logo.jpg" />
     <Content Include="Images\sector.png" />
     <Content Include="Images\stadium.png" />
     <Content Include="Scripts\bootstrap.js" />
@@ -293,6 +295,7 @@
     <Content Include="Scripts\CustomValidation\ValidationMessages.js" />
     <Content Include="Scripts\CustomValidation\StadiumValidation.js" />
     <Content Include="Scripts\Custom\ConfigAjaxSave.js" />
+    <Content Include="Scripts\Custom\DateAndTime.js" />
     <Content Include="Scripts\Custom\DatepickerForCreateMatch.js" />
     <Content Include="Scripts\Custom\Notification.js" />
     <Content Include="Scripts\Custom\PriceAjaxSave.js" />
