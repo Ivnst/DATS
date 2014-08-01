@@ -147,6 +147,9 @@
     <Compile Include="App_Start\NinjectConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Authorize\FormsAuthProvider.cs" />
+    <Compile Include="Authorize\IAuthProvider.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ConfigSettingController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -188,6 +191,7 @@
     <Compile Include="Models\Configs.cs" />
     <Compile Include="Models\ModelsView\ClientView.cs" />
     <Compile Include="Models\ModelsView\ConfigView.cs" />
+    <Compile Include="Models\ModelsView\LoginViewModel.cs" />
     <Compile Include="Models\ModelsView\SellingView.cs" />
     <Compile Include="Models\ModelsView\ReservationView.cs" />
     <Compile Include="Models\ModelsView\PlaceView.cs" />
@@ -355,6 +359,7 @@
     <None Include="Scripts\jquery-2.1.1.min.map" />
     <Content Include="Views\ConfigSetting\Index.cshtml" />
     <Content Include="Views\Sector\Confirm.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 
 namespace DATS.Controllers
 {
+    [Authorize]
     public class BaseController : Controller
     {
       [Inject]
@@ -134,10 +135,16 @@ namespace DATS.Controllers
         }
 
         //заполняем данные для View
+        ViewBag.CurrUser = HttpContext.User.Identity.Name;
         ViewBag.Stadiums = Repository.GetAllStadiums();
         ViewBag.CurrentStadium = currentStadium;
         ViewBag.CurrentMatch = currentMatch;
         ViewBag.Matches = Repository.GetMatchesByStadium(currentStadium);
+      }
+
+      protected void FillUserDetail()
+      {
+        ViewBag.CurrUser = HttpContext.User.Identity.Name;
       }
 
 

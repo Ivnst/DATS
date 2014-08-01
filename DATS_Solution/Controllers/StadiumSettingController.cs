@@ -15,6 +15,7 @@ namespace DATS.Controllers
         // GET: /StadiumSetting/
         public ActionResult Index()
         {
+            FillUserDetail();
             ViewBag.Tab = 1;
             return View(Repository.Stadiums);
         }
