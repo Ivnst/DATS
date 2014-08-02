@@ -14,6 +14,7 @@ namespace DATS.Controllers
 
     public ActionResult Index(int? sid, int? mid)
     {
+      FillUserDetail();
       ViewBag.Tab = 4;
       // переменные для сбора данных в ветвлениях
       int SID, MID;

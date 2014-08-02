@@ -13,6 +13,7 @@ namespace DATS.Controllers
 
         public ActionResult Index(int? sid)
         {
+          FillUserDetail();
           ViewBag.Tab = 3;
           ViewBag.Stadiumes = Repository.GetAllStadiums();
 
