@@ -27,8 +27,16 @@
               <td>@Html.DisplayFor(model => model.Contact)</td>
             </tr>
             <tr>
+              <td>@Html.LabelFor(model => model.StadiumName)</td>
+              <td>@Html.DisplayFor(model => model.StadiumName)</td>
+            </tr>
+            <tr>
+              <td>@Html.LabelFor(model => model.MatchName)</td>
+              <td>@Html.DisplayFor(model => model.MatchName)</td>
+            </tr>
+            <tr>
               <td>@Html.LabelFor(model => model.SectorName)</td>
-              <td>@Html.DisplayFor(model => model.SectorName)</td>
+              <td><a href="~/Sector/Edit?sid=@Model.SectorId&mid=@Model.MatchId">@Model.SectorName</a></td>
             </tr>
             <tr>
               <td>@Html.LabelFor(model => model.PlacesList)</td>

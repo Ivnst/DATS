@@ -111,6 +111,11 @@ namespace DATS.Controllers
           if (ModelState.IsValid)
           {
             reservation = Repository.GetReservationInfo(reservation.Id);
+            if(reservation == null)
+            {
+              string msgKey = PrepareMessageBox("Информация о данном бронировании отсутствует!", "Внимание!", true);
+              return RedirectToAction("Index", "Reservation", new { notify = msgKey });
+            }
             Repository.SellAllReservation(reservation);
 
             string messageKey = PrepareMessageBox("Забронированные билеты успешно проданы!", "Готово!", false);
@@ -129,6 +134,11 @@ namespace DATS.Controllers
           if (ModelState.IsValid)
           {
             reservation = Repository.GetReservationInfo(reservation.Id);
+            if (reservation == null)
+            {
+              string msgKey = PrepareMessageBox("Информация о данном бронировании отсутствует!", "Внимание!", true);
+              return RedirectToAction("Index", "Reservation", new { notify = msgKey });
+            }
             Repository.ReleaseAllReservation(reservation);
             
             string messageKey = PrepareMessageBox("Забронированные билеты успешно возвращены в свободную продажу!", "Готово!", false);
