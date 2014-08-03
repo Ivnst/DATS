@@ -32,11 +32,11 @@
       
       <ul class="nav navbar-nav">
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">@ViewBag.CurrentStadium.Name <b class="caret"></b></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">@Html.ShortenString((string)ViewBag.CurrentStadium.Name,50) <b class="caret"></b></a>
           <ul class="dropdown-menu">
             @foreach(DATS.Stadium stadium in ViewBag.Stadiums)
             {
-               <li class="@((@ViewBag.CurrentStadium.Id==stadium.Id)?"active":"")"><a href="/Home/Stadium?sid=@stadium.Id">@stadium.Name</a></li>  
+               <li class="@((@ViewBag.CurrentStadium.Id==stadium.Id)?"active":"")"><a href="/Home/Stadium?sid=@stadium.Id">@Html.ShortenString(@stadium.Name, 100)</a></li>  
             }
           </ul>
         </li>
@@ -45,7 +45,7 @@
           <ul class="dropdown-menu">
             @foreach(DATS.Match match in ViewBag.Matches)
             {
-               <li class="@((@ViewBag.CurrentMatch.Id==match.Id)?"active":"")"><a href="/Home/Match?mid=@match.Id">@match.Name</a></li>  
+               <li class="@((@ViewBag.CurrentMatch.Id==match.Id)?"active":"")"><a href="/Home/Match?mid=@match.Id">@Html.ShortenString(match.Name, 100)</a></li>  
             }
           </ul>
         </li>
