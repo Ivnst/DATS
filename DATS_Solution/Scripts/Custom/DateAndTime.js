@@ -21,7 +21,7 @@
             minutes = "0" + minutes;
         }
        
-        element.innerHTML =  day + '.' +month + '.' + year + "      " + hours + ":" + minutes; // Отобразить его
+        element.innerHTML =  '<b>' + day + '.' +month + '.' + year + "      " + hours + ":" + minutes +'</b>'; // Отобразить его
        
     }         
 

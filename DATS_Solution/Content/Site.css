@@ -64,3 +64,13 @@ textarea {
   src: url('../fonts/digital-7.ttf');
 }
 
+
+
+ /* Таблица стилей CSS для часов */
+    #Clock { /* Стили применяются к элементу с id="Clock" */
+        color: black;
+        font: 15pt "digital-7"; 
+        /*padding: 8px;  Отступы вокруг */
+         /*border: solid grey 2px; И сплошная серая рамка */
+        /*border-radius: 10px;  Закругленные углы */
+    }
