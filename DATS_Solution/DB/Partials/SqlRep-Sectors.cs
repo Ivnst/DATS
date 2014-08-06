@@ -33,7 +33,7 @@ namespace DATS
     /// <returns></returns>
     public List<Sector> GetSectorsByStadium(int stadiumId)
     {
-      return Sectors.Where<Sector>(s => s.StadiumId == stadiumId).ToList<Sector>();
+      return Sectors.Where<Sector>(s => s.StadiumId == stadiumId).OrderBy(s => s.Name).ToList<Sector>();
     }
 
 

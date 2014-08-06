@@ -17,7 +17,7 @@ namespace DATS.Controllers
         {
             FillUserDetail();
             ViewBag.Tab = 1;
-            return View(Repository.Stadiums);
+            return View(Repository.Stadiums.OrderBy(s => s.Name));
         }
 
         #region <Create>

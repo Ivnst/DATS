@@ -18,33 +18,25 @@ namespace DATS.Controllers
 
             if (sid == null)
             {
-                // если sid нет, выбераем первый встретившийся стадион
+                // если sid нет, выбираем первый встретившийся стадион
                 var FindFirstStadium = Repository.Stadiums.FirstOrDefault<Stadium>();
 
                 if (FindFirstStadium == null)
                 {
-                    throw new ArgumentNullException("Ошибка! Отсутсвуют стадионы в справочнике стадионов.");
+                  throw new ArgumentNullException("Ошибка! Отсутствуют стадионы в справочнике стадионов.");
                 }
-                else
-                {
-                    ViewBag.Stadium = FindFirstStadium;
-                    return View(Repository.Sectors.Where(p => p.StadiumId == FindFirstStadium.Id));
-                }
+                sid = FindFirstStadium.Id;
             }
-            else
+
+            ViewBag.Stadium = Repository.FindStadium((int)sid);
+            if (ViewBag.Stadium == null)
             {
-                ViewBag.Stadium = Repository.FindStadium((int)sid);
-                if (ViewBag.Stadium == null)
-                {
-                  logger.Warn("/SectorSetting/Index : Не найден указанный стадион. sid = " + sid.ToString());
-                  string msgKey = PrepareMessageBox("Не найден указанный стадион!", "Внимание!", true);
-                  return RedirectToAction("Index", "SectorSetting", new { notify = msgKey });
-                }
-
-
-                return View(Repository.Sectors.Where(p => p.StadiumId == (int)sid));
+              logger.Warn("/SectorSetting/Index : Не найден указанный стадион. sid = " + sid.ToString());
+              string msgKey = PrepareMessageBox("Не найден указанный стадион!", "Внимание!", true);
+              return RedirectToAction("Index", "SectorSetting", new { notify = msgKey });
             }
 
+            return View(Repository.Sectors.Where(p => p.StadiumId == (int)sid).OrderBy(p => p.Name));
         }
 
         #region <Edit>

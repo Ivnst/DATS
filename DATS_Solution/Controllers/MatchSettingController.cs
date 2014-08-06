@@ -11,41 +11,36 @@ namespace DATS.Controllers
     public class MatchSettingController : BaseController
     {
 
-        public ActionResult Index(int? sid)
-        {
+      public ActionResult Index(int? sid)
+      {
           FillUserDetail();
           ViewBag.Tab = 3;
           ViewBag.Stadiumes = Repository.GetAllStadiums();
-
+        
+          //проверяем входящий параметр (код стадиона)
           if (sid == null)
           {
-            // если sid нет, выбераем первый встретившийся стадион
+            // если sid нет, выбираем первый встретившийся стадион
             var FindFirstStadium = Repository.Stadiums.FirstOrDefault<Stadium>();
-
+            
             if (FindFirstStadium == null)
             {
-              throw new ArgumentNullException("Ошибка! Отсутсвуют стадионы в справочнике стадионов.");
+              throw new ArgumentNullException("Ошибка! Отсутствуют стадионы в справочнике стадионов.");
             }
-            else
-            {
-              ViewBag.Stadium = FindFirstStadium;
-              return View(Repository.Matches.Where(p => p.StadiumId == FindFirstStadium.Id));
-            }
+            sid = FindFirstStadium.Id;
           }
-          else
+        
+          //ищем указанный стадион
+          ViewBag.Stadium = Repository.FindStadium((int)sid);
+          if (ViewBag.Stadium == null)
           {
-            ViewBag.Stadium = Repository.FindStadium((int)sid);
-            if (ViewBag.Stadium == null)
-            {
-              logger.Warn("/MatchSetting/Index : Не найден указанный стадион. sid = " + sid.ToString());
-              string msgKey = PrepareMessageBox("Не найден указанный стадион!", "Внимание!", true);
-              return RedirectToAction("Index", "MatchSetting", new { notify = msgKey });
-            }
-
-            return View(Repository.Matches.Where(p => p.StadiumId == (int)sid));
+            logger.Warn("/MatchSetting/Index : Не найден указанный стадион. sid = " + sid.ToString());
+            string msgKey = PrepareMessageBox("Не найден указанный стадион!", "Внимание!", true);
+            return RedirectToAction("Index", "MatchSetting", new { notify = msgKey });
           }
 
-        }
+          return View(Repository.Matches.Where(p => p.StadiumId == (int)sid).OrderBy(p => p.BeginsAt));
+      }
 
 
         #region <Edit>
