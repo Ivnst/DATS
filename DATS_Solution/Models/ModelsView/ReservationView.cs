@@ -25,6 +25,29 @@ namespace DATS
     /// </summary>
     [DisplayName("Контакт клиента")]
     public string Contact { get; set; }
+
+    /// <summary>
+    /// Код стадиона
+    /// </summary>
+    [DisplayName("Код стадиона")]
+    public int StadiumId { get; set; }
+    /// <summary>
+    /// Наименование стадиона
+    /// </summary>
+    [DisplayName("Стадион")]
+    public string StadiumName { get; set; }
+    
+    /// <summary>
+    /// Код мероприятия
+    /// </summary>
+    [DisplayName("Код мероприятия")]
+    public int MatchId { get; set; }
+    /// <summary>
+    /// Наименование сектора
+    /// </summary>
+    [DisplayName("Мероприятие")]
+    public string MatchName { get; set; }
+
     /// <summary>
     /// Код сектора
     /// </summary>
@@ -35,6 +58,7 @@ namespace DATS
     /// </summary>
     [DisplayName("Сектор")]
     public string SectorName { get; set; }
+
     /// <summary>
     /// Количество забронированных мест
     /// </summary>

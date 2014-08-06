@@ -17,7 +17,7 @@ namespace DATS.Controllers
         {
             FillUserDetail();
             ViewBag.Tab = 1;
-            return View(Repository.Stadiums);
+            return View(Repository.Stadiums.OrderBy(s => s.Name));
         }
 
         #region <Create>
@@ -30,6 +30,9 @@ namespace DATS.Controllers
         [HttpPost]
         public ActionResult Create(Stadium stadium)
         {
+          stadium.Name = Utils.DeleteSpecialCharacters(stadium.Name);
+          stadium.Address = Utils.DeleteSpecialCharacters(stadium.Address);
+
           if (!ModelState.IsValid)
             return View(stadium);
 
@@ -100,6 +103,9 @@ namespace DATS.Controllers
         [HttpPost]
         public ActionResult Edit(Stadium stadium)
         {
+          stadium.Name = Utils.DeleteSpecialCharacters(stadium.Name);
+          stadium.Address = Utils.DeleteSpecialCharacters(stadium.Address);
+
           if (!ModelState.IsValid)
             return View(stadium);
 

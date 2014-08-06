@@ -47,7 +47,7 @@ namespace DATS.Controllers
               // перехват ошибки
               ViewBag.Stadium = FindFirstStadium;
               ViewBag.Match = new Match();
-              ViewBag.Matchess = Repository.Matches.Where<Match>(m => m.StadiumId == 0).ToList<Match>();
+              ViewBag.Matchess = Repository.Matches.Where<Match>(m => m.StadiumId == 0).OrderBy(m => m.BeginsAt).ToList<Match>();
               var JoinMoq1 = (from sk in Repository.Sectors
                               where sk.StadiumId == 0
                               select new PriceView()
@@ -90,7 +90,7 @@ namespace DATS.Controllers
             // перехват ошибки
             ViewBag.Stadium = Repository.Stadiums.FirstOrDefault<Stadium>(z => z.Id == (int)sid);
             ViewBag.Match = new Match();
-            ViewBag.Matchess = Repository.Matches.Where<Match>(m => m.StadiumId == 0).ToList<Match>();
+            ViewBag.Matchess = Repository.Matches.Where<Match>(m => m.StadiumId == 0).OrderBy(m => m.BeginsAt).ToList<Match>();
             var JoinMoq2 = (from sk in Repository.Sectors
                             where sk.StadiumId == 0
                             select new PriceView()
@@ -121,7 +121,7 @@ namespace DATS.Controllers
 
       // Применяем собраные значения переменных SID и MID (как фильтры), STADIUM и MATCH (как выбор в фильтрах)
 
-      ViewBag.Matchess = Repository.Matches.Where<Match>(m => m.StadiumId == SID).ToList<Match>();
+      ViewBag.Matchess = Repository.Matches.Where<Match>(m => m.StadiumId == SID).OrderBy(m => m.BeginsAt).ToList<Match>();
 
       ViewBag.Stadium = STADIUM;
       ViewBag.Match = MATCH;

@@ -8,7 +8,7 @@
 
 $('#myModal form').validate({  // initialize plugin
     rules: {
-        Name: { required: true, maxlength: 255 },
+        Name: { required: true, maxlength: 255, validName: true },
         BeginsAt: { vdate: true },
         Duration: { required: true, digits: true, range: [1, 2147483647] }
     },

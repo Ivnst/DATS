@@ -17,3 +17,20 @@ $.validator.messages.min = $.validator.format("Пожалуйста, введи�
 $.ajaxSetup({
     async: false
 });
+
+$.validator.addMethod('validName', function (value) {
+
+    var allowed = "abcdefghijklmnopqrstuvwxyz" +
+                  "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+                  "абвгдеёжзийклмнопрстуфхцчшщъыьэюя" +
+                  "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ" +
+                  "1234567890" +
+                  " `~!@#$%^&*()_-=+[]{};:'\\|,./?\"";
+
+    for (var i = 0; i < value.length; i++) {
+        if (allowed.indexOf(value.charAt(i)) == -1) {
+            return false;
+        }
+    }
+    return true;
+}, 'Поле содержит некорректные символы');

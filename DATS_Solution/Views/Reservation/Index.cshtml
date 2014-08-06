@@ -39,7 +39,9 @@
               <td class="text-center">№ брони</td>
               <td class="text-center">ФИО</td>
               <td class="text-center">Контакт</td>
+              <td class="text-center">Стадион</td>
               <td class="text-center">Сектор</td>
+              <td class="text-center">Мероприятие</td>
               <td class="text-center">Количество</td>
               <td class="text-center">Цена</td>
               <td class="text-center">Стоимость</td>
@@ -54,7 +56,9 @@
               <td class="text-center">@rv.Id</td>
               <td class="text-center">@rv.Name</td>
               <td class="text-center">@rv.Contact</td>
-              <td class="text-center"><a href="~/Sector/Edit?sid=@rv.SectorId&mid=@ViewBag.CurrentMatch.Id">@rv.SectorName</a></td>
+              <td class="text-center">@rv.StadiumName</td>
+              <td class="text-center"><a href="~/Sector/Edit?sid=@rv.SectorId&mid=@rv.MatchId">@rv.SectorName</a></td>
+              <td class="text-center">@rv.MatchName</td>
               <td class="text-center">@rv.Count</td>
               <td class="text-center">@rv.Price</td>
               <td class="text-center">@rv.Summ</td>
