@@ -8,6 +8,28 @@ namespace DATS
 {
   public static class Utils
   {
+    private static string goodSymbols = null;
+    /// <summary>
+    /// Разрешенные символы
+    /// </summary>
+    public static string GoodSymbols
+    {
+      get
+      {
+        if (goodSymbols == null)
+        {
+          goodSymbols = string.Concat(
+                "abcdefghijklmnopqrstuvwxyz",
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+                "абвгдеёжзийклмнопрстуфхцчшщъыьэюя",
+                "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ",
+                "1234567890",
+                " `~!@#$%^&*()_-=+[]{};:'\\|,./?\"");
+        }
+        return goodSymbols;
+      }
+    }
+
     /// <summary>
     /// Возвращает текущее наше время
     /// </summary>
@@ -113,5 +135,26 @@ namespace DATS
 
       return sb.ToString();
     }
+
+    /// <summary>
+    /// Удаление спец символов из строки
+    /// </summary>
+    /// <param name="src"></param>
+    /// <returns></returns>
+    public static string DeleteSpecialCharacters(string src)
+    {
+      if (string.IsNullOrEmpty(src)) return src;
+
+      StringBuilder sb = new StringBuilder(src.Length);
+
+      string allowed = GoodSymbols;
+
+      foreach (char ch in src)
+        if (allowed.Contains(ch))
+            sb.Append(ch);
+
+      return sb.ToString();
+    }
+
   }
 }

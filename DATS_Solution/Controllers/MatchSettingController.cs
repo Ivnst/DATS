@@ -70,6 +70,8 @@ namespace DATS.Controllers
         [HttpPost]
         public ActionResult Edit(Match match)
         {
+            match.Name = Utils.DeleteSpecialCharacters(match.Name);
+          
             if (ModelState.IsValid)
             {
                 try
@@ -127,6 +129,8 @@ namespace DATS.Controllers
         [HttpPost]
         public ActionResult Create(Match match)
         {
+            match.Name = Utils.DeleteSpecialCharacters(match.Name);
+          
             if (ModelState.IsValid)
             {
                 try

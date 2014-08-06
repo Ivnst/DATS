@@ -69,6 +69,8 @@ namespace DATS.Controllers
         [HttpPost]
         public ActionResult Edit(Sector sector)
         {
+            sector.Name = Utils.DeleteSpecialCharacters(sector.Name);
+
             if (ModelState.IsValid)
             {
                 try
@@ -126,6 +128,7 @@ namespace DATS.Controllers
         [HttpPost]
         public ActionResult Create(Sector sector)
         {
+            sector.Name = Utils.DeleteSpecialCharacters(sector.Name);
             if (ModelState.IsValid)
             {
                 try
