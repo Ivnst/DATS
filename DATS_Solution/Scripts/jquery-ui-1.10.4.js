@@ -3200,9 +3200,10 @@ $.extend(Datepicker.prototype, {
 			inst.trigger = $(this._get(inst, "buttonImageOnly") ?
 				$("<img/>").addClass(this._triggerClass).
 					attr({ src: buttonImage, alt: buttonText, title: buttonText }) :
-				$("<button type='button'></button>").addClass(this._triggerClass).
+                $("<span></span>").addClass("input-group-btn").html(
+				$("<button type='button'></button>").addClass(this._triggerClass).addClass("btn btn-primary").
 					html(!buttonImage ? buttonText : $("<img/>").attr(
-					{ src:buttonImage, alt:buttonText, title:buttonText })));
+					{ src:buttonImage, alt:buttonText, title:buttonText }))));
 			input[isRTL ? "before" : "after"](inst.trigger);
 			inst.trigger.click(function() {
 				if ($.datepicker._datepickerShowing && $.datepicker._lastInput === input[0]) {
