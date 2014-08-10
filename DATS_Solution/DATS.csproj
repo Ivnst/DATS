@@ -291,6 +291,7 @@
     <Content Include="Images\configs.png" />
     <Content Include="Images\favicon.ico" />
     <Content Include="Images\info.png" />
+    <Content Include="Images\Logo.jpg" />
     <Content Include="Images\sector.png" />
     <Content Include="Images\stadium.png" />
     <Content Include="Scripts\bootstrap.js" />
@@ -302,6 +303,7 @@
     <Content Include="Scripts\CustomValidation\StadiumValidation.js" />
     <Content Include="Scripts\Custom\ConfigAjaxSave.js" />
     <Content Include="Scripts\Custom\DatepickerForMatch.js" />
+    <Content Include="Scripts\Custom\DateAndTime.js" />
     <Content Include="Scripts\Custom\Notification.js" />
     <Content Include="Scripts\Custom\PriceAjaxSave.js" />
     <Content Include="Scripts\Custom\SectorCommon.js" />
