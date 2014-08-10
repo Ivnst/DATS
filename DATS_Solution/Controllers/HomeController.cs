@@ -93,7 +93,6 @@ namespace DATS.Controllers
           return View();
         }
 
-
         /// <summary>
         /// Пример использования Twitter Bootstrap
         /// </summary>

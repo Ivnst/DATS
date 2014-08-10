@@ -235,5 +235,16 @@ namespace DATS.Controllers
 
         #endregion
 
+        #region <RouteError>
+
+        public ActionResult RouteError()
+        {
+            logger.Warn("Ошибочный ввод URL!");
+            string msgKey = PrepareMessageBox("Ошибочный ввод URL!", "Внимание!", true);
+            return RedirectToAction("Index", "Home", new { notify = msgKey });
+        }
+
+        #endregion
+
     }
 }
