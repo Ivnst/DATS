@@ -5,49 +5,58 @@
     Layout = null;
 }
 
-@Styles.Render("~/Content/css")
-@Scripts.Render("~/bundles/jqueryval")
-@Scripts.Render("~/bundles/bootstrap")
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Вход в систему DATS</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+</head>
 
-<body style="background: #ffffff;">
-     <div style="width: 50%; border: 4px double #808080; margin: 10% 0 0 25%; background: #f0f0f0; ">
-        <div class="modal-header">
-            <h2 class="modal-title" id="myModalLabel" style="color: #808080; text-align: center; font-style: italic;">
-                Вход в систему DATS
-            </h2>
+    <body>
+        <div style="width: 50%; border: 4px double #808080; margin: 10% 0 0 25%; background: #f0f0f0; ">
+            <div class="modal-header">
+                <h2 class="modal-title" id="myModalLabel" style="color: #808080; text-align: center; font-style: italic;">
+                    Вход в систему DATS
+                </h2>
+            </div>
+
+
+            @using (Html.BeginForm())
+            {
+                @Html.ValidationSummary(true)
+
+                <div class="modal-body">
+                    <fieldset>
+
+                        <div class="editor-label" style="color: #808080;">
+                            @Html.LabelFor(model => model.UserName)
+                        </div>
+                        <div class="editor-field">
+                            @Html.TextBoxFor(model => model.UserName, new { @class = "form-control", @autocomplete = "off" })
+                            @Html.ValidationMessageFor(model => model.UserName)
+                        </div>
+
+                        <div class="editor-label" style="color: #808080;">
+                            @Html.LabelFor(model => model.Password)
+                        </div>
+                        <div class="editor-field">
+                            @Html.TextBoxFor(model => model.Password, new { @class = "form-control", @type = "password", @autocomplete = "off" })
+                            @Html.ValidationMessageFor(model => model.Password)
+                        </div>
+
+                    </fieldset>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-success" style="background: #808080;" value="Применить" />
+                </div>
+
+            }
         </div>
-
-
-        @using (Html.BeginForm())
-        {
-            @Html.ValidationSummary(true)
-
-            <div class="modal-body">
-                <fieldset>
-
-                    <div class="editor-label" style="color: #808080;">
-                        @Html.LabelFor(model => model.UserName)
-                    </div>
-                    <div class="editor-field">
-                        @Html.TextBoxFor(model => model.UserName, new { @class = "form-control", @autocomplete = "off" })
-                        @Html.ValidationMessageFor(model => model.UserName)
-                    </div>
-
-                    <div class="editor-label" style="color: #808080;">
-                        @Html.LabelFor(model => model.Password)
-                    </div>
-                    <div class="editor-field">
-                        @Html.TextBoxFor(model => model.Password, new { @class = "form-control", @type = "password", @autocomplete = "off" })
-                        @Html.ValidationMessageFor(model => model.Password)
-                    </div>
-
-                </fieldset>
-            </div>
-
-            <div class="modal-footer">
-                <input type="submit" class="btn btn-success" style="background: #808080;" value="Применить" />
-            </div>
-
-        }
-    </div>
-<</body>>
+        
+    </body>
+</html>
