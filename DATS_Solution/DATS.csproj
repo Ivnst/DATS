@@ -302,6 +302,7 @@
     <Content Include="Scripts\CustomValidation\ValidationMessages.js" />
     <Content Include="Scripts\CustomValidation\StadiumValidation.js" />
     <Content Include="Scripts\Custom\ConfigAjaxSave.js" />
+    <Content Include="Scripts\Custom\gremlins_init.js" />
     <Content Include="Scripts\Custom\DatepickerForMatch.js" />
     <Content Include="Scripts\Custom\DateAndTime.js" />
     <Content Include="Scripts\Custom\Notification.js" />
@@ -310,6 +311,7 @@
     <Content Include="Scripts\Custom\SectorCopy.js" />
     <Content Include="Scripts\Custom\SectorEdit.js" />
     <Content Include="Scripts\Custom\SectorConfigure.js" />
+    <Content Include="Scripts\gremlins.js" />
     <Content Include="Scripts\jquery-2.1.1-vsdoc.js" />
     <Content Include="Scripts\jquery-2.1.1.js" />
     <Content Include="Scripts\jquery-2.1.1.min.js" />
@@ -413,7 +415,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>3427</DevelopmentServerPort>
+          <DevelopmentServerPort>29563</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

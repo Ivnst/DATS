@@ -37,6 +37,11 @@ namespace DATS
                   "~/Scripts/Custom/SectorConfigure.js",
                   "~/Scripts/Custom/SectorCommon.js"));
 
+      bundles.Add(new ScriptBundle("~/bundles/gremlins").Include(
+                  "~/Scripts/gremlins.js",
+                  "~/Scripts/Custom/gremlins_init.js"));
+
+
       bundles.Add(new StyleBundle("~/Content/css")
         .Include("~/Content/site.css")
         .Include("~/Content/bootstrap*"));
