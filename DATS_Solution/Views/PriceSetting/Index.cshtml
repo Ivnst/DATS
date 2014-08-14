@@ -38,6 +38,7 @@
 
 @using (Html.BeginForm("Save", "PriceSetting", FormMethod.Post, new { Id = "FormForSave" }))
 {
+    @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
     
 <div>

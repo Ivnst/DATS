@@ -30,6 +30,7 @@
 
 @using (Html.BeginForm("Edit", "StadiumSetting", FormMethod.Post, new { @enctype = "multipart/form-data" }))
 {
+    @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
 <div class="modal-body">

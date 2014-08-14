@@ -27,6 +27,7 @@
 
 @using (Html.BeginForm())
 {
+    @Html.AntiForgeryToken()
     @Html.HiddenFor(model => model.StadiumId)
 
     <div class="modal-footer">

@@ -218,6 +218,7 @@ namespace DATS.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Confirm(SellingView model)
         {
           //check sector id

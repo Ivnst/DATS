@@ -63,6 +63,7 @@ namespace DATS.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Edit(Match match)
         {
             match.Name = Utils.DeleteSpecialCharacters(match.Name);
@@ -122,6 +123,7 @@ namespace DATS.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Create(Match match)
         {
             match.Name = Utils.DeleteSpecialCharacters(match.Name);
@@ -176,6 +178,7 @@ namespace DATS.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Delete(Match match)
         {
             try

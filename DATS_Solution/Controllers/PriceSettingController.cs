@@ -149,6 +149,7 @@ namespace DATS.Controllers
     #region <Save>
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public ActionResult Save(FormCollection formCollection)
     {
 

@@ -59,6 +59,7 @@ namespace DATS.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Edit(Sector sector)
         {
             sector.Name = Utils.DeleteSpecialCharacters(sector.Name);
@@ -118,6 +119,7 @@ namespace DATS.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Create(Sector sector)
         {
             sector.Name = Utils.DeleteSpecialCharacters(sector.Name);
@@ -172,6 +174,7 @@ namespace DATS.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Delete(Sector sector)
         {
             if(Repository.GetCountOfSoldPlacesInSector(sector) != 0)

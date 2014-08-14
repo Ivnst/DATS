@@ -19,6 +19,7 @@
 
 @using (Html.BeginForm())
 {
+    @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
     @Html.HiddenFor(model => model.Data)
     @Html.HiddenFor(model => model.MatchId)

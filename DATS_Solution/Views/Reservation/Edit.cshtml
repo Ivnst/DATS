@@ -66,10 +66,14 @@
 <div class="modal-footer">
 <div class="list-inline">
     <li>@using (Html.BeginForm("SellReservation", "Reservation", new { id = Model.Id }, FormMethod.Post, new { @class = "form-horizontal" }))
-    {<input type="submit" class="btn btn-success" value="Продать" />}</li>
+    {
+            @Html.AntiForgeryToken()
+            <input type="submit" class="btn btn-success" value="Продать" />}</li>
     
     <li>@using (Html.BeginForm("ReleaseReservation", "Reservation", new { id = Model.Id }, FormMethod.Post, new { @class = "form-horizontal" }))
-    {<input type="submit" class="btn btn-primary" value="Вернуть в продажу" />}</li>
+    {
+            @Html.AntiForgeryToken()
+            <input type="submit" class="btn btn-primary" value="Вернуть в продажу" />}</li>
     <li><button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button></li>
 </div>
 

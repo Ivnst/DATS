@@ -46,6 +46,7 @@ namespace DATS.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Create(ClientView client)
         {
           if (client.Contact == null) client.Contact = "";
@@ -106,6 +107,7 @@ namespace DATS.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult SellReservation(ReservationView reservation)
         {
           if (ModelState.IsValid)
@@ -129,6 +131,7 @@ namespace DATS.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult ReleaseReservation(ReservationView reservation)
         {
           if (ModelState.IsValid)

@@ -28,6 +28,7 @@ namespace DATS.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Create(Stadium stadium)
         {
           stadium.Name = Utils.DeleteSpecialCharacters(stadium.Name);
@@ -101,6 +102,7 @@ namespace DATS.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Edit(Stadium stadium)
         {
           stadium.Name = Utils.DeleteSpecialCharacters(stadium.Name);
@@ -178,6 +180,7 @@ namespace DATS.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Delete(Stadium stadium)
         {
           int id = stadium.Id;
