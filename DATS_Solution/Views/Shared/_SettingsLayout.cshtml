@@ -16,6 +16,8 @@
     @RenderSection("scripts", required: false)
     <script src="~/Scripts/CustomValidation/ValidationMessages.js"  type="text/javascript"></script>
     <script src="~/Scripts/Custom/DateAndTime.js" type="text/javascript"></script>
+    <script src="~/Scripts/Custom/gremlins_init.js" type="text/javascript"></script>
+    <script src="~/Scripts/gremlins.js" type="text/javascript"></script>
 </head>
 <body>
 
@@ -40,6 +42,7 @@
         <li><a href="/Home/Index">Главная</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
+        <li><a href="#" id="Info"></a></li>
         <li><a href="#" id="Clock"></a></li>
         <li><a href="/StadiumSetting/Index">Настройки</a></li>
           <li class="dropdown">
