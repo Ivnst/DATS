@@ -27,13 +27,30 @@ namespace DATS.Controllers
             {
                 if (authProvider.Authenticate(model.UserName, model.Password))
                 {
-                    logger.Trace("Пользователь прошёл аутетификацию | " + HttpContext.User.Identity.Name + " | " + Request.UserHostAddress);
+                    try
+                    {
+                        logger.Trace("Пользователь прошёл аутетификацию | " + HttpContext.User.Identity.Name + " | " + Request.UserHostAddress);
+                    }
+                    catch
+                    {
+                        // не обрабатываем, так как ошибка возникает только в режиме выполнения unit test
+                    }
+                    
                     return Redirect(returnUrl ?? Url.Action("Index", "Home"));
                 }
                 else
                 {
-                    logger.Trace("Неверный пользователь или пароль | " + HttpContext.User.Identity.Name + " | " + Request.UserHostAddress);
+                    try
+                    {
+                        logger.Trace("Неверный пользователь или пароль | " + HttpContext.User.Identity.Name + " | " + Request.UserHostAddress);
+                    }
+                    catch
+                    {
+                        // не обрабатываем, так как ошибка возникает только в режиме выполнения unit test
+                    }
+                    
                     ModelState.AddModelError("", "Неверный пользователь или пароль.");
+                    
                     return View();
                 }
             }
@@ -45,8 +62,15 @@ namespace DATS.Controllers
 
         public ActionResult Logout()
         {
-
+            try
+            { 
             logger.Trace("Logout пользователя | " + HttpContext.User.Identity.Name + " | " + Request.UserHostAddress);
+            }
+            catch
+            {
+                // не обрабатываем, так как ошибка возникает только в режиме выполнения unit test
+            }
+            
             authProvider.Logout();
 
             return Redirect(Url.Action("Login", "Account"));
